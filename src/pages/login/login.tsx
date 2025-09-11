@@ -22,6 +22,11 @@ const Login = () => {
         <p className="welcome-text">
           Com ele, você pode encontrar o prestador ideal para sua necessidade, negociar valores dentro do seu orçamento e resolver desde pequenos reparos até grandes obras de forma simples e segura.
         </p>
+
+         <div className="profile-image-container">
+          <img src={ProfileImage} alt="Profile" className="profile-image" />
+        </div>
+        
         <p className="welcome-text-bold">
           Experimente agora e descubra como é fácil encontrar ou oferecer serviços no WorkMatch!
         </p>
@@ -47,10 +52,6 @@ const Login = () => {
             <span className="icon">🔒</span>
           </div>
           <a href="#" className="forgot-password">Esqueceu sua senha?</a>
-        </div>
-        
-        <div className="profile-image-container">
-          <img src={ProfileImage} alt="Profile" className="profile-image" />
         </div>
 
         <div className="button-group">
