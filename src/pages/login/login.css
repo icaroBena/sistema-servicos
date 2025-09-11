@@ -1,0 +1,21 @@
+.illustration-container img {
+  width: 20%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.parceria img {
+  width: 10%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.login-container{
+    display: flex;
+    flex: 1;
+}
+
+.login-left-panel,
+.login-right-panel {
+  flex: 1; 
+}
