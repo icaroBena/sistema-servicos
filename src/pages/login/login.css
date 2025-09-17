@@ -1,21 +1,46 @@
+/* Layout geral */
+.login-container {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.login-left-panel { flex: 1; display: flex; align-content: center; flex-direction: column; align-items: center;}
+.login-right-panel { flex: 1; display: flex; align-items:center; flex-direction: column;}
+.login-right-panel h2,p{
+  margin: 2px;
+}
+.login-left-panel p{
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
+
+/* Ilustração maior (se quiser manter) */
 .illustration-container img {
   width: 20%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  
 }
 
-.parceria img {
-  width: 10%;
-  height: 100%;
-  object-fit: cover;
+/* Estilos para a imagem do problema */
+.imagemproblema {
+  width: 120px;      /* ajuste o tamanho conforme necessário */
+  height: auto;
+  object-fit: cover; /* Opcional: Ajusta a imagem sem distorcer */
+  display: flex;
+  margin-bottom: 20px; /* Adiciona espaço abaixo */
 }
 
-.login-container{
-    display: flex;
-    flex: 1;
-}
-
-.login-left-panel,
-.login-right-panel {
-  flex: 1; 
+/* Estilos para a imagem de parceria */
+.imagemparceria {
+  width: 120px;      /* ajuste o tamanho conforme necessário */
+  height: auto;
+  object-fit: cover; /* Opcional: Ajusta a imagem sem distorcer */
+  display: flex;
+  margin-top: 20px; /* Adiciona espaço acima */
 }

@@ -15,17 +15,13 @@ const Login = () => {
         <p className="welcome-text">
           WorkMatch é a plataforma que conecta pessoas que precisam de serviços de manutenção, construção e reformas com profissionais qualificados e de confiança.
         </p>
-        <div className="illustration-container">
           {/* Você pode substituir esta imagem pela sua */}
-          <img src={WorkMatchLogo} alt="WorkMatch Illustration" className="illustration-image" />
-        </div>
+          <img src={WorkMatchLogo} alt="WorkMatch Illustration" className="imagemproblema" />
+        
         <p className="welcome-text">
           Com ele, você pode encontrar o prestador ideal para sua necessidade, negociar valores dentro do seu orçamento e resolver desde pequenos reparos até grandes obras de forma simples e segura.
         </p>
-
-         <div className="profile-image-container">
-          <img src={ProfileImage} alt="Profile" className="profile-image" />
-        </div>
+          <img src={ProfileImage} alt="Profile" className="imagemparceria" />
         
         <p className="welcome-text-bold">
           Experimente agora e descubra como é fácil encontrar ou oferecer serviços no WorkMatch!
@@ -40,7 +36,7 @@ const Login = () => {
         <div className="form-group">
           <label htmlFor="username">Usuário</label>
           <div className="input-group">
-            <input type="text" id="username" placeholder="jhonasrodrigues" />
+            <input type="text" id="username" placeholder="nomeusuario" />
             <span className="icon">👤</span>
           </div>
         </div>
