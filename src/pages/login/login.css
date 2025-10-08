@@ -7,8 +7,15 @@
 
 .login-left-panel { flex: 1; display: flex; align-content: center; flex-direction: column; align-items: center; text-align: center;}
 .login-right-panel { flex: 1; display: flex; align-items:center; flex-direction: column;}
-.login-right-panel h2,p{
+.login-right-panel h2{
   margin: 2px;
+  color: dodgerblue;
+}
+.login-right-panel p{
+  margin: 2px;
+}
+.login-left-panel h1{
+  color:dodgerblue;
 }
 .login-left-panel p{
   display: flex;
@@ -45,3 +52,18 @@
   margin-top: 20px; /* Adiciona espaço acima */
 }
 
+ .form-group{
+  padding-top: 1%;
+ }
+
+ .forgot-password{
+  padding-top: 2%;
+ }
+
+ .button-group{
+  padding: 2%;
+ }
+
+ .btn-primary{
+  margin-right: 10px;
+ }

@@ -1,4 +1,3 @@
-import React from 'react';
 import './login.css';
 
 // Importe as imagens que você vai usar
@@ -12,13 +11,13 @@ const Login = () => {
       {/* Painel Esquerdo */}
       <div className="login-left-panel">
         <h1 className="welcome-title">Bem vindo ao WorkMatch</h1>
-        <p className="welcome-text-bold">
+        <p className="welcome-text">
           WorkMatch é a plataforma que conecta pessoas que precisam de serviços de manutenção, construção e reformas com profissionais qualificados e de confiança.
         </p>
           {/* Você pode substituir esta imagem pela sua */}
           <img src={WorkMatchLogo} alt="WorkMatch Illustration" className="imagemproblema" />
         
-        <p className="welcome-text-bold">
+        <p className="welcome-text">
           Com ele, você pode encontrar o prestador ideal para sua necessidade, negociar valores dentro do seu orçamento e resolver desde pequenos reparos até grandes obras de forma simples e segura.
         </p>
           <img src={ProfileImage} alt="Profile" className="imagemparceria" />

@@ -1,0 +1,36 @@
+/* navbar.css */
+.wm-navbar {
+  background-color: #0a66ff;  /* Azul */
+  padding: 16px 20px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wm-brand {
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: 0.2px;
+}
+
+.wm-nav {
+  display: flex;
+  gap: 20px;
+}
+
+.wm-nav-link {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.wm-nav-link:hover {
+  color: #e0e0e0;
+}
+
+.wm-container{
+  display: flex;
+}

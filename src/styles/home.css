@@ -1,0 +1,51 @@
+/* home.css */
+html,body,h1{
+    margin: 0 auto;
+}
+
+.wm-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.wm-popular-services {
+
+}
+
+.wm-popular-services h2 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.wm-services-list {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.wm-how-to {
+  margin-top: 60px;
+  text-align: center;
+}
+
+.wm-how-to h2 {
+  font-size: 22px;
+  margin-bottom: 24px;
+  color: #6b7280;
+}
+
+.wm-how-to-content p {
+  font-size: 16px;
+  color: #6b7280;
+}
+
+.wm-how-to-content .wm-btn-primary {
+  margin-top: 12px;
+}
+
+.wm-main{
+   
+    background-color: aliceblue;
+}
+

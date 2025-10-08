@@ -1,10 +1,9 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import Login from './pages/login/login.tsx'
+import React from "react";
+import { createRoot } from "react-dom/client";
+import Home from "./pages/home/home"; 
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <Login/>
-  </StrictMode>,
-)
+createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <Home />
+  </React.StrictMode>
+);
