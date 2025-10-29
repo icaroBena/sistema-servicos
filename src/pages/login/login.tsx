@@ -47,7 +47,7 @@ const Login = () => {
 
         <div className="button-group">
           <button className="btn btn-primary">ENTRAR</button>
-          <button className="btn btn-secondary">REGISTRAR</button>
+          <button className="btn btn-secondary">CADASTRAR</button>
         </div>
       </div>
     </div>
