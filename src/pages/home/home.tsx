@@ -22,7 +22,7 @@ export default function Home() {
             <ServiceCard title="Personal Trainer" imgSrc="/Figures/personal trainer.avif" buttonText="Ver Orçamentos" />
           </div>
         </section>
-
+{/* Paulo esteve aqui*/}
         {/* Como pedir um serviço */}
         <section className="wm-how-to">
           <h2>Como pedir um serviço</h2>
