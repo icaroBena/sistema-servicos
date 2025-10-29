@@ -1,10 +1,8 @@
 /* navbar.css */
 .wm-navbar {
-  background-color: #0a66ff;  /* Azul */
-  padding: 16px 20px;
+  background-color: #0a66ff;
   color: white;
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 
@@ -33,4 +31,7 @@
 
 .wm-container{
   display: flex;
+  justify-content: space-between;
+  align-items: center; 
+  width: 100%;
 }

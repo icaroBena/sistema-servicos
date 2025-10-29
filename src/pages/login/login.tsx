@@ -1,9 +1,5 @@
 import './login.css';
-
-// Importe as imagens que você vai usar
-// Certifique-se de que os caminhos estão corretos
-import WorkMatchLogo from '../../Figures/problema.png';
-import ProfileImage from '../../Figures/parceria.png';
+import React from 'react';
 
 const Login = () => {
   return (
@@ -15,12 +11,12 @@ const Login = () => {
           WorkMatch é a plataforma que conecta pessoas que precisam de serviços de manutenção, construção e reformas com profissionais qualificados e de confiança.
         </p>
           {/* Você pode substituir esta imagem pela sua */}
-          <img src={WorkMatchLogo} alt="WorkMatch Illustration" className="imagemproblema" />
+          {/*<img src={ProblemaImagem} alt="WorkMatch Illustration" className="imagemproblema" />*/}
         
         <p className="welcome-text">
           Com ele, você pode encontrar o prestador ideal para sua necessidade, negociar valores dentro do seu orçamento e resolver desde pequenos reparos até grandes obras de forma simples e segura.
         </p>
-          <img src={ProfileImage} alt="Profile" className="imagemparceria" />
+          {/*<img src={ParceriaImagem} alt="Profile" className="imagemparceria" />*/}
         
         <p className="welcome-text-bold">
           Experimente agora e descubra como é fácil encontrar ou oferecer serviços no WorkMatch!

@@ -4,7 +4,10 @@
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(16, 24, 40, 0.08);
-  width: 280px;
+  /* width: 280px;  <- remova */
+  /* margin: 10 10 0 0; <- remova (e estava sem 'px') */
+  box-sizing: border-box;
+  height: 100%;              /* opcional: cards com alturas iguais na linha */
   text-align: center;
   transition: transform 0.3s ease;
 }
