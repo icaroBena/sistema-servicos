@@ -8,7 +8,7 @@
   /* margin: 10 10 0 0; <- remova (e estava sem 'px') */
   box-sizing: border-box;
   height: 100%;              /* opcional: cards com alturas iguais na linha */
-  text-align: center;
+  text-align: center;/* bens */
   transition: transform 0.3s ease;
 }
 
