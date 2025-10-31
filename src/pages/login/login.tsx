@@ -1,7 +1,15 @@
 import './login.css';
 import React from 'react';
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
+
+  const handleEntrar = () => {
+    // aqui você poderia validar usuário/senha antes…
+    navigate("/home");
+  };
+  
   return (
     <div className="login-container">
       {/* Painel Esquerdo */}
@@ -46,7 +54,7 @@ const Login = () => {
         </div>
 
         <div className="button-group">
-          <button className="btn btn-primary">ENTRAR</button>
+          <button className="btn btn-primary" onClick={handleEntrar}>ENTRAR</button>
           <button className="btn btn-secondary">CADASTRAR</button>
         </div>
       </div>

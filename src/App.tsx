@@ -1,12 +1,15 @@
 
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Home from './pages/home/home';
+import Login from "./pages/login/login";
 
-function App() {
-
+export default function App() {
   return (
-    <>
-      <p>Sistema de Serviços WorkMatch</p>
-    </>
-  )
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="/home" element={<Home />} />
+      {/* qualquer rota desconhecida volta pro login */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
 }
-
-export default App
