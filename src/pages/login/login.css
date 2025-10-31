@@ -1,69 +1,82 @@
+/* Reset para evitar margens e barras de rolagem indesejadas */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 /* Layout geral */
 .login-container {
   display: flex;
-  align-items: center;
-  flex: 1;
-}
-
-.login-left-panel { flex: 1; display: flex; align-content: center; flex-direction: column; align-items: center; text-align: center;}
-.login-right-panel { flex: 1; display: flex; align-items:center; flex-direction: column;}
-.login-right-panel h2{
-  margin: 2px;
-  color: dodgerblue;
-}
-.login-right-panel p{
-  margin: 2px;
-}
-.login-left-panel h1{
-  color:dodgerblue;
-}
-.login-left-panel p{
-  display: flex;
-  align-items: center;
-  align-content: center;
   justify-content: center;
+  align-items: center;
+  height: 100vh;          /* ocupa toda a altura da janela */
+  width: 100vw;           /* ocupa toda a largura da janela */
+  overflow: hidden;       /* impede o scroll */
+  background-color: #f5f5f5;
 }
 
-/* Ilustração maior (se quiser manter) */
-.illustration-container img {
-  width: 20%;
+/* Painéis */
+.login-left-panel, 
+.login-right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  height: 100%; /* usar 100% do container, não 100vh */
+}
+
+/* Remove as barras de rolagem causadas por largura extra */
+.login-left-panel {
+  background-color: #ffffff;
+  border-right: 1px solid #ddd;
+}
+
+.login-right-panel {
+  background-color: #0a66ff;
+}
+
+/* Títulos e textos */
+.login-left-panel h1 {
+  color: #0a66ff;
+}
+
+.login-left-panel p,
+.login-right-panel p {
+  margin: 10px 0;
+}
+
+/* Ajuste opcional das imagens */
+.imagemproblema, .imagemparceria {
+  width: 120px;
   height: auto;
+  object-fit: cover;
+  margin: 10px 0;
+}
+
+/* Formulário */
+.form-group {
+  margin: 10px 0;
+}
+
+.input-group {
   display: flex;
   align-items: center;
-  align-content: center;
-  
 }
 
-/* Estilos para a imagem do problema */
-.imagemproblema {
-  width: 120px;      /* ajuste o tamanho conforme necessário */
-  height: auto;
-  object-fit: cover; /* Opcional: Ajusta a imagem sem distorcer */
-  display: flex;
-  margin-bottom: 20px; /* Adiciona espaço abaixo */
+.input-group input {
+  padding: 8px;
+  margin-right: 5px;
 }
 
-/* Estilos para a imagem de parceria */
-.imagemparceria {
-  width: 120px;      /* ajuste o tamanho conforme necessário */
-  height: auto;
-  object-fit: cover; /* Opcional: Ajusta a imagem sem distorcer */
-  display: flex;
-  margin-top: 20px; /* Adiciona espaço acima */
+/* Botões */
+.button-group {
+  margin-top: 15px;
 }
 
- .form-group{
-  padding-top: 1%;
- }
-
- .forgot-password{
-  padding-top: 2%;
- }
-
- .button-group{
-  padding: 2%;
- }
-
- .btn-primary{
+.btn-primary {
   margin-right: 10px;
- }
+}
