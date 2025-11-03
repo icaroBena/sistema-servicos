@@ -83,16 +83,30 @@ input[type="file"] {
     color: white;
 }
 
+.btn.remove {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
 .btn.cancel {
     background-color: #d8ebff;
+}
+
+.btn.primary:hover {
+    background-color: #005ed1;
 }
 
 .btn.cancel:hover {
     background-color: #a6bed7;
 }
 
-.btn.primary:hover {
-    background-color: #005ed1;
+.btn.remove:hover {
+  background-color: #e63c3c;
 }
 
 .verified-text {
