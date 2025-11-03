@@ -1,0 +1,53 @@
+/* serviceCard.css */
+.wm-service-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.08);
+  /* width: 280px;  <- remova */
+  /* margin: 10 10 0 0; <- remova (e estava sem 'px') */
+  box-sizing: border-box;
+  height: 100%;              /* opcional: cards com alturas iguais na linha */
+  text-align: center;/* bens */
+  transition: transform 0.3s ease;
+}
+
+.wm-service-card:hover {
+  transform: translateY(-5px);
+}
+
+.wm-service-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.wm-service-card h3 {
+  font-size: 18px;
+  margin: 12px 0;
+}
+
+.wm-service-card p {
+  font-size: 14px;
+  color: #6b7280;  /* texto desativado */
+  margin-bottom: 12px;
+}
+
+.wm-btn-primary {
+  background-color: #0a66ff;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.wm-btn-primary:hover {
+  background-color: #0646af;
+}

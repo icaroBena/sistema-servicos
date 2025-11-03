@@ -1,21 +1,82 @@
-.illustration-container img {
-  width: 20%;
-  height: 100%;
-  object-fit: cover;
+/* Reset para evitar margens e barras de rolagem indesejadas */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.parceria img {
-  width: 10%;
-  height: 100%;
-  object-fit: cover;
+/* Layout geral */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;          /* ocupa toda a altura da janela */
+  width: 100vw;           /* ocupa toda a largura da janela */
+  overflow: hidden;       /* impede o scroll */
+  background-color: #f5f5f5;
 }
 
-.login-container{
-    display: flex;
-    flex: 1;
-}
-
-.login-left-panel,
+/* Painéis */
+.login-left-panel, 
 .login-right-panel {
-  flex: 1; 
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  height: 100%; /* usar 100% do container, não 100vh */
+}
+
+/* Remove as barras de rolagem causadas por largura extra */
+.login-left-panel {
+  background-color: #ffffff;
+  border-right: 1px solid #ddd;
+}
+
+.login-right-panel {
+  background-color: #0a66ff;
+}
+
+/* Títulos e textos */
+.login-left-panel h1 {
+  color: #0a66ff;
+}
+
+.login-left-panel p,
+.login-right-panel p {
+  margin: 10px 0;
+}
+
+/* Ajuste opcional das imagens */
+.imagemproblema, .imagemparceria {
+  width: 120px;
+  height: auto;
+  object-fit: cover;
+  margin: 10px 0;
+}
+
+/* Formulário */
+.form-group {
+  margin: 10px 0;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+}
+
+.input-group input {
+  padding: 8px;
+  margin-right: 5px;
+}
+
+/* Botões */
+.button-group {
+  margin-top: 15px;
+}
+
+.btn-primary {
+  margin-right: 10px;
 }

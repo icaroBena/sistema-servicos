@@ -1,0 +1,31 @@
+/* limita largura e centraliza tudo que usar wm-container */
+.wm-container {
+  padding: 24px;
+}
+
+/* seção dos populares */
+.wm-popular-services {
+  padding: 24px 0 8px;
+}
+
+/* título */
+.wm-h2-popular-services {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 20px 0;
+}
+
+.wm-services-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;       
+}
+
+
+/* opcional: deixa o bloco "como pedir" centralizado e com respiro */
+.wm-how-to {
+  margin: 48px 0 64px;
+  text-align: center;
+}
+
+
