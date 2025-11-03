@@ -9,6 +9,11 @@ const Login = () => {
     // aqui você poderia validar usuário/senha antes…
     navigate("/home");
   };
+
+  const handleCadastrar = () => {
+    // Paulo: Adicionado função para acessar cadastro
+    navigate("/register");
+  };
   
   return (
     <div className="login-container">
@@ -55,7 +60,7 @@ const Login = () => {
 
         <div className="button-group">
           <button className="btn btn-primary" onClick={handleEntrar}>ENTRAR</button>
-          <button className="btn btn-secondary">CADASTRAR</button>
+          <button className="btn btn-secondary" onClick={handleCadastrar} >CADASTRAR</button>
         </div>
       </div>
     </div>
