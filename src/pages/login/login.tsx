@@ -55,7 +55,6 @@ const Login = () => {
             <input type="password" id="password" placeholder="senhaacesso" />
             <span className="icon">🔒</span>
           </div>
-          <a href="#" className="forgot-password">Esqueceu sua senha?</a>
         </div>
 
         <div className="button-group">
