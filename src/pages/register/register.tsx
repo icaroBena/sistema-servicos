@@ -28,6 +28,10 @@ const Register: React.FC = () => {
     const [missingFields, setMissingFields] = useState(false);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+    // Tipos de arquivos permitidos para a documentação:
+    const allowedMimeTypes = ["image/jpeg", "image/png", "application/pdf"];
+    const allowedExtensions = ["jpg", "jpeg", "png", "pdf"];
+
     // Manipulação genérica de campos
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { id, value, type, checked } = e.target;
@@ -49,13 +53,18 @@ const Register: React.FC = () => {
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
-        setVerificationFile(file);
 
-        if (file) {
-            setDocumentValid(true);
-        } else{
-            handleFileRemoval();
+        const fileExtension = file && file.name.split(".").pop()?.toLowerCase();
+
+        // Verificação de formato e erros
+        if (!file || !allowedMimeTypes.includes(file.type) || !fileExtension || !allowedExtensions.includes(fileExtension)) {
+            {file && alert("Formato errado! Envie um arquivo válido (PDF, PNG, JPG)")}
+            handleFileRemoval()
+            return;
         }
+
+        setVerificationFile(file);
+        setDocumentValid(true);
     };
 
     // Submissão (ainda sem backend)
