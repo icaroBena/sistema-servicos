@@ -26,20 +26,20 @@
     margin-bottom: 25px;
 }
 
-.fill-alert {
+.register-fill-alert {
     text-align: center;
     color: #ff4242;
     margin-bottom: 25px;
 }
 
-.form-group {
+.register-form-group {
     display: flex;
     flex-direction: column;
     margin-bottom: 15px;
     flex: 1;
 }
 
-.form-row {
+.register-form-row {
     display: flex;
     gap: 40px;
 }
@@ -54,7 +54,7 @@ input[type="file"] {
     border: 1px solid #ccc;
 }
 
-.form-group.terms {
+.register-form-group.terms {
     flex-direction: row;
     align-items: center;
     gap: 8px;
@@ -63,7 +63,7 @@ input[type="file"] {
 
 
 
-.button-group {
+.register-button-group {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
