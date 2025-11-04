@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 
 import './register.css';
+import VerificationInfoPopup from './components/VerificationInfoPopup';
 import { useNavigate } from "react-router-dom";
 
 // Os dados de registração por enquanto são temporários, apenas para testes.
@@ -26,11 +27,12 @@ const Register: React.FC = () => {
     const [verificationFile, setVerificationFile] = useState<File | null>(null);
     const [documentValid, setDocumentValid] = useState(false);
     const [missingFields, setMissingFields] = useState(false);
+    const [showInfo, setShowInfo] = useState(false);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     // Tipos de arquivos permitidos para a documentação:
-    const allowedMimeTypes = ["image/jpeg", "image/png", "application/pdf"];
-    const allowedExtensions = ["jpg", "jpeg", "png", "pdf"];
+    const allowedMimeTypes = ["application/pdf"];
+    const allowedExtensions = ["pdf"];
 
     // Manipulação genérica de campos
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -54,12 +56,15 @@ const Register: React.FC = () => {
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
 
-        const fileExtension = file && file.name.split(".").pop()?.toLowerCase();
-
         // Verificação de formato e erros
-        if (!file || !allowedMimeTypes.includes(file.type) || !fileExtension || !allowedExtensions.includes(fileExtension)) {
-            {file && alert("Formato errado! Envie um arquivo válido (PDF, PNG, JPG)")}
-            handleFileRemoval()
+        if (!file) return;
+
+        const fileExtension = file.name.split(".").pop()?.toLowerCase();
+        const isValidType = allowedMimeTypes.includes(file.type) && fileExtension && allowedExtensions.includes(fileExtension);
+
+        if (!isValidType) {
+            alert("Formato inválido! Envie um arquivo PDF");
+            handleFileRemoval();
             return;
         }
 
@@ -162,9 +167,38 @@ const Register: React.FC = () => {
 
                     {formData.userType === 'prestador' && (
                         <div className="register-form-group">
-                            <label htmlFor="verificationFile">{!documentValid && "Documento de verificação" || "✅ Documento de verificação enviado!"}</label>
-                            <input type="file" id="verificationFile" accept=".pdf,.jpg,.png" onChange={handleFileChange} ref={fileInputRef} />
-                            {documentValid && <button type="button" className="btn remove" onClick={handleFileRemoval}> Remover Documento </button>}
+                            <label htmlFor="verificationFile">
+                                {documentValid ? "✅ Documento de verificação enviado!" : "Documento de verificação"}
+                            </label>
+
+                            <div className="info-row">
+                                <input
+                                    type="file"
+                                    id="verificationFile"
+                                    accept=".pdf"
+                                    onChange={handleFileChange}
+                                    ref={fileInputRef}
+                                />
+                                <button
+                                    type="button"
+                                    className="btn info"
+                                    onClick={() => setShowInfo(true)}
+                                >
+                                    O que é um documento de verificação?
+                                </button>
+                            </div>
+
+                            {documentValid && (
+                                <button
+                                    type="button"
+                                    className="btn remove"
+                                    onClick={handleFileRemoval}
+                                >
+                                    Remover Documento
+                                </button>
+                            )}
+
+                            {showInfo && <VerificationInfoPopup onClose={() => setShowInfo(false)} />}
                         </div>
                     )}
 

@@ -84,13 +84,13 @@ input[type="file"] {
 }
 
 .btn.remove {
-  background-color: #ff4d4d;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-top: 8px;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 8px;
 }
 
 .btn.cancel {
@@ -106,7 +106,52 @@ input[type="file"] {
 }
 
 .btn.remove:hover {
-  background-color: #e63c3c;
+    background-color: #e63c3c;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn.info {
+    background-color: #0078ff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    /* ↓ reduz altura e largura */
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    /* ↓ texto mais equilibrado */
+    line-height: 1.2;
+    white-space: nowrap;
+    /* evita quebra de linha */
+    transition: background-color 0.2s;
+}
+
+.btn.info:hover {
+    background-color: #005ed1;
+}
+
+/* Ajuste da linha com o input */
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+@media (max-width: 200px) {
+    .info-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .btn.info {
+        width: 100%;
+    }
 }
 
 .verified-text {
