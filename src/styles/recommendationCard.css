@@ -1,0 +1,56 @@
+.recommendation-card {
+  display: flex;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+  padding: 16px;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;  /* Limita o tamanho para que não ultrapasse a tela */
+  overflow: hidden;
+}
+
+.recommendation-img {
+  width: 120px; /* Reduzir o tamanho da imagem */
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 16px;
+}
+
+.recommendation-info {
+  flex-grow: 1; /* Garante que a descrição ocupe o espaço restante */
+  display: flex;
+  flex-direction: column;
+}
+
+.recommendation-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.recommendation-category {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 4px 0;
+}
+
+.recommendation-price {
+  font-size: 16px;
+  font-weight: 600;
+  color: #16a34a;
+}
+
+.recommendation-rating {
+  font-size: 14px;
+  color: #fbbf24;
+  margin: 8px 0;
+}
+
+.recommendation-contact {
+  font-size: 14px;
+  color: #0f172a;
+  margin-top: 8px;
+}
