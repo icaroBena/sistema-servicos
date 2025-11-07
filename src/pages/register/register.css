@@ -1,0 +1,101 @@
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f7fa;
+}
+
+.register-center-panel {
+    background: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 650px;
+}
+
+.register-title {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 400;
+}
+
+.register-subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 25px;
+}
+
+.register-fill-alert {
+    text-align: center;
+    color: #ff4242;
+    margin-bottom: 25px;
+}
+
+.register-form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    flex: 1;
+}
+
+.register-form-row {
+    display: flex;
+    gap: 40px;
+}
+
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="file"] {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.register-form-group.terms {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+
+
+.register-button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn {
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn.primary {
+    background-color: #0078ff;
+    color: white;
+}
+
+.btn.cancel {
+    background-color: #d8ebff;
+}
+
+.btn.cancel:hover {
+    background-color: #a6bed7;
+}
+
+.btn.primary:hover {
+    background-color: #005ed1;
+}
+
+.verified-text {
+    color: green;
+    font-size: 14px;
+}
