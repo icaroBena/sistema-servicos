@@ -60,7 +60,7 @@ export default function Home() {
         </section>
 
         <div className="home-container">
-      <h1>Recomendações</h1>
+      <h1>Serviços Disponíveis</h1>
       <div className="recommendation-list">
         <RecommendationCard
           title="Instalações e Manutenções Domésticas"
@@ -96,7 +96,6 @@ export default function Home() {
         />
       </div>
     </div>
-
       </main>
 
       <Footer />
