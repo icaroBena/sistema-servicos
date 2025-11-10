@@ -3,9 +3,10 @@ import type { ChangeEvent, FormEvent } from 'react';
 
 import './register.css';
 import Footer from "../../components/Footer.tsx";
-import Navbar from "../../components/Navbar.tsx"
+import Navbar from "../../components/Navbar.tsx";
 import VerificationInfoPopup from './components/VerificationInfoPopup';
 import { useNavigate } from "react-router-dom";
+import { registerRequest } from "../../services/api.ts"; 
 
 import BackImage from '/Figures/register-prestadores.jpg';
 
@@ -52,7 +53,7 @@ const Register: React.FC = () => {
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
         }
-    }
+    };
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
@@ -73,28 +74,36 @@ const Register: React.FC = () => {
         setDocumentValid(true);
     };
 
-    // Submissão (ainda sem backend)
-    const handleSubmit = (e: FormEvent) => {
+    // Submissão integrada com backend
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
-        // Verifica se há campos vazios obrigatórios
         const requiredFields = ['username', 'email', 'password', 'confirmPassword'];
         const isEmpty = requiredFields.some(field => !formData[field as keyof typeof formData]);
 
-        if (isEmpty || !formData.termsAccepted || !documentValid) {
+        if (isEmpty || !formData.termsAccepted) {
             setMissingFields(true);
             return;
         }
 
-        setMissingFields(false);
+        if (formData.password !== formData.confirmPassword) {
+            alert("As senhas não coincidem!");
+            return;
+        }
 
-        console.log("Dados cadastrados:", {
-            ...formData,
-            verificationFile,
-            fileValid: documentValid,
-        });
+        try {
+            const data = await registerRequest(formData.username, formData.email, formData.password);
 
-        navigate("/home");
+            if (data.success) {
+                alert("Cadastro realizado com sucesso!");
+                navigate("/login"); // redireciona para o login
+            } else {
+                alert(data.message || "Erro ao cadastrar usuário.");
+            }
+        } catch (error) {
+            console.error("Erro no cadastro:", error);
+            alert("Erro ao conectar com o servidor.");
+        }
     };
 
     // Tela de registro
@@ -106,7 +115,6 @@ const Register: React.FC = () => {
                 className="register-background"
                 style={{ backgroundImage: `url(${BackImage})` }}
             >
-
                 <div className="register-overlay">
                     <div className="register-panel">
                         <h2 className="register-title">Se cadastre em poucos passos!</h2>
