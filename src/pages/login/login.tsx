@@ -1,5 +1,4 @@
 import './login.css';
-import React from 'react';
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -8,6 +7,11 @@ const Login = () => {
   const handleEntrar = () => {
     // aqui você poderia validar usuário/senha antes…
     navigate("/home");
+  };
+
+  const handleCadastrar = () => {
+    // Paulo: Adicionado função para acessar cadastro
+    navigate("/register");
   };
   
   return (
@@ -50,12 +54,11 @@ const Login = () => {
             <input type="password" id="password" placeholder="senhaacesso" />
             <span className="icon">🔒</span>
           </div>
-          <a href="#" className="forgot-password">Esqueceu sua senha?</a>
         </div>
 
         <div className="button-group">
           <button className="btn btn-primary" onClick={handleEntrar}>ENTRAR</button>
-          <button className="btn btn-secondary">CADASTRAR</button>
+          <button className="btn btn-secondary" onClick={handleCadastrar} >CADASTRAR</button>
         </div>
       </div>
     </div>

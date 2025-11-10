@@ -88,5 +88,7 @@
 }
 
 .btn-primary {
-  margin-right: 10px;
+  background-color: #0078ff;
+  color: white;
+  margin: 10px;
 }

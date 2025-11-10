@@ -1,0 +1,209 @@
+.wm-register {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.register-background {
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex: 1;
+    align-items: left;
+    justify-content: left;
+    position: relative;
+    min-height: calc(100vh - 160px);
+}
+
+.register-overlay {
+    background: rgba(255, 255, 255);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 60px;
+    padding-right: 60px;
+    width: 90%;
+    max-width: 46%;
+    display: flex;
+    justify-content: center;
+}
+
+.register-panel {
+    width: 100%;
+}
+
+.register-title {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 400;
+    margin-bottom: 8px;
+}
+
+.register-subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 25px;
+}
+
+
+.register-form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    flex: 1;
+}
+
+.register-form-row {
+    display: flex;
+    gap: 40px;
+}
+
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="file"] {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.register-form-group.terms {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+
+.register-button-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+    
+}
+
+.btn {
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn.primary {
+    background-color: #0078ff;
+    color: white;
+}
+
+.btn.remove {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    align-self: flex-start;
+    margin-top: 8px;
+}
+
+.btn.cancel {
+    background-color: #d8ebff;
+}
+
+.btn.primary:hover {
+    background-color: #005ed1;
+}
+
+.btn.cancel:hover {
+    background-color: #a6bed7;
+}
+
+.btn.remove:hover {
+    background-color: #e63c3c;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn.info {
+    background-color: #0078ff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    width: 30%;
+    white-space: normal;
+    line-height: 1.2;
+    text-align: center;
+    word-break: break-word;
+}
+
+.btn.info:hover {
+    background-color: #005ed1;
+}
+
+/* Ajuste da linha com o input */
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+@media (max-width: 200px) {
+    .info-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .btn.info {
+        width: 100%;
+    }
+}
+
+.verified-text {
+    color: green;
+    font-size: 14px;
+}
+
+.register-fill-alert {
+    text-align: center;
+    color: #ff4242;
+    margin-bottom: 20px;
+}
+
+.register-benefits {
+    background: #fff;
+    padding: 60px 0;
+    text-align: center;
+}
+
+.benefit-cards {
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+    margin-top: 40px;
+}
+
+.benefit-card {
+    width: 220px;
+    text-align: center;
+}
+
+.benefit-card img {
+    width: 200px;
+    margin-bottom: 12px;
+}
+
+.benefit-card p {
+    font-size: 1.2rem;
+    color: #444;
+}
