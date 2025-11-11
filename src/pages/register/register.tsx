@@ -36,12 +36,36 @@ const Register: React.FC = () => {
     const allowedMimeTypes = ["application/pdf"];
     const allowedExtensions = ["pdf"];
 
-    // Manipulação genérica de campos
+    // Manipulação genérica de campos (com máscaras)
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { id, value, type, checked } = e.target;
+        let formattedValue = value;
+
+        // Máscara de telefone
+        if (id === 'phone') {
+            const digits = value.replace(/\D/g, '');
+            if (digits.length <= 10) {
+                formattedValue = digits
+                    .replace(/^(\d{2})(\d)/, '($1) $2')
+                    .replace(/(\d{4})(\d)/, '$1-$2');
+            } else {
+                formattedValue = digits
+                    .replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
+            }
+        }
+
+        // Máscara de CPF
+        if (id === 'cpf') {
+            const digits = value.replace(/\D/g, '');
+            formattedValue = digits
+                .replace(/(\d{3})(\d)/, '$1.$2')
+                .replace(/(\d{3})(\d)/, '$1.$2')
+                .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        }
+
         setFormData({
             ...formData,
-            [id]: type === 'checkbox' ? checked : value,
+            [id]: type === 'checkbox' ? checked : formattedValue,
         });
     };
 
@@ -58,7 +82,6 @@ const Register: React.FC = () => {
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
 
-        // Verificação de formato e erros
         if (!file) return;
 
         const fileExtension = file.name.split(".").pop()?.toLowerCase();
@@ -96,7 +119,7 @@ const Register: React.FC = () => {
 
             if (data.success) {
                 alert("Cadastro realizado com sucesso!");
-                navigate("/login"); // redireciona para o login
+                navigate("/login");
             } else {
                 alert(data.message || "Erro ao cadastrar usuário.");
             }
@@ -106,7 +129,6 @@ const Register: React.FC = () => {
         }
     };
 
-    // Tela de registro
     return (
         <div className="wm-register">
             <Navbar />
@@ -236,7 +258,6 @@ const Register: React.FC = () => {
                 </div>
             </div>
 
-            {/* Seção de benefícios */}
             <div className="register-benefits">
                 <h2>Por que se cadastrar?</h2>
                 <div className="benefit-cards">
