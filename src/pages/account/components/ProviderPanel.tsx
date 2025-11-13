@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './profile-tabs.css';
+import './account-tabs-style.css';
 
 const ProviderPanel: React.FC = () => {
   const [verificationStatus, setVerificationStatus] = useState<'PENDENTE' | 'APROVADO' | 'NEGADO' | 'EXPIRADO'>('NEGADO');

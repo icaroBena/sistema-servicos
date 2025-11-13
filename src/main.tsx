@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/login/login";
 import Home from "./pages/home/home";
 import Register from "./pages/register/register";
-import Profile from "./pages/profile/profile"; // veio da tela-login
+import Account from "./pages/account/account"; // veio da tela-login
 import ServiceRequest from "./pages/serviceRequest/ServiceRequest"; // veio da development
 
 createRoot(document.getElementById("root")!).render(
@@ -19,7 +19,7 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/home" element={<Home />} />
         <Route path="/service-requests" element={<ServiceRequest />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/account" element={<Account />} />
         <Route path="/service-requests" element={<ServiceRequest />} />
 
         {/* qualquer rota desconhecida volta pro login */}

@@ -1,10 +1,10 @@
 import React from 'react';
-import './base-profile-section.css';
+import './base-account-tab.css';
 
 // Falta codificar funcionalidade
 const ServicesPanel: React.FC = () => {
   return (
-    <div className="profile-section">
+    <div className="account-section">
       <h2 className="section-title">Meus Serviços</h2>
       <p className="section-subtitle">
         Aqui você poderá visualizar, adicionar ou editar os serviços que oferece na plataforma WorkMatch.

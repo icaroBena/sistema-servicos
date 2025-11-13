@@ -33,7 +33,7 @@ const Sidebar: React.FC<SidebarProps> = ({ active, onSelect, userType }) => {
             : [...commonLinks.slice(0, 1), ...clientLinks, ...commonLinks.slice(1)];
 
     return (
-        <aside className="profile-sidebar">
+        <aside className="account-sidebar">
             <h3 className="sidebar-title">Painel</h3>
 
             <ul className="sidebar-menu">
