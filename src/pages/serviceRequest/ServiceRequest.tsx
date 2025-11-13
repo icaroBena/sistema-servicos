@@ -1,5 +1,11 @@
 import React, { useMemo, useState } from "react";
 import "./request.css";
+import { useNavigate } from "react-router-dom";
+import Button from "../../components/Button.tsx";
+
+
+
+
 
 type TempoServico = "imediato" | "2-6" | "1-3" | "1m+";
 
@@ -8,6 +14,11 @@ export default function ServiceRequest() {
   const [valor, setValor] = useState("");
   const [tempo, setTempo] = useState<TempoServico>("imediato");
   const [files, setFiles] = useState<File[]>([]);
+
+  const navigate = useNavigate();
+const EnviarSolicitacao = () => {
+  navigate("/confirm-service");
+};
 
   // gera pré-visualizações das fotos
   const previews = useMemo(() => files.map(f => URL.createObjectURL(f)), [files]);
@@ -127,9 +138,9 @@ export default function ServiceRequest() {
 
           {/* botões */}
           <div className="actions">
-            <button type="submit" className="btn-primary">
+            <Button variant="primary" onClick={EnviarSolicitacao}>
               Enviar solicitação
-            </button>
+            </Button>
             <button
               type="button"
               className="btn-secondary"

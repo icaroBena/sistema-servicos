@@ -8,6 +8,7 @@ import Home from "./pages/home/home";
 import Register from "./pages/register/register";
 import Profile from "./pages/profile/profile"; // veio da tela-login
 import ServiceRequest from "./pages/serviceRequest/ServiceRequest"; // veio da development
+import ServiceConfirmation from "./pages/ServiceConfirmation/serviceConfirmation";
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -15,7 +16,7 @@ createRoot(document.getElementById("root")!).render(
       <Routes>
         {/* rota inicial: login */}
         <Route path="/" element={<Login />} />
-        
+        <Route path="/confirm-service" element={<ServiceConfirmation />} />
         <Route path="/home" element={<Home />} />
         <Route path="/service-requests" element={<ServiceRequest />} />
         <Route path="/register" element={<Register />} />

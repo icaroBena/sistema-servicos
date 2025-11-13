@@ -1,0 +1,258 @@
+    /* container geral da página de confirmação */
+.wm-confirm-page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+  background-color: #f3f4f6;
+}
+
+/* cabeçalho */
+.wm-confirm-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.wm-confirm-header p {
+  margin: 0 0 24px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* layout em duas colunas */
+.wm-confirm-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+/* cards */
+.wm-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+.wm-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.wm-card-header h2 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.wm-card-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: #e5f0ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+/* prestador */
+.wm-provider-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wm-provider-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: #e5f0ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.wm-provider-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wm-provider-name {
+  margin: 0;
+  font-weight: 600;
+}
+
+.wm-provider-rating {
+  margin: 0;
+  font-size: 13px;
+}
+
+.wm-muted {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.wm-badge-success {
+  margin-left: auto;
+  background-color: #dcfce7;
+  color: #16a34a;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* detalhes do serviço */
+.wm-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #4f46e5;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.wm-service-description {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.wm-service-meta {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.wm-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wm-meta-label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.wm-meta-value {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.wm-meta-extra {
+  font-size: 12px;
+  color: #2563eb;
+}
+
+/* resumo financeiro */
+.wm-summary-card {
+  height: 100%;
+}
+
+.wm-summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.wm-summary-divider {
+  border-top: 1px solid #e5e7eb;
+  margin: 10px 0;
+}
+
+.wm-summary-total {
+  font-weight: 700;
+}
+
+.wm-summary-total-value {
+  color: #2563eb;
+}
+
+.wm-summary-info {
+  background-color: #e0f2fe;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #0f172a;
+  margin: 12px 0 16px;
+}
+
+.wm-summary-info p {
+  margin: 0;
+}
+
+/* botões – reaproveita a ideia do btn-primary que você já usa */
+.btn-primary {
+  background-color: #0078ff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 4px;
+  transition: filter .2s ease;
+}
+
+.btn-primary:hover {
+  filter: brightness(0.95);
+}
+
+.btn-secondary {
+  background-color: #ffffff;
+  color: #111827;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.wm-summary-btn {
+  margin-top: 12px;
+}
+
+.wm-summary-btn-secondary {
+  margin-top: 8px;
+}
+
+.wm-terms {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 10px;
+}
+
+.wm-terms a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+/* responsivo */
+@media (max-width: 900px) {
+  .wm-confirm-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .wm-confirm-right {
+    order: -1; /* mostra o resumo primeiro no mobile, se quiser tirar é só remover */
+  }
+
+  .wm-service-meta {
+    grid-template-columns: 1fr;
+  }
+}
