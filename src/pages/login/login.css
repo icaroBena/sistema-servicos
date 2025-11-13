@@ -49,6 +49,16 @@
   margin: 10px 0;
 }
 
+.login-right-panel h2 {
+  color: #ffffff;
+}
+
+.login-subtitle, label {
+  margin-top: 15px;
+  font-size: 18px;
+  color: #ffffff;
+}
+
 /* Ajuste opcional das imagens */
 .imagemproblema, .imagemparceria {
   width: 120px;
