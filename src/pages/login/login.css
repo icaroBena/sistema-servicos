@@ -53,11 +53,6 @@
   color: #ffffff;
 }
 
-.login-subtitle, label {
-  margin-top: 15px;
-  font-size: 18px;
-  color: #ffffff;
-}
 
 /* Ajuste opcional das imagens */
 .imagemproblema, .imagemparceria {
@@ -92,3 +87,12 @@
   color: white;
   margin: 10px;
 }
+
+.login-subtitle,
+.login-right-panel label {
+  margin-top: 15px;
+  font-size: 18px;
+  color: #ffffff;
+}
+
+
