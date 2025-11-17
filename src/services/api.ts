@@ -9,6 +9,7 @@ interface LoginResponse {
     name: string;
     email: string;
     role?: string;
+    tipo?: string;
   };
 }
 
@@ -28,16 +29,12 @@ export async function loginRequest(email: string, password: string): Promise<Log
   }
 }
 
-export async function registerRequest(
-  username: string,
-  email: string,
-  password: string
-): Promise<LoginResponse> {
+export async function registerRequest(payload: any): Promise<LoginResponse> {
   try {
     const response = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: username, email, password }),
+      body: JSON.stringify(payload),
     });
 
     const data: LoginResponse = await response.json();
