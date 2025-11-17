@@ -120,16 +120,7 @@ export default function ServiceRequest() {
             </div>
           </fieldset>
 
-          {/* upload */}
-          <label className="sr-label" htmlFor="fotos">Fotos do serviço (opcional)</label>
-          <input
-            type="file"
-            id="fotos"
-            className="sr-input-file"
-            multiple
-            accept="image/*"
-            onChange={handleChangeFiles}
-          />
+          
 
           {previews.length > 0 && (
             <div className="sr-preview-grid">
