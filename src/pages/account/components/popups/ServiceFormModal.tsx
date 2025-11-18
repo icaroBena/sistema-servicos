@@ -255,7 +255,7 @@ const ServiceFormModal: React.FC<Props> = ({ existing = null, onClose, onSave })
                 {sugestoes.length > 0 ? (
                     <ul className="sugestoes" aria-live="polite">
                         {sugestoes.map((s, i) => (
-                            <li key={i}>• {s}</li>
+                            <li key={i}>{s}</li>
                         ))}
                     </ul>
                 ) : (

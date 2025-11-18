@@ -41,7 +41,7 @@ const mockUser: User = {
   email: "joao@workmatch.com",
   telefone: "(92) 99999-0000",
   localizacao: "Manaus, AM",
-  tipo: "cliente",
+  tipo: "prestador",
   verificado: true,
   avaliacao: 4.7,
   disponibilidade: "DISPONÍVEL",
