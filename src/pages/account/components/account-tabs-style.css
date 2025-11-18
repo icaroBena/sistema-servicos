@@ -80,11 +80,11 @@
 }
 
 .verification-actions {
-  margin-top: 10px;
-  display: flex;
-  align-items: flex-start;
-  flex-direction: column;
-  gap: 10px;
+    margin-top: 10px;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
 }
 
 /* ===== BOTÕES ===== */
@@ -130,22 +130,23 @@
     background-color: #0078ff;
     color: white;
     padding: 8px 16px;
-    margin-top: 16px;
+    margin-top: 8px;
+    margin-bottom: 12px;
     border-radius: 8px;
 }
 
 /* ===== LISTAS ===== */
 .payment-form {
-  margin-top: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .payment-form label {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: #333;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #333;
 }
 
 .payment-item {
@@ -166,22 +167,87 @@
 
 .payment-form input,
 .payment-form select {
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  outline: none;
-  transition: all 0.2s ease;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+    transition: all 0.2s ease;
 }
 
 .payment-form input:focus,
 .payment-form select:focus {
-  border-color: #0078ff;
-  box-shadow: 0 0 4px rgba(0, 120, 255, 0.2);
+    border-color: #0078ff;
+    box-shadow: 0 0 4px rgba(0, 120, 255, 0.2);
 }
 
 .form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* ===== SERVIÇOS ===== */
+.srv-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.srv-card {
+    display: flex;
+    background: #fafafa;
+    padding: 14px;
+    border-radius: 10px;
+    gap: 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.srv-img {
+    width: 160px;
+    height: 120px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: #ddd;
+}
+
+.srv-info {
+    flex: 1;
+}
+
+.desc {
+    font-style: italic;
+    color: #555;
+}
+
+.srv-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+.small {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.remove {
+    background: #d60000;
+    color: white;
+}
+
+.limit-warning {
   margin-top: 10px;
+  color: #d60000;
+  font-weight: bold;
+}
+
+.price {
+  font-size: 1.2rem;
+  color: #1a8f4d;
+  font-weight: bold;
 }

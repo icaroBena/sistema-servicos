@@ -8,6 +8,8 @@ import ServicesPanel from "./components/ServicesPanel";
 import SettingsPanel from "./components/SettingsPanel";
 import NotificationsPanel from "./components/NotificationsPanel";
 import PropositionsPanel from "./components/PropositionsPanel";
+import AppointmentPanel from "./components/AppointmentPanel";
+import RefundsPanel from "./components/RefundsPanel";
 import ProviderPanel from "./components/ProviderPanel";
 import PaymentMethodsPanel from "./components/PaymentMethodsPanel";
 
@@ -39,7 +41,7 @@ const mockUser: User = {
   email: "joao@workmatch.com",
   telefone: "(92) 99999-0000",
   localizacao: "Manaus, AM",
-  tipo: "prestador",
+  tipo: "cliente",
   verificado: true,
   avaliacao: 4.7,
   disponibilidade: "DISPONÍVEL",
@@ -90,6 +92,10 @@ const Account: React.FC = () => {
         return userData.tipo === "prestador" ? <ServicesPanel /> : <div />;
       case "verification":
         return userData.tipo === "prestador" ? <ProviderPanel /> : <div />;
+      case "refunds":
+        return userData.tipo === "cliente" ? <RefundsPanel /> : <div />;
+      case "appointments":
+        return <AppointmentPanel />;
       case "propositions":
         return <PropositionsPanel />;
       case "payments":
