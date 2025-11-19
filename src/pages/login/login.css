@@ -88,3 +88,12 @@
   font-size: 18px;
   color: #ffffff;
 }
+
+.login-subtitle,
+.login-right-panel label {
+  margin-top: 15px;
+  font-size: 18px;
+  color: #ffffff;
+}
+
+
