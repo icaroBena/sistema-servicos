@@ -49,6 +49,11 @@
   margin: 10px 0;
 }
 
+.login-right-panel h2 {
+  color: #ffffff;
+}
+
+
 /* Ajuste opcional das imagens */
 .imagemproblema, .imagemparceria {
   width: 120px;
@@ -82,3 +87,12 @@
   color: white;
   margin: 10px;
 }
+
+.login-subtitle,
+.login-right-panel label {
+  margin-top: 15px;
+  font-size: 18px;
+  color: #ffffff;
+}
+
+
