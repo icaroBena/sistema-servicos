@@ -53,7 +53,6 @@
   color: #ffffff;
 }
 
-
 /* Ajuste opcional das imagens */
 .imagemproblema, .imagemparceria {
   width: 120px;
@@ -82,10 +81,12 @@
   margin-top: 15px;
 }
 
-.btn-primary {
-  background-color: #0078ff;
-  color: white;
-  margin: 10px;
+/* Títulos e labels */
+.login-subtitle,
+.login-right-panel label {
+  margin-top: 15px;
+  font-size: 18px;
+  color: #ffffff;
 }
 
 .login-subtitle,
