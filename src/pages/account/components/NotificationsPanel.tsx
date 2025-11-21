@@ -1,10 +1,10 @@
 import React from 'react';
-import './base-profile-section.css';
+import './base-account-tab.css';
 
 // Falta codificar funcionalidade
 const NotificationsPanel: React.FC = () => {
   return (
-    <div className="profile-section">
+    <div className="account-section">
       <h2 className="section-title">Notificações</h2>
       <p className="section-subtitle">
         Veja suas notificações mais recentes, atualizações de pedidos e mensagens do sistema.

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './profile-tabs.css';
+import './account-tabs-style.css';
 
 interface PaymentMethod {
   id: string;
@@ -48,8 +48,8 @@ const PaymentMethodsPanel: React.FC<PaymentMethodsPanelProps> = ({ userType }) =
           selectedType === 'PIX'
             ? `${formData.chavePix}`
             : selectedType === 'CARTÃO'
-            ? `${formData.bandeira} •••• ${formData.numeroCartao?.slice(-4)}`
-            : `${formData.banco} - Ag ${formData.agencia} / CC ${formData.conta}`,
+              ? `${formData.bandeira} •••• ${formData.numeroCartao?.slice(-4)}`
+              : `${formData.banco} - Ag ${formData.agencia} / CC ${formData.conta}`,
         data: formData,
       };
 

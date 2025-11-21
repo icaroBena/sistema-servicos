@@ -1,10 +1,10 @@
 import React from 'react';
-import './base-profile-section.css';
+import './base-account-tab.css';
 
 // Falta codificar funcionalidade
 const SettingsPanel: React.FC = () => {
   return (
-    <div className="profile-section">
+    <div className="account-section">
       <h2 className="section-title">Configurações</h2>
       <p className="section-subtitle">
         Personalize sua conta, gerencie notificações e defina preferências do sistema.

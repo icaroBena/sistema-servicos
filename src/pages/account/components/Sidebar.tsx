@@ -2,7 +2,8 @@ import React from 'react';
 import './sidebar.css';
 
 import { useNavigate } from "react-router-dom";
-import { FaUser, FaCheckCircle, FaCog, FaBell, FaCreditCard, FaSignOutAlt, FaHandshake } from "react-icons/fa";
+import { FaUser, FaCheckCircle, FaCog, FaBell, FaCreditCard, FaSignOutAlt, 
+    FaHandshake, FaCalendarAlt, FaBriefcase, FaMoneyBill } from "react-icons/fa";
 
 interface SidebarProps {
     active: string;
@@ -14,18 +15,22 @@ const Sidebar: React.FC<SidebarProps> = ({ active, onSelect, userType }) => {
     const navigate = useNavigate();
     const commonLinks = [
         { id: 'profile', icon: FaUser, label: 'Perfil' },
-        { id: 'settings', icon: FaCog, label: 'Configurações' },
+        { id: 'appointments', icon: FaCalendarAlt, label: 'Agendamentos' },
         { id: 'propositions', icon: FaHandshake, label: 'Propostas' },
         { id: 'notifications', icon: FaBell, label: 'Notificações' },
+        { id: 'settings', icon: FaCog, label: 'Configurações' },
     ];
 
     const providerLinks = [
-        { id: 'services', icon: FaBell, label: 'Meus Serviços' },
+        { id: 'services', icon: FaBriefcase, label: 'Meus Serviços' },
         { id: 'verification', icon: FaCheckCircle, label: 'Verificação' },
         { id: 'payments', icon: FaCreditCard, label: 'Pagamentos' },
     ];
 
-    const clientLinks = [{ id: 'payments', icon: FaCreditCard, label: 'Carteira' }];
+    const clientLinks = [
+        { id: 'payments', icon: FaCreditCard, label: 'Carteira' },
+        { id: 'refunds', icon: FaMoneyBill, label: 'Reembolso' },
+    ];
 
     const linksToShow =
         userType === 'prestador'
@@ -33,8 +38,8 @@ const Sidebar: React.FC<SidebarProps> = ({ active, onSelect, userType }) => {
             : [...commonLinks.slice(0, 1), ...clientLinks, ...commonLinks.slice(1)];
 
     return (
-        <aside className="profile-sidebar">
-            <h3 className="sidebar-title">Painel</h3>
+        <aside className="account-sidebar">
+            <h2 className="sidebar-title">Conta</h2>
 
             <ul className="sidebar-menu">
                 {linksToShow.map((link) => (
