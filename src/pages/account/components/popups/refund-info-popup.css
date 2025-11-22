@@ -1,0 +1,31 @@
+.info-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+}
+
+.info-content {
+  background: #fff;
+  padding: 28px;
+  border-radius: 12px;
+  width: 600px;
+  max-width: 95vw;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+}
+
+.info-content h3 {
+  text-align: center;
+  color: #0078ff;
+}
+
+.image-placeholder img {
+  width: 100%;
+  max-width: 460px;
+  border-radius: 8px;
+}
