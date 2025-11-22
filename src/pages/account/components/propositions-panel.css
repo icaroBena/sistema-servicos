@@ -1,0 +1,114 @@
+.propositions-panel {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.propositions-panel .section-title {
+  color: #0078ff;
+  font-size: 1.4rem;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.propositions-panel .section-subtitle {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* LISTA */
+.proposal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* CARD */
+.proposal-card {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.prop-title {
+  font-size: 1.2rem;
+  color: #0078ff;
+  margin-bottom: 6px;
+}
+
+.prop-desc {
+  margin: 8px 0;
+  color: #444;
+}
+
+/* STATUS */
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-top: 6px;
+  text-transform: capitalize;
+}
+
+.status-pendente {
+  background: #fff5cc;
+  color: #8a6d00;
+  border: 1px solid #ffe58f;
+}
+
+.status-aceita {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #95ffae;
+}
+
+.status-recusada {
+  background-color: #f8d7da;
+  color: #941a1a;
+  border: 1px solid #ffb3b3;
+}
+
+/* AÇÕES */
+.proposal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn.primary {
+  background-color: #0078ff;
+  color: white;
+  padding: 8px 16px;
+}
+
+.btn.remove {
+  background-color: #ff4d4d;
+  color: white;
+  padding: 8px 16px;
+}
+
+.empty-message {
+  color: #999;
+  text-align: center;
+  font-style: italic;
+}
+
+.counter-offer-block {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.counter-input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
