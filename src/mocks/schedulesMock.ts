@@ -27,7 +27,7 @@ export const schedulesMock: Agendamento[] = [
     descricao: "Musculação e treino funcional!",
     preco: 180,
     imagemUrl: "/Figures/personal_trainer.png",
-    status: "concluido",
+    status: "disputando",
     criadoEm: "2025-10-15T09:00:00",
     atualizadoEm: "2025-10-16T16:00:00",
     reembolsoId: "r1",

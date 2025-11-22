@@ -132,7 +132,19 @@
 .status-expirado {
     background-color: #ffe6c0;
     color: #994d00;
-    background-color: #ffcd81;
+    border: 1px solid #ffcd81;
+}
+
+.status-disputando {
+    background-color: #dbc0ff;
+    color: #450099;
+    border: 1px solid #c681ff;
+}
+
+.status-default {
+    background: #e7e7e7;
+    color: #333;
+    border: 1px solid #ccc;
 }
 
 .verification-actions {

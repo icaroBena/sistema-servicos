@@ -9,7 +9,7 @@ interface Props {
 
 const ScheduleCard: React.FC<Props> = ({ item, onOpen }) => {
   const isHistory =
-    item.status === "concluido" || item.status === "cancelado";
+    item.status === "concluido" || item.status === "cancelado" || item.status === "disputando";
 
   const cardClass = isHistory ? "card-history" : "card-active";
 

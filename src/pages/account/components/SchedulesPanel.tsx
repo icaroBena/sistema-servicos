@@ -6,19 +6,24 @@ import { useConfirm } from "../../../components/UseConfirm";
 import { useNavigate } from "react-router-dom";
 import "./account-tabs-style.css";
 
-// Mocks leves para testar as duas perspectivas (cliente / prestador)
-import { mockCliente, mockPrestador } from "../../../mocks/devUser";
+import { mockCliente } from "../../../mocks/devUser";
 import { schedulesMock } from "../../../mocks/schedulesMock";
 const usuario = mockCliente;
 
 export const updateStatus = (
   list: Agendamento[],
   id: string,
-  newStatus: Agendamento["status"]
+  newStatus: Agendamento["status"],
+  refundId?: string
 ) => {
   return list.map(item =>
     item.id === id
-      ? { ...item, status: newStatus, atualizadoEm: new Date().toISOString() }
+      ? { 
+          ...item, 
+          status: newStatus, 
+          refundId: refundId ?? item.refundId,
+          atualizadoEm: new Date().toISOString() 
+        }
       : item
   );
 };
@@ -27,17 +32,19 @@ export const filterActive = (list: Agendamento[]) =>
   list.filter(item => item.status === "negociacao" || item.status === "execucao");
 
 export const filterHistory = (list: Agendamento[]) =>
-  list.filter(item => item.status === "concluido" || item.status === "cancelado");
-
+  list.filter(item =>
+    ["concluido", "cancelado", "disputando"].includes(item.status)
+  );
 
 const SchedulesPanel: React.FC = () => {
   const [items, setItems] = useState<Agendamento[]>([]);
   const [tab, setTab] = useState<"active" | "history">("active");
   const [selected, setSelected] = useState<Agendamento | null>(null);
   const confirm = useConfirm();
-  const testing: boolean = true;
+  const testing = true;
   const navigate = useNavigate();
 
+  /* --------------------- LOAD ----------------------- */
   useEffect(() => {
     const saved = localStorage.getItem("schedules");
 
@@ -45,7 +52,7 @@ const SchedulesPanel: React.FC = () => {
       try {
         setItems(JSON.parse(saved));
         return;
-      } catch { }
+      } catch {}
     }
 
     setItems(schedulesMock);
@@ -55,6 +62,7 @@ const SchedulesPanel: React.FC = () => {
     localStorage.setItem("schedules", JSON.stringify(items));
   }, [items]);
 
+  /* ------------------ ACTIONS ------------------------ */
 
   const handleCancel = async (id: string) => {
     const ok = await confirm.show({
@@ -111,6 +119,15 @@ const SchedulesPanel: React.FC = () => {
     setSelected(null);
   };
 
+  /* ------------------ NOVO: REEMBOLSO ------------------------ */
+  const handleReembolsoCriado = (agendamentoId: string, refundId: string) => {
+    setItems(prev =>
+      updateStatus(prev, agendamentoId, "disputando", refundId)
+    );
+  };
+
+  /* ------------------ RENDER ------------------------ */
+
   const list = tab === "active" ? filterActive(items) : filterHistory(items);
 
   return (
@@ -150,6 +167,7 @@ const SchedulesPanel: React.FC = () => {
           onConclude={handleConclude}
           onGoNegotiation={handleGoNegotiation}
           onStartExecution={handleStartExecution}
+          onReembolsoCriado={handleReembolsoCriado} 
         />
       )}
 

@@ -10,65 +10,65 @@ import RefundDetailsModal from "./popups/RefundDetailsModal";
 import RefundInfoPopup from "./popups/RefundInfoPopup";
 
 const RefundsPanel: React.FC = () => {
-  const usuario = mockCliente;
-  const [reembolsos, setReembolsos] = useState<Reembolso[]>([]);
-  const [selectedRefundId, setSelectedRefundId] = useState<string | null>(null);
-  const [infoPopup, setInfoPopup] = useState(false);
+    const usuario = mockCliente;
+    const [reembolsos, setReembolsos] = useState<Reembolso[]>([]);
+    const [selectedRefundId, setSelectedRefundId] = useState<string | null>(null);
+    const [infoPopup, setInfoPopup] = useState(false);
 
-  const carregar = () => {
-    setReembolsos(reembolsoMockApi.listarPorUsuario(usuario.id));
-  };
+    const carregar = () => {
+        setReembolsos(reembolsoMockApi.listarPorUsuario(usuario.id));
+    };
 
-  useEffect(() => {
-    carregar();
-  }, []);
+    useEffect(() => {
+        carregar();
+    }, []);
 
-  return (
-    <div className="panel">
-      <h3>Meus Reembolsos</h3>
-      <p>Veja o andamento e histórico dos seus pedidos de reembolso.</p>
+    return (
+        <div className="panel">
+            <h3>Meus Reembolsos</h3>
+            <p>Veja o andamento e histórico dos seus pedidos de reembolso.</p>
 
-      <button className="btn add" onClick={() => setInfoPopup(true)}>
-        Como pedir reembolso?
-      </button>
+            <button className="btn add" onClick={() => setInfoPopup(true)}>
+                Como pedir reembolso?
+            </button>
 
-      <div className="srv-list">
-        {reembolsos.length === 0 && <p>Nenhuma solicitação encontrada.</p>}
+            <div className="srv-list">
+                {reembolsos.length === 0 && <p>Nenhuma solicitação encontrada.</p>}
 
-        {reembolsos.map((r) => (
-          <div
-            key={r.id}
-            className="srv-card clickable card-history"
-            onClick={() => setSelectedRefundId(r.id)}
-          >
-            <div className="srv-info">
-              <h4>Reembolso #{r.id}</h4>
-              <p className="desc">{r.justificativa}</p>
+                {reembolsos.map((r) => (
+                    <div
+                        key={r.id}
+                        className="srv-card clickable card-history"
+                        onClick={() => setSelectedRefundId(r.id)}
+                    >
+                        <div className="srv-info">
+                            <h4>Reembolso do agendamento #{r.agendamentoId}</h4>
+                            <p className="desc">{r.justificativa}</p>
 
-              <span className={`status-badge status-${r.status}`}>
-                {r.status.replace("_", " ")}
-              </span>
+                            <span className={`status-badge status-default`}>
+                                {r.status.replace("_", " ")}
+                            </span>
+                        </div>
+
+                        <div className="srv-right">
+                            <span className="price">R$ {r.valorSolicitado}</span>
+                        </div>
+                    </div>
+                ))}
             </div>
 
-            <div className="srv-right">
-              <span className="price">R$ {r.valorSolicitado}</span>
-            </div>
-          </div>
-        ))}
-      </div>
+            {selectedRefundId && (
+                <RefundDetailsModal
+                    refundId={selectedRefundId}
+                    onClose={() => setSelectedRefundId(null)}
+                />
+            )}
 
-      {selectedRefundId && (
-        <RefundDetailsModal
-          refundId={selectedRefundId}
-          onClose={() => setSelectedRefundId(null)}
-        />
-      )}
-
-      {infoPopup && (
-        <RefundInfoPopup onClose={() => setInfoPopup(false)} />
-      )}
-    </div>
-  );
+            {infoPopup && (
+                <RefundInfoPopup onClose={() => setInfoPopup(false)} />
+            )}
+        </div>
+    );
 };
 
 export default RefundsPanel;
