@@ -8,7 +8,7 @@ import ServicesPanel from "./components/ServicesPanel";
 import SettingsPanel from "./components/SettingsPanel";
 import NotificationsPanel from "./components/NotificationsPanel";
 import PropositionsPanel from "./components/PropositionsPanel";
-import AppointmentPanel from "./components/AppointmentPanel";
+import SchedulesPanel from "./components/SchedulesPanel";
 import RefundsPanel from "./components/RefundsPanel";
 import ProviderPanel from "./components/ProviderPanel";
 import PaymentMethodsPanel from "./components/PaymentMethodsPanel";
@@ -16,49 +16,17 @@ import PaymentMethodsPanel from "./components/PaymentMethodsPanel";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
-/**
- * Modelo de usuário (simplificado, substitua conforme seu tipo real)
- */
-interface User {
-  id: string;
-  nome: string;
-  email: string;
-  telefone?: string;
-  localizacao?: string;
-  tipo: "prestador" | "cliente";
-  verificado?: boolean;
-  avaliacao?: number;
-  disponibilidade?: "DISPONÍVEL" | "INDISPONÍVEL" | string;
-  categorias: string[];
-  certificacoes: string[];
-  sobre?: string;
-  foto?: string | null; // url local ou remoto
-}
-
-const mockUser: User = {
-  id: "u1",
-  nome: "João Silva",
-  email: "joao@workmatch.com",
-  telefone: "(92) 99999-0000",
-  localizacao: "Manaus, AM",
-  tipo: "prestador",
-  verificado: true,
-  avaliacao: 4.7,
-  disponibilidade: "DISPONÍVEL",
-  categorias: ["Eletricista", "Instalador de Ar"],
-  certificacoes: ["Curso Avançado de Elétrica - SENAI", "NR10"],
-  sobre:
-    "Profissional com mais de 10 anos de experiência em instalações e manutenções residenciais.",
-  foto: null,
-};
+// Mocks leves para testar as duas perspectivas (cliente / prestador)
+import type { Usuario } from "../../models/Usuario";
+import { mockCliente, mockPrestador } from "../../mocks/devUser";
 
 const Account: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("profile");
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [userData, setUserData] = useState<User>(mockUser);
+  const [userData, setUserData] = useState<Usuario>(mockCliente);
 
   // salvar as alterações dos dados
-  const handleSave = (updatedData: User, passwordPayload?: { senhaAtual: string; novaSenha: string } | null) => {
+  const handleSave = (updatedData: Usuario, passwordPayload?: { senhaAtual: string; novaSenha: string } | null) => {
     // Aqui você chamaria o backend para persistir profile e alteração de senha.
     setUserData(updatedData);
     setEditMode(false);
@@ -95,7 +63,7 @@ const Account: React.FC = () => {
       case "refunds":
         return userData.tipo === "cliente" ? <RefundsPanel /> : <div />;
       case "appointments":
-        return <AppointmentPanel />;
+        return <SchedulesPanel />;
       case "propositions":
         return <PropositionsPanel />;
       case "payments":
@@ -126,7 +94,7 @@ export default Account;
 /* ================= Subcomponentes internos ================= */
 
 interface HeaderProps {
-  user: User;
+  user: Usuario;
 }
 
 const ProfileHeader: React.FC<HeaderProps> = ({ user }) => {
@@ -164,7 +132,7 @@ const ProfileHeader: React.FC<HeaderProps> = ({ user }) => {
 };
 
 interface ViewProps {
-  user: User;
+  user: Usuario;
   onEdit: () => void;
 }
 const ProfileView: React.FC<ViewProps> = ({ user, onEdit }) => {
@@ -220,12 +188,13 @@ const ProfileView: React.FC<ViewProps> = ({ user, onEdit }) => {
 };
 
 interface EditProps {
-  user: User;
-  onSave: (u: User, passwordPayload?: { senhaAtual: string; novaSenha: string } | null) => void;
+  user: Usuario;
+  onSave: (u: Usuario, passwordPayload?: { senhaAtual: string; novaSenha: string } | null) => void;
   onCancel: () => void;
 }
+
 const ProfileEditForm: React.FC<EditProps> = ({ user, onSave, onCancel }) => {
-  const [form, setForm] = useState<User>({ ...user });
+  const [form, setForm] = useState<Usuario>({ ...user });
   const [fotoFile, setFotoFile] = useState<File | null>(null);
 
   // campos para alteração de senha (local)

@@ -1,23 +1,14 @@
 import React, { useState, useEffect } from "react";
 import ServiceFormModal from "./popups/ServiceFormModal";
+import type { Servico } from "../../../models/Servico";
 import "./account-tabs-style.css";
-
-export interface ServiceItem {
-  id: string;
-  titulo: string;
-  descricao: string;
-  categoria: string;
-  preco: string;
-  imagemUrl: string | null;
-  data: string;
-}
 
 const MAX = 3;
 
 const ServicesPanel: React.FC = () => {
-  const [services, setServices] = useState<ServiceItem[]>([]);
+  const [services, setServices] = useState<Servico[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const [edit, setEdit] = useState<ServiceItem | null>(null);
+  const [edit, setEdit] = useState<Servico | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem("services");
@@ -43,7 +34,7 @@ const ServicesPanel: React.FC = () => {
     setModalOpen(true);
   };
 
-  const save = (s: ServiceItem) => {
+  const save = (s: Servico) => {
     if (!s.id) s.id = Date.now().toString();
     if (edit) {
       setServices((prev) => prev.map((x) => (x.id === s.id ? s : x)));
