@@ -1,21 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FiEdit } from "react-icons/fi";
 import "./service-form-modal.css";
-
-interface ServiceItemLocal {
-    id: string;
-    titulo: string;
-    descricao: string;
-    categoria: string;
-    preco: string;
-    imagemUrl: string | null;
-    data: string;
-}
+import type { Servico } from "../../../../models/Servico";
 
 interface Props {
-    existing?: ServiceItemLocal | null;
+    existing?: Servico | null;
     onClose: () => void;
-    onSave: (data: ServiceItemLocal) => void;
+    onSave: (data: Servico) => void;
 }
 
 // temporário: categorias mock (substituir por fetch do backend)
@@ -134,7 +125,7 @@ const ServiceFormModal: React.FC<Props> = ({ existing = null, onClose, onSave })
         return null;
     };
 
-    // salvar (retorna ServiceItemLocal)
+    // salvar (retorna ServicoLocal)
     const salvar = () => {
         const err = validar();
         if (err) {
@@ -142,7 +133,7 @@ const ServiceFormModal: React.FC<Props> = ({ existing = null, onClose, onSave })
             return;
         }
 
-        const item: ServiceItemLocal = {
+        const item: Servico = {
             id: existing?.id ?? Date.now().toString(),
             titulo: titulo.trim(),
             descricao: descricao.trim(),
