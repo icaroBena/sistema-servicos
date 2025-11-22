@@ -6,21 +6,27 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/login/login";
 import Home from "./pages/home/home";
 import Register from "./pages/register/register";
-import ServiceRequest from "./pages/serviceRequest/ServiceRequest";
-
-
+import Account from "./pages/account/account"; // veio da tela-login
+import ServiceRequest from "./pages/serviceRequest/ServiceRequest"; // veio da development
+import ServiceConfirmation from "./pages/ServiceConfirmation/serviceConfirmation";
+import Admin from "./page-adm/admin";
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        {/* rota inicial: login */}
+
+        {/* rota inicial */}
         <Route path="/" element={<Login />} />
-        {/* sua outra tela */}
         <Route path="/home" element={<Home />} />
+
+        {/* suas telas */}
         <Route path="/service-requests" element={<ServiceRequest />} />
+        <Route path="/confirm-service" element={<ServiceConfirmation />} />
         <Route path="/register" element={<Register />} />
-        {/* qualquer rota desconhecida volta pro login */}
+        <Route path="/account" element={<Account />} />
+
+        {/* rota fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

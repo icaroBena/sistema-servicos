@@ -1,0 +1,364 @@
+/* ==== LAYOUT GERAL ==== */
+
+.wm-account {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.account-container {
+  display: flex;
+  flex: 1;
+  padding: 40px 80px;
+  background-color: #f5f7fa;
+  gap: 30px;
+}
+
+.account-content {
+  flex: 1;
+  background: white;
+  padding: 30px 40px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow-y: auto;
+}
+
+/* ==== CABEÇALHO DO PERFIL ==== */
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #f0f0f0;
+  margin-bottom: 25px;
+}
+
+.profile-avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #0078ff;
+}
+
+.profile-header-text h2 {
+  font-size: 1.6rem;
+  color: #222;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px; /* espaçamento entre nome e badge */
+}
+
+.profile-header-text p {
+  font-size: 0.95rem;
+  color: #555;
+  margin: 3px 0;
+}
+
+/* badge verificado */
+.verified-badge {
+  background-color: #4caf50;
+  color: white;
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 8px;
+  display: inline-block;
+  margin-left: 8px;
+}
+
+.profile-rating {
+  color: rgb(50, 65, 94);
+  font-weight: 600;
+  font-size: medium;
+  padding: 4px 8px;
+  border-radius: 8px;
+  display: flex;
+}
+
+/* status usuário */
+.user-status {
+  background-color: #e0f7ff;
+  color: rgb(0, 0, 0);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 4px 8px;
+  border-radius: 8px;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.user-status.available {
+  background-color: #b2ffea;
+}
+
+.user-status.unavailable {
+  background-color: #ffe4b2;
+}
+
+/* ==== VISUALIZAÇÃO DE PERFIL ==== */
+
+.profile-view {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-view-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.profile-basic {
+  flex: 1;
+}
+
+.profile-actions {
+  margin-left: 20px;
+}
+
+/* estilização dos títulos dentro da view */
+.profile-view h3 {
+  font-size: 1.1rem;
+  color: #0078ff;
+  margin-bottom: 6px;
+}
+
+/* linhas de informação */
+.profile-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.profile-row strong {
+  width: 120px;
+  color: #222;
+}
+
+/* certificações com visual tipo LinkedIn */
+.cert-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 8px 0 16px 0;
+}
+
+.cert-item {
+  background: #f6f9ff;
+  border-left: 4px solid #0078ff;
+  padding: 10px 12px;
+  margin: 6px 0;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  color: #222;
+}
+
+/* categorias como 'pills' */
+.categories {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.category-pill {
+  background: #e9f2fe;
+  color: #0078ff;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+/* botão editar */
+.profile-view .btn.primary {
+  align-self: flex-end;
+  margin-top: 20px;
+  background-color: #0078ff;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.profile-view .btn.primary:hover {
+  transform: scale(1.03);
+  background-color: #005fd4;
+}
+
+/* ==== FORMULÁRIO DE EDIÇÃO ==== */
+
+.profile-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  background-color: #e9f2fe;
+  border-radius: 8px;
+}
+
+.profile-edit-form label {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+/* inputs */
+.profile-edit-form input,
+.profile-edit-form textarea,
+.profile-edit-form select {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.profile-edit-form input[disabled] {
+  background: #f1f5fb;
+  color: #666;
+}
+
+/* foco */
+.profile-edit-form input:focus,
+.profile-edit-form textarea:focus,
+.profile-edit-form select:focus {
+  border-color: #0078ff;
+  box-shadow: 0 0 4px rgba(0, 120, 255, 0.12);
+}
+
+.profile-edit-form textarea {
+  resize: none;
+}
+
+/* avatar upload */
+.avatar-upload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #0078ff;
+}
+
+/* tags (categorias / certificações) */
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.tag {
+  background-color: #ffffff;
+  border: 1px solid #dfe9fb;
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 0.85rem;
+  color: #333;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tag-remove {
+  background: none;
+  border: none;
+  color: #c02b2b;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+/* pequena ajuda text */
+.small-text {
+  font-size: 0.82rem;
+  color: #5b6975;
+  margin-top: 6px;
+}
+
+/* ações */
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* ==== BOTÕES ==== */
+
+.btn {
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn.primary {
+  background-color: #0078ff;
+  color: white;
+  padding: 10px 18px;
+}
+
+.btn.primary:hover {
+  background-color: #005fd4;
+  transform: translateY(-1px);
+}
+
+.btn.cancel {
+  background-color: #c1d3e3;
+  color: #222222;
+  padding: 10px 18px;
+}
+
+.btn.cancel:hover {
+  background-color: #8ba0b5;
+}
+
+/* ==== ESTRUTURA DE COLUNAS / GRID ==== */
+
+.profile-tab {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-tab .profile-header + * {
+  margin-top: 20px;
+}
+
+/* ==== RESPONSIVIDADE ==== */
+
+@media (max-width: 900px) {
+  .account-container {
+    padding: 20px;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .profile-avatar {
+    width: 70px;
+    height: 70px;
+  }
+
+  .edit-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
