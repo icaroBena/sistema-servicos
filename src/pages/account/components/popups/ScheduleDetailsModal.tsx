@@ -1,8 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { Agendamento } from "../../../../models/Agendamento";
+import type { Usuario } from "../../../../models/Usuario";
 import "./schedule-modal.css";
 
-import type { Usuario } from "../../../../models/Usuario";
+import { reembolsoMockApi } from "../../../../services/reembolsoMockApi";
+import RefundRequestModal from "./RefundRequestModal";
+import RefundDetailsModal from "./RefundDetailsModal";
 
 interface Props {
   item: Agendamento;
@@ -12,6 +15,7 @@ interface Props {
   onConclude: (id: string) => void;
   onGoNegotiation: (id: string) => void;
   onStartExecution: (id: string) => void;
+  onReembolsoCriado: (agendamentoId: string, refundId: string) => void;
 }
 
 const ScheduleDetailsModal: React.FC<Props> = ({
@@ -21,22 +25,32 @@ const ScheduleDetailsModal: React.FC<Props> = ({
   onCancel,
   onConclude,
   onGoNegotiation,
-  onStartExecution
+  onStartExecution,
+  onReembolsoCriado
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
+
+  const [abrirReembolso, setAbrirReembolso] = useState(false);
+  const [verReembolso, setVerReembolso] = useState(false);
+  const [reembolsoId, setReembolsoId] = useState<string | null>(null);
+
+  // Verifica se já existe reembolso para este agendamento
+  useEffect(() => {
+    const existente = reembolsoMockApi.obterPorAgendamento(item.id);
+    setReembolsoId(existente ? existente.id : null);
+  }, [item.id]);
 
   useEffect(() => {
     modalRef.current?.focus();
   }, []);
 
+  const emDisputa = item.status === "disputando";
+
   return (
     <div className="modal-backdrop" role="dialog" aria-modal="true">
+      <div className="modal" tabIndex={0} ref={modalRef}>
 
-      <div
-        className="modal"
-        tabIndex={0}
-        ref={modalRef}
-      >
+        {/* HEADER */}
         <h2>{item.titulo}</h2>
         <img src={item.imagemUrl ?? ""} className="modal-img" />
 
@@ -44,49 +58,137 @@ const ScheduleDetailsModal: React.FC<Props> = ({
         <p><b>Preço:</b> R$ {item.preco}</p>
         <p><b>Status:</b> {item.status}</p>
 
+        {reembolsoId && (
+          <p>
+            <span className="status-badge status-negociacao">
+              Reembolso em andamento
+            </span>
+          </p>
+        )}
+
         <div className="modal-buttons">
+          {emDisputa && (
+            <>
+              <p className="status-alert">
+                Este serviço está em disputa. O pagamento está bloqueado até que o reembolso seja analisado.
+              </p>
 
-          {/* CLIENTE — continuar negociação */}
-          {usuario.tipo === "cliente" && item.status === "negociacao" && (
-            <button className="btn primary" onClick={() => onGoNegotiation(item.id)}>
-              Continuar Negociação
-            </button>
+              {reembolsoId && (
+                <button
+                  className="btn primary"
+                  onClick={() => setVerReembolso(true)}
+                >
+                  Ver Reembolso
+                </button>
+              )}
+
+              <button className="btn" onClick={onClose}>
+                Fechar
+              </button>
+            </>
           )}
 
-          {/* PRESTADOR — iniciar execução */}
-          {usuario.tipo === "prestador" && item.status === "negociacao" && (
-            <button className="btn primary" onClick={() => onStartExecution(item.id)}>
-              Iniciar Execução
-            </button>
-          )}
+          {!emDisputa && (
+            <>
+              {/* CLIENTE – continuar negociação */}
+              {usuario.tipo === "cliente" && item.status === "negociacao" && (
+                <button
+                  className="btn primary"
+                  onClick={() => onGoNegotiation(item.id)}
+                >
+                  Continuar Negociação
+                </button>
+              )}
 
-          {/* CLIENTE — concluir serviço */}
-          {usuario.tipo === "cliente" && item.status === "execucao" && (
-            <button className="btn primary" onClick={() => onConclude(item.id)}>
-              Concluir Serviço
-            </button>
-          )}
+              {/* PRESTADOR – iniciar execução */}
+              {usuario.tipo === "prestador" && item.status === "negociacao" && (
+                <button
+                  className="btn primary"
+                  onClick={() => onStartExecution(item.id)}
+                >
+                  Iniciar Execução
+                </button>
+              )}
 
-          {/* Cancelar — ambos podem, se não concluído */}
-          {item.status !== "concluido" && item.status !== "cancelado" && (
-            <button className="btn danger" onClick={() => onCancel(item.id)}>
-              Cancelar Serviço
-            </button>
-          )}
+              {/* CLIENTE — concluir serviço */}
+              {usuario.tipo === "cliente" && item.status === "execucao" && (
+                <button
+                  className="btn primary"
+                  onClick={() => onConclude(item.id)}
+                >
+                  Concluir Serviço
+                </button>
+              )}
 
-          {/* Cliente — abrir disputa */}
-          {usuario.tipo === "cliente" && item.status === "concluido" && (
-            <button className="btn outline">
-              Abrir Reembolso
-            </button>
-          )}
+              {/* Cancelamento (ambos) */}
+              {item.status !== "concluido" && item.status !== "cancelado" && (
+                <button
+                  className="btn danger"
+                  onClick={() => onCancel(item.id)}
+                >
+                  Cancelar Serviço
+                </button>
+              )}
 
-          {/* FECHAR */}
-          <button className="btn" onClick={onClose}>
-            Fechar
-          </button>
+              {/* REEMBOLSO (somente quando concluído) */}
+              {usuario.tipo === "cliente" && item.status === "concluido" && (
+                <>
+                  {!reembolsoId && (
+                    <button
+                      className="btn outline"
+                      onClick={() => setAbrirReembolso(true)}
+                    >
+                      Abrir Reembolso
+                    </button>
+                  )}
+
+                  {reembolsoId && (
+                    <button
+                      className="btn primary"
+                      onClick={() => setVerReembolso(true)}
+                    >
+                      Ver Reembolso
+                    </button>
+                  )}
+                </>
+              )}
+
+              <button className="btn" onClick={onClose}>
+                Fechar
+              </button>
+            </>
+          )}
         </div>
       </div>
+
+      {/* ==============================
+          MODAL: abrir reembolso
+      =============================== */}
+      {abrirReembolso && (
+        <RefundRequestModal
+          agendamentoId={item.id}
+          solicitanteId={usuario.id}
+          tipoSolicitante={usuario.tipo}
+          valor={item.preco}
+          onClose={() => setAbrirReembolso(false)}
+          onCriado={(novoId) => {
+            setReembolsoId(novoId);
+            onReembolsoCriado(item.id, novoId);
+            setAbrirReembolso(false);
+            setVerReembolso(true);
+          }}
+        />
+      )}
+
+      {/* ==============================
+          MODAL: ver detalhes do reembolso
+      =============================== */}
+      {verReembolso && reembolsoId && (
+        <RefundDetailsModal
+          refundId={reembolsoId}
+          onClose={() => setVerReembolso(false)}
+        />
+      )}
 
     </div>
   );

@@ -4,7 +4,10 @@ export interface Agendamento {
   descricao: string;
   preco: number;
   imagemUrl: string | null;
-  status: "negociacao" | "execucao" | "concluido" | "cancelado";
+  status: "negociacao" | "execucao" | "concluido" | "cancelado" | "disputando";
+  refundId?: string;
   criadoEm: string;
   atualizadoEm: string;
+  reembolsoId?: string;   // se houver um reembolso ativo
+  reembolsoStatus?: string; // p/ exibir no card
 }
