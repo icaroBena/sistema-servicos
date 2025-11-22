@@ -9,6 +9,7 @@ import Register from "./pages/register/register";
 import Account from "./pages/account/account"; // veio da tela-login
 import ServiceRequest from "./pages/serviceRequest/ServiceRequest"; // veio da development
 import ServiceConfirmation from "./pages/ServiceConfirmation/serviceConfirmation";
+import Admin from "./page-adm/admin";
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
