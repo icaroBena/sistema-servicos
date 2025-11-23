@@ -6,6 +6,7 @@ import "./schedule-modal.css";
 import { reembolsoMockApi } from "../../../../services/reembolsoMockApi";
 import RefundRequestModal from "./RefundRequestModal";
 import RefundDetailsModal from "./RefundDetailsModal";
+import RatingPopup from "./RatingPopup"; // <-- IMPORTANTE
 
 interface Props {
   item: Agendamento;
@@ -34,7 +35,8 @@ const ScheduleDetailsModal: React.FC<Props> = ({
   const [verReembolso, setVerReembolso] = useState(false);
   const [reembolsoId, setReembolsoId] = useState<string | null>(null);
 
-  // Verifica se já existe reembolso para este agendamento
+  const [showRating, setShowRating] = useState(false); // <-- NOVO
+
   useEffect(() => {
     const existente = reembolsoMockApi.obterPorAgendamento(item.id);
     setReembolsoId(existente ? existente.id : null);
@@ -50,7 +52,6 @@ const ScheduleDetailsModal: React.FC<Props> = ({
     <div className="modal-backdrop" role="dialog" aria-modal="true">
       <div className="modal" tabIndex={0} ref={modalRef}>
 
-        {/* HEADER */}
         <h2>{item.titulo}</h2>
         <img src={item.imagemUrl ?? ""} className="modal-img" />
 
@@ -67,103 +68,69 @@ const ScheduleDetailsModal: React.FC<Props> = ({
         )}
 
         <div className="modal-buttons">
-          {emDisputa && (
+          {emDisputa ? (
             <>
               <p className="status-alert">
                 Este serviço está em disputa. O pagamento está bloqueado até que o reembolso seja analisado.
               </p>
 
               {reembolsoId && (
-                <button
-                  className="btn primary"
-                  onClick={() => setVerReembolso(true)}
-                >
+                <button className="btn primary" onClick={() => setVerReembolso(true)}>
                   Ver Reembolso
                 </button>
               )}
 
-              <button className="btn" onClick={onClose}>
-                Fechar
-              </button>
+              <button className="btn" onClick={onClose}>Fechar</button>
             </>
-          )}
-
-          {!emDisputa && (
+          ) : (
             <>
-              {/* CLIENTE – continuar negociação */}
               {usuario.tipo === "cliente" && item.status === "negociacao" && (
-                <button
-                  className="btn primary"
-                  onClick={() => onGoNegotiation(item.id)}
-                >
+                <button className="btn primary" onClick={() => onGoNegotiation(item.id)}>
                   Continuar Negociação
                 </button>
               )}
 
-              {/* PRESTADOR – iniciar execução */}
               {usuario.tipo === "prestador" && item.status === "negociacao" && (
-                <button
-                  className="btn primary"
-                  onClick={() => onStartExecution(item.id)}
-                >
+                <button className="btn primary" onClick={() => onStartExecution(item.id)}>
                   Iniciar Execução
                 </button>
               )}
 
-              {/* CLIENTE — concluir serviço */}
+              {/* AQUI ABRE O POPUP DE AVALIAÇÃO */}
               {usuario.tipo === "cliente" && item.status === "execucao" && (
-                <button
-                  className="btn primary"
-                  onClick={() => onConclude(item.id)}
-                >
+                <button className="btn primary" onClick={() => setShowRating(true)}>
                   Concluir Serviço
                 </button>
               )}
 
-              {/* Cancelamento (ambos) */}
               {item.status !== "concluido" && item.status !== "cancelado" && (
-                <button
-                  className="btn danger"
-                  onClick={() => onCancel(item.id)}
-                >
+                <button className="btn danger" onClick={() => onCancel(item.id)}>
                   Cancelar Serviço
                 </button>
               )}
 
-              {/* REEMBOLSO (somente quando concluído) */}
               {usuario.tipo === "cliente" && item.status === "concluido" && (
                 <>
                   {!reembolsoId && (
-                    <button
-                      className="btn outline"
-                      onClick={() => setAbrirReembolso(true)}
-                    >
+                    <button className="btn outline" onClick={() => setAbrirReembolso(true)}>
                       Abrir Reembolso
                     </button>
                   )}
 
                   {reembolsoId && (
-                    <button
-                      className="btn primary"
-                      onClick={() => setVerReembolso(true)}
-                    >
+                    <button className="btn primary" onClick={() => setVerReembolso(true)}>
                       Ver Reembolso
                     </button>
                   )}
                 </>
               )}
 
-              <button className="btn" onClick={onClose}>
-                Fechar
-              </button>
+              <button className="btn" onClick={onClose}>Fechar</button>
             </>
           )}
         </div>
       </div>
 
-      {/* ==============================
-          MODAL: abrir reembolso
-      =============================== */}
       {abrirReembolso && (
         <RefundRequestModal
           agendamentoId={item.id}
@@ -180,16 +147,19 @@ const ScheduleDetailsModal: React.FC<Props> = ({
         />
       )}
 
-      {/* ==============================
-          MODAL: ver detalhes do reembolso
-      =============================== */}
       {verReembolso && reembolsoId && (
-        <RefundDetailsModal
-          refundId={reembolsoId}
-          onClose={() => setVerReembolso(false)}
-        />
+        <RefundDetailsModal refundId={reembolsoId} onClose={() => setVerReembolso(false)} />
       )}
 
+      {/* POPUP DE AVALIAÇÃO */}
+      <RatingPopup
+        isOpen={showRating}
+        onClose={() => setShowRating(false)}
+        onSubmit={(rating) => {
+          console.log("Avaliação enviada:", rating);
+          onConclude(item.id);
+        }}
+      />
     </div>
   );
 };
