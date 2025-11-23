@@ -8,9 +8,6 @@ export default function Footer() {
           <p>© 2025 WorkMatch - Todos os direitos reservados</p>
         </div>
         <div className="wm-footer-right">
-          <a href="#">Blog</a>
-          <a href="#">Blog</a>
-          <a href="#">Suporte</a>
         </div>
       </div>
     </footer>

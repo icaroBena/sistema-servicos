@@ -1,0 +1,80 @@
+/* Versão clicável de serviceCard */
+.srv-card.clickable {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  cursor: pointer;
+  transition: 0.2s ease;
+  outline: none;
+}
+
+.srv-card.clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+}
+
+.srv-card.clickable:focus {
+  outline: 3px solid #007bff;
+  box-shadow: 0 0 0 3px rgba(0,123,255,0.5);
+}
+
+.srv-img {
+  width: 85px;
+  height: 85px;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-right: 14px;
+}
+
+/* INFO */
+.srv-info {
+  flex: 1;
+}
+
+.srv-info h4 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.srv-info .desc {
+  margin: 4px 0;
+  color: #555;
+  font-size: 14px;
+}
+
+.srv-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.price {
+  font-size: 24px;
+  font-weight: bold;
+  color: #219150;
+}
+
+.card-active {
+    border-left: 5px solid #0078ff;
+    background: #ffffff;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+}
+
+.card-history {
+    background: #f3f3f3;
+    opacity: 0.85;
+    border-left: 5px solid #bfbfbf;
+}
+
+.role-prestador {
+  border-left-color: #00b894;
+}
+
+.role-cliente {
+  border-left-color: #0078ff;
+}

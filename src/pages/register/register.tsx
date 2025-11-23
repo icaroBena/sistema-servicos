@@ -133,7 +133,6 @@ const Register: React.FC = () => {
 
     return (
         <div className="wm-register">
-            <Navbar />
 
             <div
                 className="register-background"

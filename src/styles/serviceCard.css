@@ -7,8 +7,10 @@
   /* width: 280px;  <- remova */
   /* margin: 10 10 0 0; <- remova (e estava sem 'px') */
   box-sizing: border-box;
-  height: 100%;              /* opcional: cards com alturas iguais na linha */
-  text-align: center;/* bens */
+  height: 100%;
+  /* opcional: cards com alturas iguais na linha */
+  text-align: center;
+  /* bens */
   transition: transform 0.3s ease;
 }
 
@@ -29,9 +31,16 @@
   margin: 12px 0;
 }
 
+.wm-service-price {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #23a141;
+}
+
 .wm-service-card p {
   font-size: 14px;
-  color: #6b7280;  /* texto desativado */
+  color: #6b7280;
+  /* texto desativado */
   margin-bottom: 12px;
 }
 
