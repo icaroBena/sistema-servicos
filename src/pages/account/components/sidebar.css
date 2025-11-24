@@ -78,3 +78,14 @@
     background-color: #e63d3d;
     transform: scale(1.02);
 }
+
+.sidebar-badge {
+  background: #ff3b3b;
+  color: white;
+  padding: 2px 6px;
+  font-size: 0.7rem;
+  border-radius: 12px;
+
+  margin-left: auto;
+  margin-right: 6px;
+}

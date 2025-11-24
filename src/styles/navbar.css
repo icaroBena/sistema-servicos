@@ -1,37 +1,61 @@
-/* navbar.css */
-.wm-navbar {
-  background-color: #0a66ff;
-  color: white;
-  display: flex;
-  align-items: center;
-}
-
-.wm-brand {
-  font-size: 30px;
-  font-weight: bold;
-  letter-spacing: 0.2px;
-}
-/*teste*/
-.wm-nav {
-  display: flex;
-  gap: 20px;
-}
-
-.wm-nav-link {
-  color: white;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 16px;
-  transition: color 0.3s ease;
-}
-
-.wm-nav-link:hover {
-  color: #e0e0e0;
-}
-
-.wm-container{
+.navbar {
+  width: 100%;
+  background: #0078ff;
+  padding: 10px 26px;
   display: flex;
   justify-content: space-between;
-  align-items: center; 
-  width: 100%;
+  align-items: center;
+  color: white;
+}
+
+.nav-logo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: white;
+  text-decoration: none;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: white;
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-weight: 500;
+
+  transition: background 0.2s ease;
+}
+
+.nav-btn:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+.nav-btn.active {
+  background: rgba(255,255,255,0.45);
+}
+
+.nav-btn.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.nav-icon {
+  font-size: 1rem;
+}
+
+.nav-profile {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid white;
+  object-fit: cover;
 }
