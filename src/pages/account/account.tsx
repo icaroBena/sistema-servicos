@@ -1,4 +1,5 @@
 // Código de conta geral - A lógica de fronteira de gerenciar perfil
+import { useLocation, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import "./account.css";
 import Sidebar from "./components/Sidebar";
@@ -19,11 +20,44 @@ import Footer from "../../components/Footer";
 // Mocks leves para testar as duas perspectivas (cliente / prestador)
 import type { Usuario } from "../../models/Usuario";
 import { mockCliente, mockPrestador } from "../../mocks/devUser";
+import { carregarNotificacoesMock } from "../../mocks/notificacoesMock";
+import { useNotificacoes } from "../../contexts/NotificationContext";
 
 const Account: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("profile");
   const [editMode, setEditMode] = useState<boolean>(false);
   const [userData, setUserData] = useState<Usuario>(mockCliente);
+
+  const location = useLocation();
+  const notificacaoCtx = useNotificacoes();
+  const navigate = useNavigate();
+
+  // Testando notificações mock na primeira carga
+  useEffect(() => {
+    const jaCriado = localStorage.getItem("mock_notifs_carregadas");
+
+    if (jaCriado) {
+      carregarNotificacoesMock();
+      notificacaoCtx.atualizar();
+      localStorage.setItem("mock_notifs_carregadas", "true");
+    }
+  }, []);
+
+  // Quando a URL mudar, atualizar a tab
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tabFromUrl = params.get("tab");
+
+    if (tabFromUrl) {
+      setActiveTab(tabFromUrl);
+    }
+  }, [location.search]);
+
+  // Quando user clicar na sidebar, atualizar a URL também
+  const handleTabSelect = (tab: string) => {
+    navigate(`/account?tab=${tab}`);
+    setActiveTab(tab);
+  };
 
   // salvar as alterações dos dados
   const handleSave = (updatedData: Usuario, passwordPayload?: { senhaAtual: string; novaSenha: string } | null) => {
@@ -77,11 +111,18 @@ const Account: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (!params.get("tab")) {
+      navigate("/account?tab=profile", { replace: true });
+    }
+  }, []);
+
   return (
     <div className="wm-account">
       <Navbar />
       <div className="account-container">
-        <Sidebar active={activeTab} onSelect={setActiveTab} userType={userData.tipo} />
+        <Sidebar active={activeTab} onSelect={handleTabSelect} userType={userData.tipo} />
         <div className="account-content">{renderContent()}</div>
       </div>
       <Footer />

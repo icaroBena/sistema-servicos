@@ -11,24 +11,25 @@ import ServiceRequest from "./pages/serviceRequest/ServiceRequest"; // veio da d
 import ServiceConfirmation from "./pages/ServiceConfirmation/serviceConfirmation";
 import Admin from "./page-adm/admin";
 
+import { NotificationProvider } from "./contexts/NotificationContext";
+
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <Routes>
+      <NotificationProvider>
+        <Routes>
 
-        {/* rota inicial */}
-        <Route path="/" element={<Login />} />
-        <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/service-requests" element={<ServiceRequest />} />
+          <Route path="/confirm-service" element={<ServiceConfirmation />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/account" element={<Account />} />
 
-        {/* suas telas */}
-        <Route path="/service-requests" element={<ServiceRequest />} />
-        <Route path="/confirm-service" element={<ServiceConfirmation />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/account" element={<Account />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
 
-        {/* rota fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+        </Routes>
+      </NotificationProvider>
     </BrowserRouter>
   </React.StrictMode>
 );
