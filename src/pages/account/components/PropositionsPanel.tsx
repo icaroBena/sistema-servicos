@@ -1,9 +1,9 @@
 // src/pages/account/components/PropositionsPanel.tsx
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./propositions-panel.css";
 
-interface Proposal {
+interface ProposalView {
   id: string;
   client: {
     name: string;
@@ -17,7 +17,9 @@ interface Proposal {
   counterOffer?: number;
 }
 
-const mockProposals: Proposal[] = [
+import * as proposalsApi from "../../../api/proposals";
+
+const SAMPLE_PROPOSALS: ProposalView[] = [
   {
     id: "1",
     client: { name: "João Pedro", address: "Rua das Flores, 120 - Centro" },
@@ -30,19 +32,39 @@ const mockProposals: Proposal[] = [
 ];
 
 const PropositionsPanel: React.FC = () => {
-  const [proposals, setProposals] = useState<Proposal[]>(mockProposals);
+  const [proposals, setProposals] = useState<ProposalView[]>(SAMPLE_PROPOSALS);
   const [counterValues, setCounterValues] = useState<Record<string, string>>({});
 
-  const accept = (id: string) => {
-    setProposals(prev =>
-      prev.map(p => (p.id === id ? { ...p, status: "accepted" } : p))
-    );
+  const accept = async (id: string) => {
+    try {
+      await proposalsApi.updateProposal(id, { status: "accepted" } as any);
+      // reload list after API update
+      await load();
+    } catch (err) {
+      setProposals((prev) => prev.map((p) => (p.id === id ? { ...p, status: "accepted" } : p)));
+      // persist fallback
+      try {
+        const raw = localStorage.getItem("fallback_proposals");
+        const list: ProposalView[] = raw ? JSON.parse(raw) : proposals;
+        const updated = list.map((p) => (p.id === id ? { ...p, status: "accepted" } : p));
+        localStorage.setItem("fallback_proposals", JSON.stringify(updated));
+      } catch (e) {}
+    }
   };
 
-  const reject = (id: string) => {
-    setProposals(prev =>
-      prev.map(p => (p.id === id ? { ...p, status: "rejected" } : p))
-    );
+  const reject = async (id: string) => {
+    try {
+      await proposalsApi.updateProposal(id, { status: "rejected" } as any);
+      await load();
+    } catch (err) {
+      setProposals((prev) => prev.map((p) => (p.id === id ? { ...p, status: "rejected" } : p)));
+      try {
+        const raw = localStorage.getItem("fallback_proposals");
+        const list: ProposalView[] = raw ? JSON.parse(raw) : proposals;
+        const updated = list.map((p) => (p.id === id ? { ...p, status: "rejected" } : p));
+        localStorage.setItem("fallback_proposals", JSON.stringify(updated));
+      } catch (e) {}
+    }
   };
 
   const sendCounterOffer = (id: string) => {
@@ -51,16 +73,58 @@ const PropositionsPanel: React.FC = () => {
     if (!value || value <= 0)
       return alert("Digite um valor válido.");
 
-    setProposals(prev =>
-      prev.map(p =>
-        p.id === id
-          ? { ...p, counterOffer: value, status: "negotiation" }
-          : p
-      )
-    );
+    // Try API; if not available, update local state & fallback storage
+    (async () => {
+      try {
+        await proposalsApi.updateProposal(id, { counterOffer: value, status: "negotiation" } as any);
+        await load();
+      } catch (err) {
+        setProposals((prev) =>
+          prev.map((p) => (p.id === id ? { ...p, counterOffer: value, status: "negotiation" } : p))
+        );
+        try {
+          const raw = localStorage.getItem("fallback_proposals");
+          const list: ProposalView[] = raw ? JSON.parse(raw) : proposals;
+          const updated = list.map((p) => (p.id === id ? { ...p, counterOffer: value, status: "negotiation" } : p));
+          localStorage.setItem("fallback_proposals", JSON.stringify(updated));
+        } catch (e) {}
+      }
+    })();
 
     alert("Contraproposta enviada!");
   };
+
+  const load = async () => {
+    try {
+      const list = await proposalsApi.listProposals();
+      // Map API Proposal -> ProposalView for UI
+      const view = (list || []).map((p: any) => ({
+        id: p.id,
+        client: { name: p.client?.name ?? p.clientId ?? "Cliente", address: p.client?.address ?? "" },
+        categories: p.categories ?? [],
+        description: p.message ?? p.description ?? "",
+        value: p.value ?? p.price ?? 0,
+        estimatedTime: p.estimatedTime ?? p.estimatedTime ?? "",
+        status: p.status ?? "pending",
+        counterOffer: p.counterOffer,
+      } as ProposalView));
+
+      setProposals(view);
+    } catch (err) {
+      try {
+        const raw = localStorage.getItem("fallback_proposals");
+        const list: ProposalView[] = raw ? JSON.parse(raw) : SAMPLE_PROPOSALS;
+        setProposals(list);
+      } catch (e) {
+        setProposals(SAMPLE_PROPOSALS);
+      }
+    }
+  };
+
+  useEffect(() => {
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="propositions-panel">

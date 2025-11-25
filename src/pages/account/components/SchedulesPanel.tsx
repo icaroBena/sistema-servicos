@@ -12,7 +12,6 @@ import { useNavigate } from "react-router-dom";
 import "./account-tabs-style.css";
 
 import { mockClient } from "../../../mocks/devUser";
-import { schedulesMock } from "../../../mocks/schedulesMock";
 
 const user = mockClient;
 
@@ -58,10 +57,18 @@ const SchedulesPanel: React.FC = () => {
         setItems(list || []);
         return;
       } catch (err) {
-        // fallback para mock
+        // fallback para localStorage
       }
 
-      if (mounted) setItems(schedulesMock);
+      if (mounted) {
+        try {
+          const raw = localStorage.getItem("fallback_bookings");
+          const list = raw ? JSON.parse(raw) : [];
+          setItems(list);
+        } catch (e) {
+          setItems([]);
+        }
+      }
     })();
 
     return () => {
