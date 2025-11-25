@@ -7,7 +7,7 @@ interface Proposal {
   id: string;
   client: {
     name: string;
-    location: string;
+    address: string;
   };
   categories: string[];
   description: string;
@@ -20,7 +20,7 @@ interface Proposal {
 const mockProposals: Proposal[] = [
   {
     id: "1",
-    client: { name: "João Pedro", location: "Rua das Flores, 120 - Centro" },
+    client: { name: "João Pedro", address: "Rua das Flores, 120 - Centro" },
     categories: ["Instalações Elétricas"],
     description: "Preciso instalar uma tomada nova na cozinha.",
     price: 150,
@@ -74,7 +74,7 @@ const PropositionsPanel: React.FC = () => {
               <h3 className="prop-title">{p.categories.join(", ")}</h3>
 
               <p><strong>Cliente:</strong> {p.client.name}</p>
-              <p><strong>Endereço:</strong> {p.client.location}</p>
+              <p><strong>Endereço:</strong> {p.client.address}</p>
               <p><strong>Descrição:</strong> {p.description}</p>
               <p><strong>Valor oferecido:</strong> R$ {p.price}</p>
 

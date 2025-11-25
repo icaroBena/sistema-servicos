@@ -3,7 +3,6 @@ import type { ChangeEvent, FormEvent } from 'react';
 
 import './register.css';
 import Footer from "../../components/Footer.tsx";
-import Navbar from "../../components/Navbar.tsx";
 import VerificationInfoPopup from './components/VerificationInfoPopup';
 import { useNavigate } from "react-router-dom";
 import { register } from "../../api/auth"; 
@@ -31,6 +30,9 @@ const Register: React.FC = () => {
     const [missingFields, setMissingFields] = useState(false);
     const [showInfo, setShowInfo] = useState(false);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+    // reference verificationFile so TypeScript doesn't mark it as unused
+    void verificationFile;
 
     const allowedMimeTypes = ["application/pdf"];
     const allowedExtensions = ["pdf"];

@@ -1,6 +1,5 @@
 // src/pages/home/home.tsx
 
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 // Components
@@ -19,6 +18,9 @@ export default function Home() {
   const goToServiceRequests = (service?: string) => {
     // Caso futuramente a gente envie o tipo como query:
     // navigate(`/service/request?category=${encodeURIComponent(service ?? "")}`);
+
+    // mark parameter as used to avoid unused-variable warning until query is implemented
+    void service;
 
     navigate("/service/request");
   };

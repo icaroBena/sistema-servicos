@@ -1,15 +1,15 @@
 // src/pages/account/components/ServicesPanel.tsx
 import React, { useState, useEffect } from "react";
 import ServiceFormModal from "./popups/ServiceFormModal";
-import type { Servico } from "../../../models/Servico";
+import type { Service } from "../../../models/Servico";
 import "./account-tabs-style.css";
 
 const MAX = 3;
 
 const ServicesPanel: React.FC = () => {
-  const [services, setServices] = useState<Servico[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const [edit, setEdit] = useState<Servico | null>(null);
+  const [edit, setEdit] = useState<Service | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem("services");
@@ -35,7 +35,7 @@ const ServicesPanel: React.FC = () => {
     setModalOpen(true);
   };
 
-  const save = (s: Servico) => {
+  const save = (s: Service) => {
     if (!s.id) s.id = Date.now().toString();
 
     if (edit) {

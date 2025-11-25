@@ -1,101 +1,89 @@
 import React, { useState } from "react";
 import "./admin.css";
 
-/* ============================================================
-   MODELOS PADRONIZADOS (compatíveis com front + backend)
-   ============================================================ */
-export interface Usuario {
+/* Comentários e nome do ficheiro mantêm-se em português. Internals em inglês. */
+
+interface User {
   id: string;
-  nome: string;
+  name: string;
   email: string;
-  telefone?: string;
-  localizacao?: string;
-  tipo: "prestador" | "cliente";
-  verificado?: boolean;
-  avaliacao?: number;
-  disponibilidade?: "DISPONÍVEL" | "INDISPONÍVEL" | string;
-  categorias: string[];
-  certificacoes: string[];
-  sobre?: string;
-  foto?: string | null;
+  phone?: string;
+  address?: string;
+  type: "provider" | "client";
+  verified?: boolean;
+  rating?: number;
+  availability?: string;
+  categories: string[];
+  certifications: string[];
+  about?: string;
+  photoUrl?: string | null;
 }
 
-export interface Reembolso {
+interface RefundItem {
   id: string;
-
-  clienteId: string;
-  prestadorId: string;
-
-  motivo: string;
-  valor: string;
-  data: string;
-
-  evidenciaUrl?: string;
+  clientId: string;
+  providerId: string;
+  reason: string;
+  requestedValue: string;
+  date: string;
+  evidenceUrl?: string;
 }
-
-/* ============================================================
-   COMPONENTE PRINCIPAL
-   ============================================================ */
 
 const Admin: React.FC = () => {
 
   /* ---------------- MOCKS DE USUÁRIOS ---------------- */
-  const [usuarios, setUsuarios] = useState<Usuario[]>([
+  const [users, setUsers] = useState<User[]>([
     {
       id: "u1",
-      nome: "Carlos Eletricista",
+      name: "Carlos Eletricista",
       email: "carlos@email.com",
-      telefone: "(92) 98888-1111",
-      localizacao: "Rua A, Centro",
-      tipo: "prestador",
-      verificado: false,
-      categorias: ["Elétrica"],
-      certificacoes: ["Certificado NR10"],
-      sobre: "Especialista em instalações elétricas residenciais.",
-      foto: "/Figures/prestador-exemplo.png",
+      phone: "(92) 98888-1111",
+      address: "Rua A, Centro",
+      type: "provider",
+      verified: false,
+      categories: ["Elétrica"],
+      certifications: ["Certificado NR10"],
+      about: "Especialista em instalações elétricas residenciais.",
+      photoUrl: "/Figures/prestador-exemplo.png",
     },
     {
       id: "u2",
-      nome: "Maria Souza",
+      name: "Maria Souza",
       email: "maria@email.com",
-      tipo: "cliente",
-      categorias: [],
-      certificacoes: [],
-      foto: null,
+      type: "client",
+      categories: [],
+      certifications: [],
+      photoUrl: null,
     },
   ]);
 
   /* ---------------- MOCKS DE REEMBOLSOS ---------------- */
-  const [reembolsos, setReembolsos] = useState<Reembolso[]>([
+  const [refunds, setRefunds] = useState<RefundItem[]>([
     {
       id: "r1",
-      clienteId: "u2",
-      prestadorId: "u1",
-      motivo: "O serviço não foi concluído",
-      valor: "R$ 150,00",
-      data: "15/11/2025",
-      evidenciaUrl: "/Figures/exemplo-prova.jpg",
+      clientId: "u2",
+      providerId: "u1",
+      reason: "O serviço não foi concluído",
+      requestedValue: "R$ 150,00",
+      date: "15/11/2025",
+      evidenceUrl: "/Figures/exemplo-prova.jpg",
     },
   ]);
 
   /* ============================================================
      PRESTADORES PENDENTES
      ============================================================ */
-  const prestadoresPendentes = usuarios.filter(
-    (u) => u.tipo === "prestador" && !u.verificado
+  const prestadoresPendentes = users.filter(
+    (u) => u.type === "provider" && !u.verified
   );
 
   const aprovarPrestador = (id: string) => {
-    setUsuarios(prev =>
-      prev.map(u =>
-        u.id === id ? { ...u, verificado: true } : u
-      )
-    );
+    setUsers(prev => prev.map(u => (u.id === id ? { ...u, verified: true } : u)));
     alert("Prestador aprovado!");
   };
 
   const recusarPrestador = (id: string) => {
-    setUsuarios(prev => prev.filter(u => u.id !== id));
+    setUsers(prev => prev.filter(u => u.id !== id));
     alert("Prestador removido.");
   };
 
@@ -103,12 +91,12 @@ const Admin: React.FC = () => {
      REEMBOLSOS
      ============================================================ */
   const aprovarReembolso = (id: string) => {
-    setReembolsos(prev => prev.filter(r => r.id !== id));
+    setRefunds(prev => prev.filter(r => r.id !== id));
     alert("Reembolso aprovado!");
   };
 
   const recusarReembolso = (id: string) => {
-    setReembolsos(prev => prev.filter(r => r.id !== id));
+    setRefunds(prev => prev.filter(r => r.id !== id));
     alert("Reembolso recusado.");
   };
 
@@ -129,23 +117,23 @@ const Admin: React.FC = () => {
           prestadoresPendentes.map((p) => (
             <div key={p.id} className="admin-card">
 
-              {p.foto && (
+              {p.photoUrl && (
                 <img
-                  src={p.foto}
-                  alt={`Foto do prestador ${p.nome}`}
+                  src={p.photoUrl}
+                  alt={`Foto do prestador ${p.name}`}
                   className="prestador-foto"
                 />
               )}
 
-              <p><strong>Nome:</strong> {p.nome}</p>
+              <p><strong>Nome:</strong> {p.name}</p>
               <p><strong>E-mail:</strong> {p.email}</p>
-              <p><strong>Telefone:</strong> {p.telefone || "Não informado"}</p>
-              <p><strong>Localização:</strong> {p.localizacao || "Não informado"}</p>
-              <p><strong>Categorias:</strong> {p.categorias.join(", ")}</p>
-              <p><strong>Certificações:</strong> {p.certificacoes.join(", ")}</p>
+              <p><strong>Telefone:</strong> {p.phone || "Não informado"}</p>
+              <p><strong>Localização:</strong> {p.address || "Não informado"}</p>
+              <p><strong>Categorias:</strong> {p.categories.join(", ")}</p>
+              <p><strong>Certificações:</strong> {p.certifications.join(", ")}</p>
 
-              {p.sobre && (
-                <p><strong>Sobre:</strong> {p.sobre}</p>
+              {p.about && (
+                <p><strong>Sobre:</strong> {p.about}</p>
               )}
 
               <a
@@ -174,24 +162,24 @@ const Admin: React.FC = () => {
       <section className="admin-section" role="region" aria-label="Solicitações de Reembolso">
         <h2 className="section-title">Solicitações de Reembolso</h2>
 
-        {reembolsos.length === 0 ? (
+        {refunds.length === 0 ? (
           <p className="empty">Nenhuma solicitação de reembolso.</p>
         ) : (
-          reembolsos.map((r) => {
-            const cliente = usuarios.find(u => u.id === r.clienteId);
-            const prestador = usuarios.find(u => u.id === r.prestadorId);
+          refunds.map((r) => {
+            const client = users.find(u => u.id === r.clientId);
+            const provider = users.find(u => u.id === r.providerId);
 
             return (
               <div key={r.id} className="admin-card">
-                <p><strong>Cliente:</strong> {cliente?.nome}</p>
-                <p><strong>Prestador:</strong> {prestador?.nome}</p>
-                <p><strong>Motivo:</strong> {r.motivo}</p>
-                <p><strong>Valor:</strong> {r.valor}</p>
-                <p><strong>Data:</strong> {r.data}</p>
+                <p><strong>Cliente:</strong> {client?.name}</p>
+                <p><strong>Prestador:</strong> {provider?.name}</p>
+                <p><strong>Motivo:</strong> {r.reason}</p>
+                <p><strong>Valor:</strong> {r.requestedValue}</p>
+                <p><strong>Data:</strong> {r.date}</p>
 
-                {r.evidenciaUrl && (
+                {r.evidenceUrl && (
                   <a
-                    href={r.evidenciaUrl}
+                    href={r.evidenceUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="view-link"

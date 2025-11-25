@@ -4,21 +4,22 @@ import React, { useEffect, useState } from "react";
 import ScheduleCard from "../../../components/SchedulesCard";
 import ScheduleDetailsModal from "./popups/ScheduleDetailsModal";
 
-import type { Agendamento } from "../../../models/Agendamento";
+import type { Booking } from "../../../models/Agendamento";
+import * as bookingsApi from "../../../api/bookings";
 import { useConfirm } from "../../../components/UseConfirm";
 import { useNavigate } from "react-router-dom";
 
 import "./account-tabs-style.css";
 
-import { mockCliente } from "../../../mocks/devUser";
+import { mockClient } from "../../../mocks/devUser";
 import { schedulesMock } from "../../../mocks/schedulesMock";
 
-const usuario = mockCliente;
+const usuario = mockClient;
 
 export const updateStatus = (
-  list: Agendamento[],
+  list: Booking[],
   id: string,
-  newStatus: Agendamento["status"],
+  newStatus: Booking["status"],
   refundId?: string
 ) => {
   return list.map(item =>
@@ -33,34 +34,39 @@ export const updateStatus = (
   );
 };
 
-export const filterActive = (list: Agendamento[]) =>
-  list.filter(item => ["negociacao", "execucao"].includes(item.status));
+export const filterActive = (list: Booking[]) =>
+  list.filter(item => ["negotiation", "execution"].includes(item.status));
 
-export const filterHistory = (list: Agendamento[]) =>
-  list.filter(item =>
-    ["concluido", "cancelado", "disputando"].includes(item.status)
-  );
+export const filterHistory = (list: Booking[]) =>
+  list.filter(item => ["completed", "cancelled", "disputed"].includes(item.status));
 
 const SchedulesPanel: React.FC = () => {
-  const [items, setItems] = useState<Agendamento[]>([]);
+  const [items, setItems] = useState<Booking[]>([]);
   const [tab, setTab] = useState<"active" | "history">("active");
-  const [selected, setSelected] = useState<Agendamento | null>(null);
+  const [selected, setSelected] = useState<Booking | null>(null);
 
   const confirm = useConfirm();
   const navigate = useNavigate();
-  const testing = true;
 
   useEffect(() => {
-    const saved = localStorage.getItem("schedules");
-
-    if (saved && !testing) {
+    let mounted = true;
+    (async () => {
+      // Tenta carregar pela API de bookings; se falhar, fallback para mock local
       try {
-        setItems(JSON.parse(saved));
+        const list = await bookingsApi.listBookings();
+        if (!mounted) return;
+        setItems(list || []);
         return;
-      } catch {}
-    }
+      } catch (err) {
+        // fallback para mock
+      }
 
-    setItems(schedulesMock);
+      if (mounted) setItems(schedulesMock);
+    })();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -80,7 +86,7 @@ const SchedulesPanel: React.FC = () => {
 
     if (!ok) return;
 
-    setItems(prev => updateStatus(prev, id, "cancelado"));
+    setItems(prev => updateStatus(prev, id, "cancelled"));
     setSelected(null);
   };
 
@@ -95,7 +101,7 @@ const SchedulesPanel: React.FC = () => {
 
     if (!ok) return;
 
-    setItems(prev => updateStatus(prev, id, "concluido"));
+    setItems(prev => updateStatus(prev, id, "completed"));
     setSelected(null);
   };
 
@@ -124,12 +130,12 @@ const SchedulesPanel: React.FC = () => {
 
     if (!ok) return;
 
-    setItems(prev => updateStatus(prev, id, "execucao"));
+    setItems(prev => updateStatus(prev, id, "execution"));
     setSelected(null);
   };
 
   const handleRefundCreated = (agendamentoId: string, refundId: string) => {
-    setItems(prev => updateStatus(prev, agendamentoId, "disputando", refundId));
+    setItems(prev => updateStatus(prev, agendamentoId, "disputed", refundId));
   };
 
   const list = tab === "active" ? filterActive(items) : filterHistory(items);

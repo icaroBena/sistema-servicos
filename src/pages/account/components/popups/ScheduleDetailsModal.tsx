@@ -159,7 +159,7 @@ const ScheduleDetailsModal: React.FC<Props> = ({
         <RefundRequestModal
           agendamentoId={item.id}
           solicitanteId={usuario.id}
-          requesterType={usuario.type}
+          requesterType={usuario.type as "client" | "provider"}
           requestedValue={item.price}
           onClose={() => setOpenRefundRequest(false)}
           onCriado={(newId) => {

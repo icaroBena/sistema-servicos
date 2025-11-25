@@ -1,15 +1,15 @@
 import React from "react";
-import type { Notificacao } from "../../../../models/Notificacao";
+import type { Notification } from "../../../../models/Notificacao";
 import "./notification-item.css";
 
 interface Props {
-  item: Notificacao;
+  item: Notification;
   onRead: (id: string) => void;
   onDelete: (id: string) => void;
 }
 
 const NotificationItem: React.FC<Props> = ({ item, onRead, onDelete }) => {
-  const isUnread = item.status === "nao_lida";
+  const isUnread = item.status === "unread";
 
   const classe = isUnread
     ? "noti-card noti-unread"
@@ -25,19 +25,19 @@ const NotificationItem: React.FC<Props> = ({ item, onRead, onDelete }) => {
     <div
       className={classe}
       role="article"
-      aria-label={`Notificação: ${item.titulo}`}
+      aria-label={`Notificação: ${item.title}`}
     >
       {/* Cabeçalho */}
       <div className="noti-top">
-        <h4 className="noti-title">{item.titulo}</h4>
+        <h4 className="noti-title">{item.title}</h4>
 
         <span className="noti-time">
-          {new Date(item.criadaEm).toLocaleString()}
+          {new Date(item.createdAt).toLocaleString()}
         </span>
       </div>
 
       {/* Mensagem */}
-      <p className="noti-msg">{item.mensagem}</p>
+      <p className="noti-msg">{item.message}</p>
 
       {/* Ações */}
       <div className="noti-actions">

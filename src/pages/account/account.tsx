@@ -23,7 +23,7 @@ import PaymentMethodsPanel from "./components/PaymentMethodsPanel";
 import type { User } from "../../models/Usuario";
 
 // Mocks temporários
-import { mockCliente, mockPrestador } from "../../mocks/devUser";
+import { mockClient } from "../../mocks/devUser";
 import { carregarNotificacoesMock } from "../../mocks/notificacoesMock";
 import { useNotificacoes } from "../../contexts/NotificationContext";
 
@@ -32,7 +32,7 @@ const Account: React.FC = () => {
   const [editMode, setEditMode] = useState<boolean>(false);
 
   // Estado do usuário (mock inicial)
-  const [userData, setUserData] = useState<User>(mockCliente as any);
+  const [userData, setUserData] = useState<User>(mockClient as any);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -112,7 +112,11 @@ const Account: React.FC = () => {
         return <PropositionsPanel />;
 
       case "payments":
-        return <PaymentMethodsPanel userType={userData.type} />;
+        return userData.type === "client" || userData.type === "provider" ? (
+          <PaymentMethodsPanel userType={userData.type as "client" | "provider"} />
+        ) : (
+          <div />
+        );
 
       case "settings":
         return <SettingsPanel />;

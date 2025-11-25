@@ -3,27 +3,35 @@
 import React, { useEffect, useState } from "react";
 import "./account-tabs-style.css";
 
-import { mockCliente } from "../../../mocks/devUser";
-import { reembolsoMockApi } from "../../../services/reembolsoMockApi";
+import { mockClient } from "../../../mocks/devUser";
+import { refundService } from "../../../services/reembolsoMockApi";
 
-import type { Reembolso } from "../../../models/Reembolso";
+import type { Refund } from "../../../models/Reembolso";
 
 import RefundDetailsModal from "./popups/RefundDetailsModal";
 import RefundInfoPopup from "./popups/RefundInfoPopup";
 
 const RefundsPanel: React.FC = () => {
-  const usuario = mockCliente;
+  // Usa usuário autenticado se existir, senão mock (fallback temporário)
+  const stored = localStorage.getItem("auth_user");
+  const usuario = stored ? JSON.parse(stored) : mockClient;
 
-  const [refunds, setRefunds] = useState<Reembolso[]>([]);
+  const [refunds, setRefunds] = useState<Refund[]>([]);
   const [selectedRefundId, setSelectedRefundId] = useState<string | null>(null);
   const [infoPopup, setInfoPopup] = useState(false);
 
-  const load = () => {
-    setRefunds(reembolsoMockApi.listarPorUsuario(usuario.id));
+  const load = async () => {
+    try {
+      const list = await refundService.listByUser(usuario.id);
+      setRefunds(list || []);
+    } catch (err) {
+      setRefunds([]);
+    }
   };
 
   useEffect(() => {
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -45,16 +53,16 @@ const RefundsPanel: React.FC = () => {
             onClick={() => setSelectedRefundId(r.id)}
           >
             <div className="srv-info">
-              <h4>Reembolso do agendamento #{r.agendamentoId}</h4>
-              <p className="desc">{r.justificativa}</p>
+              <h4>Reembolso do agendamento #{r.bookingId}</h4>
+              <p className="desc">{r.justification}</p>
 
               <span className="status-badge status-default">
-                {r.status.replace("_", " ")}
+                {String(r.status).replace("_", " ")}
               </span>
             </div>
 
             <div className="srv-right">
-              <span className="price">R$ {r.valorSolicitado}</span>
+              <span className="price">R$ {r.requestedValue}</span>
             </div>
           </div>
         ))}

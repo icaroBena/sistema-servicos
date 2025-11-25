@@ -3,12 +3,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FiEdit } from "react-icons/fi";
 import "./service-form-modal.css";
-import type { Servico } from "../../../../models/Servico";
+import type { Service } from "../../../../models/Servico";
 
 interface Props {
-  existing?: Servico | null;
+  existing?: Service | null;
   onClose: () => void;
-  onSave: (data: Servico) => void;
+  onSave: (data: Service) => void;
 }
 
 // TEMPORÁRIO — substituir por categorias do backend
@@ -30,9 +30,9 @@ const ServiceFormModal: React.FC<Props> = ({ existing = null, onClose, onSave })
     if (existing) {
       setImageUrl(existing.imageUrl ?? null);
       setTitle(existing.title);
-      setDescription(existing.description);
+      setDescription(existing.description ?? "");
       setCategory(existing.category);
-      setPrice(existing.price);
+      setPrice(String(existing.price ?? ""));
     } else {
       setImageUrl(null);
       setTitle("");
@@ -113,12 +113,14 @@ const ServiceFormModal: React.FC<Props> = ({ existing = null, onClose, onSave })
     const error = validate();
     if (error) return alert(error);
 
-    const item: Servico = {
+    const priceNumber = Number(price.replace(/\D/g, "")) / 100;
+
+    const item: Service = {
       id: existing?.id ?? Date.now().toString(),
       title,
       description,
       category,
-      price,
+      price: priceNumber,
       imageUrl,
       createdAt: existing?.createdAt ?? new Date().toISOString(),
     };

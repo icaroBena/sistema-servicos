@@ -61,7 +61,7 @@ export const useConfirm = () => {
   const [visible, setVisible] = useState(false);
   const [options, setOptions] = useState<ConfirmOptions | null>(null);
 
-  const resolverRef = useRef<(value: boolean) => void>();
+  const resolverRef = useRef<((value: boolean) => void) | null>(null);
 
   const show = (opts: ConfirmOptions): Promise<boolean> => {
     setOptions(opts);
