@@ -18,7 +18,7 @@ const ServiceFormModal: React.FC<Props> = ({ existing = null, onClose, onSave })
   const fileRef = useRef<HTMLInputElement | null>(null);
 
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [objectURL, setObjectURL] = useState<string | null>(null);
+  const [objectUrl, setObjectUrl] = useState<string | null>(null);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -42,7 +42,7 @@ const ServiceFormModal: React.FC<Props> = ({ existing = null, onClose, onSave })
     }
 
     return () => {
-      if (objectURL) URL.revokeObjectURL(objectURL);
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
   }, [existing]);
 
@@ -63,11 +63,11 @@ const ServiceFormModal: React.FC<Props> = ({ existing = null, onClose, onSave })
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (objectURL) URL.revokeObjectURL(objectURL);
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
 
     const url = URL.createObjectURL(file);
     setImageUrl(url);
-    setObjectURL(url);
+    setObjectUrl(url);
   };
 
   // Barre de elegibilidade (mantida sua lógica)

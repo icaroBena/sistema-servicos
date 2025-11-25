@@ -14,7 +14,7 @@ import "./account-tabs-style.css";
 import { mockClient } from "../../../mocks/devUser";
 import { schedulesMock } from "../../../mocks/schedulesMock";
 
-const usuario = mockClient;
+const user = mockClient;
 
 export const updateStatus = (
   list: Booking[],
@@ -134,11 +134,11 @@ const SchedulesPanel: React.FC = () => {
     setSelected(null);
   };
 
-  const handleRefundCreated = (agendamentoId: string, refundId: string) => {
-    setItems(prev => updateStatus(prev, agendamentoId, "disputed", refundId));
+  const handleRefundCreated = (bookingId: string, refundId: string) => {
+    setItems(prev => updateStatus(prev, bookingId, "disputed", refundId));
   };
 
-  const list = tab === "active" ? filterActive(items) : filterHistory(items);
+  const displayList = tab === "active" ? filterActive(items) : filterHistory(items);
 
   return (
     <div className="panel">
@@ -161,9 +161,9 @@ const SchedulesPanel: React.FC = () => {
       </div>
 
       <div className="srv-list">
-        {list.length === 0 && <p>Nenhum agendamento encontrado.</p>}
+        {displayList.length === 0 && <p>Nenhum agendamento encontrado.</p>}
 
-        {list.map(item => (
+        {displayList.map(item => (
           <ScheduleCard key={item.id} item={item} onOpen={setSelected} />
         ))}
       </div>
@@ -171,13 +171,13 @@ const SchedulesPanel: React.FC = () => {
       {selected && (
         <ScheduleDetailsModal
           item={selected}
-          usuario={usuario}
+          user={user}
           onClose={() => setSelected(null)}
           onCancel={handleCancel}
           onConclude={handleConclude}
           onGoNegotiation={handleGoNegotiation}
           onStartExecution={handleStartExecution}
-          onReembolsoCriado={handleRefundCreated}
+          onRefundCreated={handleRefundCreated}
         />
       )}
 

@@ -11,7 +11,7 @@ interface Proposal {
   };
   categories: string[];
   description: string;
-  price: number;
+  value: number;
   estimatedTime: string;
   status: "pending" | "accepted" | "rejected" | "negotiation";
   counterOffer?: number;
@@ -23,7 +23,7 @@ const mockProposals: Proposal[] = [
     client: { name: "João Pedro", address: "Rua das Flores, 120 - Centro" },
     categories: ["Instalações Elétricas"],
     description: "Preciso instalar uma tomada nova na cozinha.",
-    price: 150,
+    value: 150,
     estimatedTime: "Imediato",
     status: "pending",
   },
@@ -76,9 +76,9 @@ const PropositionsPanel: React.FC = () => {
               <p><strong>Cliente:</strong> {p.client.name}</p>
               <p><strong>Endereço:</strong> {p.client.address}</p>
               <p><strong>Descrição:</strong> {p.description}</p>
-              <p><strong>Valor oferecido:</strong> R$ {p.price}</p>
+              <p><strong>Valor oferecido:</strong> R$ {p.value}</p>
 
-              {p.counterOffer && (
+                {p.counterOffer && (
                 <p>
                   <strong>Seu valor sugerido:</strong> R$ {p.counterOffer}
                 </p>
