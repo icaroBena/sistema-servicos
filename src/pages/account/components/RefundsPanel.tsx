@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import "./account-tabs-style.css";
 
-import { mockClient } from "../../../mocks/devUser";
+// user fallback will be read from localStorage (auth_user) — no mock import
 import * as refundsApi from "../../../api/refunds";
 
 import type { Refund } from "../../../models/Reembolso";
@@ -14,7 +14,9 @@ import RefundInfoPopup from "./popups/RefundInfoPopup";
 const RefundsPanel: React.FC = () => {
   // Usa usuário autenticado se existir, senão mock (fallback temporário)
   const stored = localStorage.getItem("auth_user");
-  const user = stored ? JSON.parse(stored) : mockClient;
+  const user = stored
+    ? JSON.parse(stored)
+    : { id: "", name: "", email: "", type: "client", categories: [], certifications: [] };
 
   const [refunds, setRefunds] = useState<Refund[]>([]);
   const [selectedRefundId, setSelectedRefundId] = useState<string | null>(null);

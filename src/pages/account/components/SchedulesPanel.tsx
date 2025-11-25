@@ -11,9 +11,9 @@ import { useNavigate } from "react-router-dom";
 
 import "./account-tabs-style.css";
 
-import { mockClient } from "../../../mocks/devUser";
-
-const user = mockClient;
+// User info for UI actions — read from localStorage 'auth_user' if available
+const storedUserRaw = typeof window !== "undefined" ? localStorage.getItem("auth_user") : null;
+const user = storedUserRaw ? JSON.parse(storedUserRaw) : { id: "", name: "", email: "", type: "client", categories: [], certifications: [] };
 
 export const updateStatus = (
   list: Booking[],

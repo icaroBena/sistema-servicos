@@ -23,22 +23,54 @@ import PaymentMethodsPanel from "./components/PaymentMethodsPanel";
 import type { User } from "../../models/Usuario";
 
 // Mocks temporários
-import { mockClient } from "../../mocks/devUser";
+// no direct mock imports here — auth API / localStorage used as fallback
+import * as authApi from "../../api/auth";
 import { useNotificacoes } from "../../contexts/NotificationContext";
 
 const Account: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("profile");
   const [editMode, setEditMode] = useState<boolean>(false);
 
-  // Estado do usuário (mock inicial)
-  const [userData, setUserData] = useState<User>(mockClient as any);
+  // Estado do usuário (tenta recuperar via API / auth, então localStorage)
+  const DEFAULT_USER: User = {
+    id: "",
+    name: "",
+    email: "",
+    phone: null,
+    address: null,
+    type: "client",
+    verified: false,
+    rating: 0,
+    availability: null,
+    categories: [],
+    certifications: [],
+    about: null,
+    photo: null,
+  };
+
+  const [userData, setUserData] = useState<User>(DEFAULT_USER as User);
 
   const location = useLocation();
   const navigate = useNavigate();
   const notificacaoCtx = useNotificacoes();
 
-  // Initial notification refresh — NotificationContext will seed fallback when backend fails
+  // Load current user from API or localStorage; notification refresh handled by context
   useEffect(() => {
+    (async () => {
+      // try API
+      const current = await authApi.getCurrentUser();
+      if (current) {
+        setUserData(current as User);
+        localStorage.setItem("auth_user", JSON.stringify(current));
+        return;
+      }
+
+      // fallback to localStorage
+      const stored = localStorage.getItem("auth_user");
+      if (stored) setUserData(JSON.parse(stored));
+      else setUserData(DEFAULT_USER as User);
+    })();
+
     notificacaoCtx.refresh();
   }, []);
 

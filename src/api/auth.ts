@@ -79,3 +79,21 @@ export async function register(payload: Partial<User> & { password: string }) {
     return { success: false, message: String(err) };
   }
 }
+
+export async function getCurrentUser(): Promise<User | null> {
+  try {
+    const raw = await apiPost<any, {}>("/auth/me", {});
+    if (!raw) return null;
+    if (raw.user) return mapUserFromBackend(raw.user);
+    // Some backends return the user directly
+    return mapUserFromBackend(raw);
+  } catch (err) {
+    // No authenticated user or endpoint missing
+    try {
+      const stored = localStorage.getItem("auth_user");
+      return stored ? JSON.parse(stored) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+}

@@ -4,31 +4,31 @@ import type { User } from "../../../../models/Usuario";
 
 import "./schedule-modal.css";
 
-import { refundService } from "../../../../services/reembolsoMockApi";
+import * as refundsApi from "../../../../api/refunds";
 import RefundRequestModal from "./RefundRequestModal";
 import RefundDetailsModal from "./RefundDetailsModal";
 import RatingPopup from "./RatingPopup";
 
 interface Props {
   item: Booking;
-  usuario: User;
+  user: User;
   onClose: () => void;
   onCancel: (id: string) => void;
   onConclude: (id: string) => void;
   onGoNegotiation: (id: string) => void;
   onStartExecution: (id: string) => void;
-  onReembolsoCriado: (agendamentoId: string, refundId: string) => void;
+  onRefundCreated: (bookingId: string, refundId: string) => void;
 }
 
 const ScheduleDetailsModal: React.FC<Props> = ({
   item,
-  usuario,
+  user,
   onClose,
   onCancel,
   onConclude,
   onGoNegotiation,
   onStartExecution,
-  onReembolsoCriado
+  onRefundCreated
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -38,14 +38,16 @@ const ScheduleDetailsModal: React.FC<Props> = ({
   const [refundId, setRefundId] = useState<string | null>(null);
   const [showRating, setShowRating] = useState(false);
 
-  // Carregar reembolso existente (usa serviço async)
+  // Carregar reembolso existente (usa API; fallback local no catch)
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        const existing = await refundService.getByBooking(item.id);
+        const list = await refundsApi.listRefunds();
+        const existing = list?.find((r) => r.bookingId === item.id) ?? null;
         if (mounted) setRefundId(existing ? existing.id : null);
       } catch (err) {
+        // backend not reachable — nothing found locally by default (components manage in-memory create)
         if (mounted) setRefundId(null);
       }
     })();
@@ -102,21 +104,21 @@ const ScheduleDetailsModal: React.FC<Props> = ({
           ) : (
             <>
               {/* Cliente deve continuar negociação */}
-              {usuario.type === "client" && item.status === "negotiation" && (
+              {user.type === "client" && item.status === "negotiation" && (
                 <button className="btn primary" onClick={() => onGoNegotiation(item.id)}>
                   Continuar Negociação
                 </button>
               )}
 
               {/* Prestador inicia execução */}
-              {usuario.type === "provider" && item.status === "negotiation" && (
+              {user.type === "provider" && item.status === "negotiation" && (
                 <button className="btn primary" onClick={() => onStartExecution(item.id)}>
                   Iniciar Execução
                 </button>
               )}
 
               {/* Cliente finaliza serviço e abre avaliação */}
-              {usuario.type === "client" && item.status === "execution" && (
+              {user.type === "client" && item.status === "execution" && (
                 <button className="btn primary" onClick={() => setShowRating(true)}>
                   Concluir Serviço
                 </button>
@@ -130,7 +132,7 @@ const ScheduleDetailsModal: React.FC<Props> = ({
               )}
 
               {/* Área de reembolso */}
-              {usuario.type === "client" && item.status === "completed" && (
+              {user.type === "client" && item.status === "completed" && (
                 <>
                   {!refundId && (
                     <button className="btn outline" onClick={() => setOpenRefundRequest(true)}>
@@ -157,14 +159,14 @@ const ScheduleDetailsModal: React.FC<Props> = ({
       {/* Modal de Abrir Reembolso */}
       {openRefundRequest && (
         <RefundRequestModal
-          agendamentoId={item.id}
-          solicitanteId={usuario.id}
-          requesterType={usuario.type as "client" | "provider"}
+          bookingId={item.id}
+          requesterId={user.id}
+          requesterType={user.type as "client" | "provider"}
           requestedValue={item.price}
           onClose={() => setOpenRefundRequest(false)}
-          onCriado={(newId) => {
+          onCreated={(newId: string) => {
             setRefundId(newId);
-            onReembolsoCriado(item.id, newId);
+            onRefundCreated(item.id, newId);
             setOpenRefundRequest(false);
             setOpenRefundDetails(true);
           }}
