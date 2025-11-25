@@ -1,5 +1,5 @@
 import React from "react";
-import { refundService } from "../../../../services/reembolsoMockApi";
+import * as refundsApi from "../../../../api/refunds";
 import "../account-tabs-style.css";
 
 interface Props {
@@ -14,10 +14,18 @@ const RefundDetailsModal: React.FC<Props> = ({ refundId, onClose }) => {
     let mounted = true;
     (async () => {
       try {
-        const data = await refundService.get(refundId);
+        const data = await refundsApi.getRefund(refundId);
         if (mounted) setRefund(data || null);
       } catch (err) {
-        if (mounted) setRefund(null);
+        // fallback: look in localStorage
+        try {
+          const raw = localStorage.getItem("fallback_refunds");
+          const list: any[] = raw ? JSON.parse(raw) : [];
+          const found = list.find((r) => r.id === refundId) ?? null;
+          if (mounted) setRefund(found);
+        } catch (e) {
+          if (mounted) setRefund(null);
+        }
       }
     })();
 

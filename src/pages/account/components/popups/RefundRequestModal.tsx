@@ -2,25 +2,26 @@
 
 import React, { useState } from "react";
 import "../account-tabs-style.css";
-import { refundService } from "../../../../services/reembolsoMockApi";
+import * as refundsApi from "../../../../api/refunds";
+import type { Refund } from "../../../../models/Reembolso";
 import type { RefundEvidence } from "../../../../models/Reembolso";
 
 interface Props {
-  agendamentoId: string;
-  solicitanteId: string;
+  bookingId: string;
+  requesterId: string;
   requesterType: "client" | "provider";
   requestedValue: number;
   onClose: () => void;
-  onCriado: (refundId: string) => void;
+  onCreated: (refundId: string) => void;
 }
 
 const RefundRequestModal: React.FC<Props> = ({
-  agendamentoId,
-  solicitanteId,
+  bookingId,
+  requesterId,
   requesterType,
   requestedValue,
   onClose,
-  onCriado,
+  onCreated,
 }) => {
   const [reason, setReason] = useState("");
   const [evidence, setEvidence] = useState<RefundEvidence[]>([]);
@@ -50,16 +51,41 @@ const RefundRequestModal: React.FC<Props> = ({
       return;
     }
 
-    const novo = await refundService.create({
-      bookingId: agendamentoId,
-      requesterId: solicitanteId,
+    let novo: Refund | null = null as any;
+    try {
+      novo = await refundsApi.createRefund({
+      bookingId: bookingId,
+      requesterId: requesterId,
       requesterType: requesterType,
       requestedValue: requestedValue,
       justification: reason,
       evidenceList: evidence,
-    } as any);
-
-    onCriado(novo.id);
+      } as any);
+    } catch (err) {
+      // fallback in-memory
+      novo = {
+        id: "rb" + Date.now().toString(),
+        bookingId: bookingId,
+        requesterId: requesterId,
+        requesterType: requesterType,
+        requestedValue: requestedValue,
+        justification: reason,
+        evidenceList: evidence,
+        status: "pending",
+        createdAt: new Date().toISOString(),
+      } as Refund;
+      // persist fallback in localStorage so other components can read it
+      const key = "fallback_refunds";
+      try {
+        const raw = localStorage.getItem(key);
+        const list: Refund[] = raw ? JSON.parse(raw) : [];
+        list.unshift(novo);
+        localStorage.setItem(key, JSON.stringify(list));
+      } catch (e) {
+        // ignore storage errors
+      }
+    }
+    onCreated(novo!.id);
   };
 
   return (

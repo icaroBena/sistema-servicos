@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import "./account-tabs-style.css";
 
 import { mockClient } from "../../../mocks/devUser";
-import { refundService } from "../../../services/reembolsoMockApi";
+import * as refundsApi from "../../../api/refunds";
 
 import type { Refund } from "../../../models/Reembolso";
 
@@ -14,7 +14,7 @@ import RefundInfoPopup from "./popups/RefundInfoPopup";
 const RefundsPanel: React.FC = () => {
   // Usa usuário autenticado se existir, senão mock (fallback temporário)
   const stored = localStorage.getItem("auth_user");
-  const usuario = stored ? JSON.parse(stored) : mockClient;
+  const user = stored ? JSON.parse(stored) : mockClient;
 
   const [refunds, setRefunds] = useState<Refund[]>([]);
   const [selectedRefundId, setSelectedRefundId] = useState<string | null>(null);
@@ -22,10 +22,17 @@ const RefundsPanel: React.FC = () => {
 
   const load = async () => {
     try {
-      const list = await refundService.listByUser(usuario.id);
-      setRefunds(list || []);
+      const list = await refundsApi.listRefunds();
+      setRefunds((list || []).filter((r) => r.requesterId === user.id));
     } catch (err) {
-      setRefunds([]);
+      // API not available — use localStorage fallback if present
+      try {
+        const raw = localStorage.getItem("fallback_refunds");
+        const list: Refund[] = raw ? JSON.parse(raw) : [];
+        setRefunds((list || []).filter((r) => r.requesterId === user.id));
+      } catch (e) {
+        setRefunds([]);
+      }
     }
   };
 

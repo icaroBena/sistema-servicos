@@ -24,7 +24,6 @@ import type { User } from "../../models/Usuario";
 
 // Mocks temporários
 import { mockClient } from "../../mocks/devUser";
-import { carregarNotificacoesMock } from "../../mocks/notificacoesMock";
 import { useNotificacoes } from "../../contexts/NotificationContext";
 
 const Account: React.FC = () => {
@@ -38,15 +37,9 @@ const Account: React.FC = () => {
   const navigate = useNavigate();
   const notificacaoCtx = useNotificacoes();
 
-  // Carrega notificações mock
+  // Initial notification refresh — NotificationContext will seed fallback when backend fails
   useEffect(() => {
-    const loaded = localStorage.getItem("mock_notifs_loaded");
-
-    if (!loaded) {
-      carregarNotificacoesMock();
-      notificacaoCtx.refresh();
-      localStorage.setItem("mock_notifs_loaded", "true");
-    }
+    notificacaoCtx.refresh();
   }, []);
 
   // Atualiza aba ao mudar URL
