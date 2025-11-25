@@ -1,23 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./admin.css";
 
 /* Comentários e nome do ficheiro mantêm-se em português. Internals em inglês. */
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  address?: string;
-  type: "provider" | "client";
-  verified?: boolean;
-  rating?: number;
-  availability?: string;
-  categories: string[];
-  certifications: string[];
-  about?: string;
-  photoUrl?: string | null;
-}
+import type { User } from "../models/Usuario";
 
 interface RefundItem {
   id: string;
@@ -28,47 +14,88 @@ interface RefundItem {
   date: string;
   evidenceUrl?: string;
 }
+import { loadFromLocal as loadLocal, saveToLocal } from "../utils/localFallback";
 
 const Admin: React.FC = () => {
-
-  /* ---------------- MOCKS DE USUÁRIOS ---------------- */
-  const [users, setUsers] = useState<User[]>([
-    {
-      id: "u1",
-      name: "Carlos Eletricista",
-      email: "carlos@email.com",
-      phone: "(92) 98888-1111",
-      address: "Rua A, Centro",
-      type: "provider",
-      verified: false,
-      categories: ["Elétrica"],
-      certifications: ["Certificado NR10"],
-      about: "Especialista em instalações elétricas residenciais.",
-      photoUrl: "/Figures/prestador-exemplo.png",
-    },
-    {
-      id: "u2",
-      name: "Maria Souza",
-      email: "maria@email.com",
-      type: "client",
-      categories: [],
-      certifications: [],
-      photoUrl: null,
-    },
-  ]);
+  const [users, setUsers] = useState<User[]>([]);
 
   /* ---------------- MOCKS DE REEMBOLSOS ---------------- */
-  const [refunds, setRefunds] = useState<RefundItem[]>([
-    {
-      id: "r1",
-      clientId: "u2",
-      providerId: "u1",
-      reason: "O serviço não foi concluído",
-      requestedValue: "R$ 150,00",
-      date: "15/11/2025",
-      evidenceUrl: "/Figures/exemplo-prova.jpg",
-    },
-  ]);
+  const [refunds, setRefunds] = useState<RefundItem[]>([]);
+
+  // API clients with fallback: prefer real API, otherwise use localStorage
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const init = async () => {
+      try {
+        const [{ default: usersApi }, { listRefunds }] = await Promise.all([
+          import("../api/users"),
+          import("../api/refunds"),
+        ]);
+
+        const apiUsers = await usersApi.listUsers();
+        const apiRefunds = await listRefunds();
+
+        if (!isMounted) return;
+        setUsers(apiUsers);
+        setRefunds(apiRefunds.map(r => ({
+          id: r.id,
+          clientId: r.requesterId,
+          providerId: r.requesterType === 'provider' ? r.adminId ?? '' : r.requesterId,
+          reason: r.justification || '',
+          requestedValue: String(r.requestedValue ?? ''),
+          date: r.createdAt ?? '',
+          evidenceUrl: (r.evidenceList && r.evidenceList[0] && r.evidenceList[0].url) || undefined,
+        })));
+      } catch (err) {
+        // API failed — use seeded fallback or stored fallback data
+        const seedUsers: User[] = loadLocal("fallback_users", [
+          {
+            id: "u1",
+            name: "Carlos Eletricista",
+            email: "carlos@email.com",
+            phone: "(92) 98888-1111",
+            address: "Rua A, Centro",
+            type: "provider",
+            verified: false,
+            categories: ["Elétrica"],
+            certifications: ["Certificado NR10"],
+            about: "Especialista em instalações elétricas residenciais.",
+            photo: "/Figures/prestador-exemplo.png",
+          },
+          {
+            id: "u2",
+            name: "Maria Souza",
+            email: "maria@email.com",
+            type: "client",
+            categories: [],
+            certifications: [],
+            photo: null,
+          },
+        ] as User[]);
+
+        const seedRefunds: RefundItem[] = loadLocal("fallback_refunds", [
+          {
+            id: "r1",
+            clientId: "u2",
+            providerId: "u1",
+            reason: "O serviço não foi concluído",
+            requestedValue: "R$ 150,00",
+            date: "15/11/2025",
+            evidenceUrl: "/Figures/exemplo-prova.jpg",
+          },
+        ]);
+
+        setUsers(seedUsers);
+        setRefunds(seedRefunds);
+      }
+    };
+
+    init();
+
+    return () => { isMounted = false; };
+  }, []);
 
   /* ============================================================
      PRESTADORES PENDENTES
@@ -77,27 +104,77 @@ const Admin: React.FC = () => {
     (u) => u.type === "provider" && !u.verified
   );
 
-  const aprovarPrestador = (id: string) => {
-    setUsers(prev => prev.map(u => (u.id === id ? { ...u, verified: true } : u)));
-    alert("Prestador aprovado!");
+  const aprovarPrestador = async (id: string) => {
+    try {
+      const usersApi = (await import("../api/users")).default;
+      const updated = await usersApi.updateUser(id, { verified: true });
+      setUsers(prev => prev.map(u => (u.id === id ? { ...u, verified: updated.verified } : u)));
+      // persist fallback
+      saveToLocal("fallback_users", users.map(u => u.id === id ? { ...u, verified: true } : u));
+      alert("Prestador aprovado!");
+    } catch (e) {
+      // fallback: update local state and persist
+      setUsers(prev => {
+        const updated = prev.map(u => (u.id === id ? { ...u, verified: true } : u));
+        saveToLocal("fallback_users", updated);
+        return updated;
+      });
+      alert("Prestador aprovado! (modo offline)");
+    }
   };
 
-  const recusarPrestador = (id: string) => {
-    setUsers(prev => prev.filter(u => u.id !== id));
-    alert("Prestador removido.");
+  const recusarPrestador = async (id: string) => {
+    try {
+      const usersApi = (await import("../api/users")).default;
+      await usersApi.deleteUser(id);
+      setUsers(prev => prev.filter(u => u.id !== id));
+      saveToLocal("fallback_users", users.filter(u => u.id !== id));
+      alert("Prestador removido.");
+    } catch (e) {
+      setUsers(prev => {
+        const filtered = prev.filter(u => u.id !== id);
+        saveToLocal("fallback_users", filtered);
+        return filtered;
+      });
+      alert("Prestador removido. (modo offline)");
+    }
   };
 
   /* ============================================================
      REEMBOLSOS
      ============================================================ */
-  const aprovarReembolso = (id: string) => {
-    setRefunds(prev => prev.filter(r => r.id !== id));
-    alert("Reembolso aprovado!");
+  const aprovarReembolso = async (id: string) => {
+    try {
+      const refundsApi = await import("../api/refunds");
+      await refundsApi.updateRefund(id, { status: 'approved' });
+      setRefunds(prev => prev.filter(r => r.id !== id));
+      saveToLocal("fallback_refunds", refunds.filter(r => r.id !== id));
+      alert("Reembolso aprovado!");
+    } catch (e) {
+      setRefunds(prev => {
+        const filtered = prev.filter(r => r.id !== id);
+        saveToLocal("fallback_refunds", filtered);
+        return filtered;
+      });
+      alert("Reembolso aprovado! (modo offline)");
+    }
   };
 
-  const recusarReembolso = (id: string) => {
-    setRefunds(prev => prev.filter(r => r.id !== id));
-    alert("Reembolso recusado.");
+  const recusarReembolso = async (id: string) => {
+    try {
+      const refundsApi = await import("../api/refunds");
+      await refundsApi.updateRefund(id, { status: 'rejected' });
+      setRefunds(prev => prev.filter(r => r.id !== id));
+      saveToLocal("fallback_refunds", refunds.filter(r => r.id !== id));
+      alert("Reembolso recusado.");
+    } catch (e) {
+      setRefunds(prev => {
+        const filtered = prev.filter(r => r.id !== id);
+        saveToLocal("fallback_refunds", filtered);
+        return filtered;
+      });
+      alert("Reembolso recusado. (modo offline)");
+    }
   };
 
   /* ============================================================
@@ -117,9 +194,9 @@ const Admin: React.FC = () => {
           prestadoresPendentes.map((p) => (
             <div key={p.id} className="admin-card">
 
-              {p.photoUrl && (
+              {p.photo && (
                 <img
-                  src={p.photoUrl}
+                  src={p.photo}
                   alt={`Foto do prestador ${p.name}`}
                   className="prestador-foto"
                 />
