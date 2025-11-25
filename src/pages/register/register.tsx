@@ -31,8 +31,7 @@ const Register: React.FC = () => {
     const [showInfo, setShowInfo] = useState(false);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-    // reference verificationFile so TypeScript doesn't mark it as unused
-    void verificationFile;
+    // verificationFile is referenced in the UI when present (shows filename)
 
     const allowedMimeTypes = ["application/pdf"];
     const allowedExtensions = ["pdf"];
@@ -245,7 +244,7 @@ const Register: React.FC = () => {
                                 <div className="register-form-group">
                                     <label htmlFor="verificationFile">
                                         {documentValid
-                                            ? "✅ Documento enviado!"
+                                            ? `✅ Documento enviado${verificationFile ? ": " + verificationFile.name : "!"}`
                                             : "Documento de verificação"}
                                     </label>
 

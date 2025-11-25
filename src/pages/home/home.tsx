@@ -16,13 +16,8 @@ export default function Home() {
   const navigate = useNavigate();
 
   const goToServiceRequests = (service?: string) => {
-    // Caso futuramente a gente envie o tipo como query:
-    // navigate(`/service/request?category=${encodeURIComponent(service ?? "")}`);
-
-    // mark parameter as used to avoid unused-variable warning until query is implemented
-    void service;
-
-    navigate("/service/request");
+    // Se tivermos uma categoria selecionada, passar como query para a página
+    navigate(`/service/request?category=${encodeURIComponent(service ?? "")}`);
   };
 
   return (
