@@ -8,16 +8,16 @@ interface Props {
 }
 
 const RefundDetailsModal: React.FC<Props> = ({ refundId, onClose }) => {
-  const [r, setR] = React.useState<any | null>(null);
+  const [refund, setRefund] = React.useState<any | null>(null);
 
   React.useEffect(() => {
     let mounted = true;
     (async () => {
       try {
         const data = await refundService.get(refundId);
-        if (mounted) setR(data || null);
+        if (mounted) setRefund(data || null);
       } catch (err) {
-        if (mounted) setR(null);
+        if (mounted) setRefund(null);
       }
     })();
 
@@ -26,7 +26,7 @@ const RefundDetailsModal: React.FC<Props> = ({ refundId, onClose }) => {
     };
   }, [refundId]);
 
-  if (!r) return null;
+  if (!refund) return null;
 
   const steps = [
     "pending",
@@ -48,7 +48,7 @@ const RefundDetailsModal: React.FC<Props> = ({ refundId, onClose }) => {
           {steps.map((s) => (
             <div
               key={s}
-              className={`refund-step ${r.status === s ? "active" : ""}`}
+              className={`refund-step ${refund.status === s ? "active" : ""}`}
             >
               {s.replace("_", " ")}
             </div>
@@ -57,23 +57,23 @@ const RefundDetailsModal: React.FC<Props> = ({ refundId, onClose }) => {
 
         {/* STATUS + VALOR */}
         <p>
-          <b>Status atual:</b> {r.status.replace("_", " ")}
+          <b>Status atual:</b> {refund.status.replace("_", " ")}
         </p>
 
         <p>
-          <b>Valor solicitado:</b> R$ {r.requestedValue}
+          <b>Valor solicitado:</b> R$ {refund.requestedValue}
         </p>
 
         {/* JUSTIFICATIVA */}
         <p>
           <b>Justificativa:</b>
         </p>
-        <p>{r.justification}</p>
+        <p>{refund.justification}</p>
 
         {/* EVIDÊNCIAS */}
         <h4>Evidências enviadas:</h4>
         <div className="evidence-list">
-          {r.evidenceList.map((p: any) => (
+          {refund.evidenceList.map((p: any) => (
             <img
               key={p.id}
               src={p.url}

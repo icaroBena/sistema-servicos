@@ -11,9 +11,7 @@ interface Props {
 const NotificationItem: React.FC<Props> = ({ item, onRead, onDelete }) => {
   const isUnread = item.status === "unread";
 
-  const classe = isUnread
-    ? "noti-card noti-unread"
-    : "noti-card";
+  const cardClass = isUnread ? "noti-card noti-unread" : "noti-card";
 
   const handleNavigate = () => {
     if (!item.link) return;
@@ -23,7 +21,7 @@ const NotificationItem: React.FC<Props> = ({ item, onRead, onDelete }) => {
 
   return (
     <div
-      className={classe}
+      className={cardClass}
       role="article"
       aria-label={`Notificação: ${item.title}`}
     >
