@@ -1,31 +1,21 @@
-// src/models/Notificacao.tsx
+// Arquivo `Notificacao.tsx` — exporta tipos em inglês para notificações
+export type NotificationStatus = "sent" | "unread" | "read" | "removed";
 
-export type StatusNotificacao =
-  | "enviada"
-  | "nao_lida"
-  | "lida"
-  | "removida";
+export type NotificationType =
+  | "refund"
+  | "booking"
+  | "proposal"
+  | "verification"
+  | "system";
 
-export type TipoNotificacao =
-  | "reembolso"
-  | "agendamento"
-  | "proposta"
-  | "verificacao"
-  | "sistema";
-
-export interface Notificacao {
+export interface Notification {
   id: string;
-  tipo: TipoNotificacao;
-  titulo: string;
-  mensagem: string;
-
-  /** redireciona o usuário quando ele clica */
+  type: NotificationType;
+  title: string;
+  message: string;
   link?: string;
-
-  criadaEm: string;
-
-  status: StatusNotificacao;
-
-  /** true = temporária (só aparece uma vez e some) */
-  temporaria?: boolean;
+  createdAt: string;
+  status: NotificationStatus;
+  temporary?: boolean;
 }
+

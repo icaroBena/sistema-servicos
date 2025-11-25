@@ -1,16 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
-import type { Agendamento } from "../../../../models/Agendamento";
-import type { Usuario } from "../../../../models/Usuario";
+import type { Booking } from "../../../../models/Agendamento";
+import type { User } from "../../../../models/Usuario";
+
 import "./schedule-modal.css";
 
-import { reembolsoMockApi } from "../../../../services/reembolsoMockApi";
+import { refundService } from "../../../../services/reembolsoMockApi";
 import RefundRequestModal from "./RefundRequestModal";
 import RefundDetailsModal from "./RefundDetailsModal";
-import RatingPopup from "./RatingPopup"; // <-- IMPORTANTE
+import RatingPopup from "./RatingPopup";
 
 interface Props {
-  item: Agendamento;
-  usuario: Usuario;
+  item: Booking;
+  usuario: User;
   onClose: () => void;
   onCancel: (id: string) => void;
   onConclude: (id: string) => void;
@@ -31,35 +32,49 @@ const ScheduleDetailsModal: React.FC<Props> = ({
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const [abrirReembolso, setAbrirReembolso] = useState(false);
-  const [verReembolso, setVerReembolso] = useState(false);
-  const [reembolsoId, setReembolsoId] = useState<string | null>(null);
+  const [openRefundRequest, setOpenRefundRequest] = useState(false);
+  const [openRefundDetails, setOpenRefundDetails] = useState(false);
 
-  const [showRating, setShowRating] = useState(false); // <-- NOVO
+  const [refundId, setRefundId] = useState<string | null>(null);
+  const [showRating, setShowRating] = useState(false);
 
+  // Carregar reembolso existente (usa serviço async)
   useEffect(() => {
-    const existente = reembolsoMockApi.obterPorAgendamento(item.id);
-    setReembolsoId(existente ? existente.id : null);
+    let mounted = true;
+    (async () => {
+      try {
+        const existing = await refundService.getByBooking(item.id);
+        if (mounted) setRefundId(existing ? existing.id : null);
+      } catch (err) {
+        if (mounted) setRefundId(null);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+    };
   }, [item.id]);
 
+  // Focar modal ao abrir
   useEffect(() => {
     modalRef.current?.focus();
   }, []);
 
-  const emDisputa = item.status === "disputando";
+  const isInDispute = item.status === "disputed";
 
   return (
     <div className="modal-backdrop" role="dialog" aria-modal="true">
       <div className="modal" tabIndex={0} ref={modalRef}>
+        
+        <h2>{item.title}</h2>
 
-        <h2>{item.titulo}</h2>
-        <img src={item.imagemUrl ?? ""} className="modal-img" />
+        <img src={item.imageUrl ?? ""} className="modal-img" />
 
-        <p>{item.descricao}</p>
-        <p><b>Preço:</b> R$ {item.preco}</p>
+        <p>{item.description}</p>
+        <p><b>Preço:</b> R$ {item.price}</p>
         <p><b>Status:</b> {item.status}</p>
 
-        {reembolsoId && (
+        {refundId && (
           <p>
             <span className="status-badge status-negociacao">
               Reembolso em andamento
@@ -68,90 +83,103 @@ const ScheduleDetailsModal: React.FC<Props> = ({
         )}
 
         <div className="modal-buttons">
-          {emDisputa ? (
+          {isInDispute ? (
             <>
               <p className="status-alert">
                 Este serviço está em disputa. O pagamento está bloqueado até que o reembolso seja analisado.
               </p>
 
-              {reembolsoId && (
-                <button className="btn primary" onClick={() => setVerReembolso(true)}>
+              {refundId && (
+                <button className="btn primary" onClick={() => setOpenRefundDetails(true)}>
                   Ver Reembolso
                 </button>
               )}
 
-              <button className="btn" onClick={onClose}>Fechar</button>
+              <button className="btn" onClick={onClose}>
+                Fechar
+              </button>
             </>
           ) : (
             <>
-              {usuario.tipo === "cliente" && item.status === "negociacao" && (
+              {/* Cliente deve continuar negociação */}
+              {usuario.type === "client" && item.status === "negotiation" && (
                 <button className="btn primary" onClick={() => onGoNegotiation(item.id)}>
                   Continuar Negociação
                 </button>
               )}
 
-              {usuario.tipo === "prestador" && item.status === "negociacao" && (
+              {/* Prestador inicia execução */}
+              {usuario.type === "provider" && item.status === "negotiation" && (
                 <button className="btn primary" onClick={() => onStartExecution(item.id)}>
                   Iniciar Execução
                 </button>
               )}
 
-              {/* AQUI ABRE O POPUP DE AVALIAÇÃO */}
-              {usuario.tipo === "cliente" && item.status === "execucao" && (
+              {/* Cliente finaliza serviço e abre avaliação */}
+              {usuario.type === "client" && item.status === "execution" && (
                 <button className="btn primary" onClick={() => setShowRating(true)}>
                   Concluir Serviço
                 </button>
               )}
 
-              {item.status !== "concluido" && item.status !== "cancelado" && (
+              {/* Cancelar serviço (ambos) */}
+              {item.status !== "completed" && item.status !== "cancelled" && (
                 <button className="btn danger" onClick={() => onCancel(item.id)}>
                   Cancelar Serviço
                 </button>
               )}
 
-              {usuario.tipo === "cliente" && item.status === "concluido" && (
+              {/* Área de reembolso */}
+              {usuario.type === "client" && item.status === "completed" && (
                 <>
-                  {!reembolsoId && (
-                    <button className="btn outline" onClick={() => setAbrirReembolso(true)}>
+                  {!refundId && (
+                    <button className="btn outline" onClick={() => setOpenRefundRequest(true)}>
                       Abrir Reembolso
                     </button>
                   )}
 
-                  {reembolsoId && (
-                    <button className="btn primary" onClick={() => setVerReembolso(true)}>
+                  {refundId && (
+                    <button className="btn primary" onClick={() => setOpenRefundDetails(true)}>
                       Ver Reembolso
                     </button>
                   )}
                 </>
               )}
 
-              <button className="btn" onClick={onClose}>Fechar</button>
+              <button className="btn" onClick={onClose}>
+                Fechar
+              </button>
             </>
           )}
         </div>
       </div>
 
-      {abrirReembolso && (
+      {/* Modal de Abrir Reembolso */}
+      {openRefundRequest && (
         <RefundRequestModal
           agendamentoId={item.id}
           solicitanteId={usuario.id}
-          tipoSolicitante={usuario.tipo}
-          valor={item.preco}
-          onClose={() => setAbrirReembolso(false)}
-          onCriado={(novoId) => {
-            setReembolsoId(novoId);
-            onReembolsoCriado(item.id, novoId);
-            setAbrirReembolso(false);
-            setVerReembolso(true);
+          requesterType={usuario.type}
+          requestedValue={item.price}
+          onClose={() => setOpenRefundRequest(false)}
+          onCriado={(newId) => {
+            setRefundId(newId);
+            onReembolsoCriado(item.id, newId);
+            setOpenRefundRequest(false);
+            setOpenRefundDetails(true);
           }}
         />
       )}
 
-      {verReembolso && reembolsoId && (
-        <RefundDetailsModal refundId={reembolsoId} onClose={() => setVerReembolso(false)} />
+      {/* Modal de Detalhes do Reembolso */}
+      {openRefundDetails && refundId && (
+        <RefundDetailsModal
+          refundId={refundId}
+          onClose={() => setOpenRefundDetails(false)}
+        />
       )}
 
-      {/* POPUP DE AVALIAÇÃO */}
+      {/* Popup de Avaliação */}
       <RatingPopup
         isOpen={showRating}
         onClose={() => setShowRating(false)}

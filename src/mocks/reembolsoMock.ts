@@ -1,27 +1,28 @@
 // src/mocks/reembolsoMock.ts
-import type { Reembolso } from "../models/Reembolso";
+import type { Refund } from "../models/Reembolso";
 
-export const reembolsoMockList: Reembolso[] = [
+// Mock de reembolsos (campos internos em inglês) — fallback
+export const reembolsoMockList: Refund[] = [
   {
     id: "rb1",
-    agendamentoId: "3",
-    solicitanteId: "u2",
-    tipoSolicitante: "cliente",
-    valorSolicitado: 180,
-    justificativa: "Serviço incompleto e peças faltando.",
-    provas: [
+    bookingId: "3",
+    requesterId: "u2",
+    requesterType: "client",
+    requestedValue: 180,
+    justification: "Serviço incompleto e peças faltando.",
+    evidenceList: [
       {
         id: "p1",
         url: "/Figures/reembolso-evidencia1.jpg",
-        nomeArquivo: "evidencia1.jpg",
-        enviadoEm: "2025-11-21T14:00:00"
-      }
+        fileName: "evidencia1.jpg",
+        uploadedAt: "2025-11-21T14:00:00",
+      },
     ],
-    status: "em_analise",
-    criadoEm: "2025-11-21T13:50:00",
-    atualizadoEm: "2025-11-21T14:00:00",
-    escrowBloqueado: true
-  }
+    status: "under_review",
+    createdAt: "2025-11-21T13:50:00",
+    updatedAt: "2025-11-21T14:00:00",
+    escrowLocked: true,
+  },
 ];
 
 export default reembolsoMockList;

@@ -1,42 +1,36 @@
-// src/models/Reembolso.tsx
-export type StatusReembolso =
-  | "pendente"
-  | "em_analise"
-  | "aguardando_resposta"
-  | "aprovado"
-  | "recusado"
-  | "estorno_pendente"
-  | "estorno_confirmado"
-  | "falha_estorno";
+// Arquivo `Reembolso.tsx` — exporta tipos em inglês para reembolsos
+export type RefundStatus =
+  | "pending"
+  | "under_review"
+  | "awaiting_response"
+  | "approved"
+  | "rejected"
+  | "refund_pending"
+  | "refund_confirmed"
+  | "refund_failed";
 
-export interface ProvaReembolso {
+export interface RefundEvidence {
   id: string;
   url: string;
-  nomeArquivo: string;
-  enviadoEm: string;
+  fileName: string;
+  uploadedAt: string;
 }
 
-export interface Reembolso {
+export interface Refund {
   id: string;
-  agendamentoId: string;
-  solicitanteId: string; // quem abriu
-  tipoSolicitante: "cliente" | "prestador";
-
-  valorSolicitado: number;
-  justificativa: string;
-  provas: ProvaReembolso[];
-
-  status: StatusReembolso;
-
-  criadoEm: string;
-  atualizadoEm: string;
-
-  // admin
+  bookingId: string;
+  requesterId: string;
+  requesterType: "client" | "provider";
+  requestedValue: number;
+  justification: string;
+  evidenceList: RefundEvidence[];
+  status: RefundStatus;
+  createdAt: string;
+  updatedAt?: string;
   adminId?: string;
-  notaAdmin?: string;
-  decididoEm?: string;
-
-  // financeiro
-  escrowBloqueado: boolean;
-  txEstorno?: string;
+  adminNote?: string;
+  decidedAt?: string;
+  escrowLocked?: boolean;
+  refundTransactionId?: string;
 }
+

@@ -1,13 +1,22 @@
-export interface Agendamento {
+// Arquivo `Agendamento.tsx` — exporta o tipo `Booking` em inglês
+export type BookingStatus =
+  | "negotiation"
+  | "execution"
+  | "completed"
+  | "cancelled"
+  | "disputed";
+
+export interface Booking {
   id: string;
-  titulo: string;
-  descricao: string;
-  preco: number;
-  imagemUrl: string | null;
-  status: "negociacao" | "execucao" | "concluido" | "cancelado" | "disputando";
-  refundId?: string;
-  criadoEm: string;
-  atualizadoEm: string;
-  reembolsoId?: string;   // se houver um reembolso ativo
-  reembolsoStatus?: string; // p/ exibir no card
+  title: string;
+  description?: string;
+  price: number;
+  imageUrl?: string | null;
+  status: BookingStatus;
+  refundId?: string | null;
+  createdAt: string;
+  updatedAt?: string;
+  clientId?: string;
+  providerId?: string;
 }
+

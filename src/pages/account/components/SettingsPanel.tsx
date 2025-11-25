@@ -1,23 +1,46 @@
-import React from 'react';
-import './base-account-tab.css';
+// src/pages/account/components/SettingsPanel.tsx
 
-// Falta codificar funcionalidade
+import React, { useState } from "react";
+import "./base-account-tab.css";
+
 const SettingsPanel: React.FC = () => {
+  // Estado local — futuramente será carregado do backend
+  const [emailNotifications, setEmailNotifications] = useState<boolean>(true);
+
+  const handleSave = () => {
+    // TODO: enviar para backend
+    console.log("Preferências salvas:", {
+      emailNotifications,
+    });
+
+    alert("Preferências salvas com sucesso!");
+  };
+
   return (
     <div className="account-section">
       <h2 className="section-title">Configurações</h2>
       <p className="section-subtitle">
-        Personalize sua conta, gerencie notificações e defina preferências do sistema.
+        Personalize sua conta e gerencie preferências do sistema.
       </p>
 
       <div className="section-content">
+
+        {/* Notificações */}
         <div className="setting-group">
-          <label>
-            <input type="checkbox" /> Receber notificações por e-mail
+          <label className="checkbox-line">
+            <input
+              type="checkbox"
+              checked={emailNotifications}
+              onChange={() => setEmailNotifications(!emailNotifications)}
+            />
+            Receber notificações por e-mail
           </label>
         </div>
 
-        <button className="action-btn">Salvar Preferências</button>
+        {/* Botão de salvar */}
+        <button className="action-btn" onClick={handleSave}>
+          Salvar Preferências
+        </button>
       </div>
     </div>
   );

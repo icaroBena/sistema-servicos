@@ -1,31 +1,32 @@
-import type { Usuario } from "../models/Usuario";
+import type { User } from "../models/Usuario";
 
-export const mockPrestador: Usuario = {
+// Mocks com campos em inglês para uso interno (fallback local)
+export const mockProvider: User = {
   id: "u1",
-  nome: "João Silva",
+  name: "João Silva",
   email: "joao@workmatch.com",
-  telefone: "(92) 99999-0000",
-  localizacao: "Manaus, AM",
-  tipo: "prestador",
-  verificado: true,
-  avaliacao: 4.7,
-  disponibilidade: "DISPONÍVEL",
-  categorias: ["Eletricista", "Instalador de Ar"],
-  certificacoes: ["Curso Avançado de Elétrica - SENAI", "NR10"],
-  sobre: "Profissional com mais de 10 anos de experiência em instalações e manutenções residenciais.",
-  foto: null,
+  phone: "(92) 99999-0000",
+  address: "Manaus, AM",
+  type: "provider",
+  verified: true,
+  rating: 4.7,
+  availability: "AVAILABLE",
+  categories: ["Electrician", "AC Installer"],
+  certifications: ["Advanced Electricity - SENAI", "NR10"],
+  about: "Profissional com mais de 10 anos de experiência em instalações e manutenções residenciais.",
+  photo: null,
 };
 
-export const mockCliente: Usuario = {
+export const mockClient: User = {
   id: "u2",
-  nome: "Bernardo da Silva",
+  name: "Bernardo da Silva",
   email: "berndslv@gmail.com",
-  telefone: "(92) 92564-0320",
-  localizacao: "Manaus, AM",
-  tipo: "cliente",
-  categorias: [],
-  certificacoes: [],
-  foto: null,
+  phone: "(92) 92564-0320",
+  address: "Manaus, AM",
+  type: "client",
+  categories: [],
+  certifications: [],
+  photo: null,
 };
 
-export default mockPrestador;
+export default mockProvider;

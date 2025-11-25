@@ -1,48 +1,78 @@
-import React, { createContext, useContext, useState } from "react";
-import { notificacaoMockApi } from "../services/notificacaoMockApi";
-import type { Notificacao } from "../models/Notificacao";
+import React, { createContext, useContext, useState, ReactNode } from "react";
+import { notificacaoService } from "../services/notificacaoMockApi";
+import type { Notification } from "../models/Notificacao";
 
-interface Ctx {
-  notificacoes: Notificacao[];
-  atualizar: () => void;
-  marcarLida: (id: string) => void;
-  remover: (id: string) => void;
-  limpar: () => void;
+interface NotificationContextType {
+  // internal names in English
+  notifications: Notification[];
+  refresh: () => void;
+  markAsRead: (id: string) => void;
+  remove: (id: string) => void;
+  clear: () => void;
 }
 
-const NotificationContext = createContext<Ctx | null>(null);
+const NotificationContext = createContext<NotificationContextType | null>(null);
 
-export const NotificationProvider = ({ children }: any) => {
-  const [notificacoes, setNotificacoes] = useState<Notificacao[]>(
-    notificacaoMockApi.listar()
-  );
+interface ProviderProps {
+  children: ReactNode;
+}
 
-  const atualizar = () =>
-    setNotificacoes(notificacaoMockApi.listar());
+export const NotificationProvider: React.FC<ProviderProps> = ({ children }) => {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  const marcarLida = (id: string) => {
-    notificacaoMockApi.marcarComoLida(id);
-    atualizar();
+  // initial load from service (falls back to in-memory)
+  React.useEffect(() => {
+    (async () => {
+      const list = await notificacaoService.list();
+      setNotifications(list as Notification[]);
+    })();
+  }, []);
+
+  /* ---------------------- Funções do contexto ---------------------- */
+
+  const refresh = async () => {
+    const list = await notificacaoService.list();
+    setNotifications(list as Notification[]);
   };
 
-  const remover = (id: string) => {
-    notificacaoMockApi.remover(id);
-    atualizar();
+  const markAsRead = async (id: string) => {
+    await notificacaoService.markAsRead(id);
+    await refresh();
   };
 
-  const limpar = () => {
-    notificacaoMockApi.limparHistorico();
-    atualizar();
+  const remove = async (id: string) => {
+    await notificacaoService.remove(id);
+    await refresh();
   };
+
+  const clear = async () => {
+    // no API endpoint for clearing all notifications — fallback: mark each removed locally
+    const list = await notificacaoService.list();
+    for (const n of list) {
+      await notificacaoService.remove(n.id);
+    }
+    await refresh();
+  };
+
+  /* --------------------------- Render ------------------------------ */
 
   return (
     <NotificationContext.Provider
-      value={{ notificacoes, atualizar, marcarLida, remover, limpar }}
+      value={{ notifications, refresh, markAsRead, remove, clear }}
     >
       {children}
     </NotificationContext.Provider>
   );
 };
 
-export const useNotificacoes = () =>
-  useContext(NotificationContext)!;
+/* ------------------------ Hook personalizado ------------------------ */
+export const useNotifications = (): NotificationContextType => {
+  const ctx = useContext(NotificationContext);
+  if (!ctx) {
+    throw new Error("useNotifications deve ser usado dentro de <NotificationProvider>");
+  }
+  return ctx;
+};
+
+// backward-compatible alias in Portuguese (temporary)
+export const useNotificacoes = useNotifications;

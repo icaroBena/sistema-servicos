@@ -1,63 +1,64 @@
+// src/pages/account/components/NotificationsPanel.tsx
+
 import React, { useState } from "react";
-import { useNotificacoes } from "../../../contexts/NotificationContext";
-import NotificationItem from "./popups/NotificationItem";
 import "./base-account-tab.css";
 
+import { useNotificacoes } from "../../../contexts/NotificationContext";
+import NotificationItem from "./popups/NotificationItem";
+
 const NotificationsPanel: React.FC = () => {
-  const { notificacoes, marcarLida, remover, limpar } = useNotificacoes();
+  const { notifications, markAsRead, remove, clear } = useNotificacoes();
 
-  const [filtro, setFiltro] = useState<"todas" | "lidas" | "nao_lidas">("todas");
+  const [filter, setFilter] = useState<"all" | "read" | "unread">("all");
 
-  const filtradas =
-    filtro === "todas"
-      ? notificacoes
-      : notificacoes.filter(n =>
-        filtro === "lidas" ? n.status === "lida" : n.status === "nao_lida"
-      );
+  const filtered =
+    filter === "all"
+      ? notifications
+      : notifications.filter((n) => (filter === "read" ? n.status === "read" : n.status === "unread"));
 
   return (
     <div className="panel">
       <h3>Notificações</h3>
-      <p>Veja suas notificações mais recentes e atualizações importantes.</p>
+      <p>Veja suas notificações recentes.</p>
 
-      {/* FILTRO */}
       <div className="tabs">
         <button
-          className={`tab ${filtro === "todas" ? "active" : ""}`}
-          onClick={() => setFiltro("todas")}
+          className={`tab ${filter === "all" ? "active" : ""}`}
+          onClick={() => setFilter("all")}
         >
           Todas
         </button>
+
         <button
-          className={`tab ${filtro === "nao_lidas" ? "active" : ""}`}
-          onClick={() => setFiltro("nao_lidas")}
+          className={`tab ${filter === "unread" ? "active" : ""}`}
+          onClick={() => setFilter("unread")}
         >
           Não lidas
         </button>
+
         <button
-          className={`tab ${filtro === "lidas" ? "active" : ""}`}
-          onClick={() => setFiltro("lidas")}
+          className={`tab ${filter === "read" ? "active" : ""}`}
+          onClick={() => setFilter("read")}
         >
           Lidas
         </button>
       </div>
 
-      <button className="btn remove" onClick={limpar}>
+      <button className="btn remove" onClick={clear}>
         Limpar Histórico
       </button>
 
-      {/* LISTA */}
       <div className="srv-list">
-        {filtradas.length === 0 && (
+        {filtered.length === 0 && (
           <p>Nenhuma notificação encontrada.</p>
         )}
 
-        {filtradas.map(n => (
+        {filtered.map(n => (
           <NotificationItem
             key={n.id}
             item={n}
-            onRead={(id) => marcarLida(id)}
-            onDelete={(id) => remover(id)}
+            onRead={(id) => markAsRead(id)}
+            onDelete={(id) => remove(id)}
           />
         ))}
       </div>

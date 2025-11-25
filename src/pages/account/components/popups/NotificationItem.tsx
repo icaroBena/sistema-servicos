@@ -9,26 +9,42 @@ interface Props {
 }
 
 const NotificationItem: React.FC<Props> = ({ item, onRead, onDelete }) => {
-  const classe =
-    item.status === "nao_lida"
-      ? "noti-card noti-unread"
-      : "noti-card";
+  const isUnread = item.status === "nao_lida";
+
+  const classe = isUnread
+    ? "noti-card noti-unread"
+    : "noti-card";
+
+  const handleNavigate = () => {
+    if (!item.link) return;
+    // redirecionamento seguro
+    window.location.href = item.link;
+  };
 
   return (
-    <div className={classe}>
+    <div
+      className={classe}
+      role="article"
+      aria-label={`Notificação: ${item.titulo}`}
+    >
+      {/* Cabeçalho */}
       <div className="noti-top">
-        <h4>{item.titulo}</h4>
+        <h4 className="noti-title">{item.titulo}</h4>
+
         <span className="noti-time">
           {new Date(item.criadaEm).toLocaleString()}
         </span>
       </div>
 
+      {/* Mensagem */}
       <p className="noti-msg">{item.mensagem}</p>
 
+      {/* Ações */}
       <div className="noti-actions">
-        {item.status === "nao_lida" && (
+        {isUnread && (
           <button
             className="btn small primary"
+            aria-label="Marcar notificação como lida"
             onClick={() => onRead(item.id)}
           >
             Marcar como lida
@@ -38,7 +54,8 @@ const NotificationItem: React.FC<Props> = ({ item, onRead, onDelete }) => {
         {item.link && (
           <button
             className="btn small"
-            onClick={() => (window.location.href = item.link!)}
+            aria-label="Ir para o conteúdo da notificação"
+            onClick={handleNavigate}
           >
             Ver
           </button>
@@ -46,6 +63,7 @@ const NotificationItem: React.FC<Props> = ({ item, onRead, onDelete }) => {
 
         <button
           className="btn small remove"
+          aria-label="Excluir notificação"
           onClick={() => onDelete(item.id)}
         >
           Excluir

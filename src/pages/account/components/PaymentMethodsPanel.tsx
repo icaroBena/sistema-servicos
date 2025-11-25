@@ -1,116 +1,134 @@
-import React, { useEffect, useState } from 'react';
-import './account-tabs-style.css';
+// src/pages/account/components/PaymentMethodsPanel.tsx
+
+import React, { useEffect, useState } from "react";
+import "./account-tabs-style.css";
 
 interface PaymentMethod {
   id: string;
-  type: 'PIX' | 'CARTÃO' | 'CONTA BANCÁRIA';
+  type: "PIX" | "CARD" | "BANK_ACCOUNT";
   label: string;
   data: Record<string, string>;
 }
 
 interface PaymentMethodsPanelProps {
-  userType: string;
+  // internal prop now in English: 'client' | 'provider'
+  userType: "client" | "provider";
 }
 
 const PaymentMethodsPanel: React.FC<PaymentMethodsPanelProps> = ({ userType }) => {
   const [methods, setMethods] = useState<PaymentMethod[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [selectedType, setSelectedType] = useState<'PIX' | 'CARTÃO' | 'CONTA BANCÁRIA' | ''>('');
-  const [formData, setFormData] = useState<Record<string, string>>({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [selectedType, setSelectedType] = useState<
+    "PIX" | "CARD" | "BANK_ACCOUNT" | ""
+  >("");
 
-  // carregar métodos salvos localmente
+  const [formData, setFormData] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
-    const saved = localStorage.getItem('paymentMethods');
+    const saved = localStorage.getItem("paymentMethods");
     if (saved) setMethods(JSON.parse(saved));
   }, []);
 
-  // salvar métodos localmente
   useEffect(() => {
-    localStorage.setItem('paymentMethods', JSON.stringify(methods));
+    localStorage.setItem("paymentMethods", JSON.stringify(methods));
   }, [methods]);
 
   const handleAdd = () => {
     setShowForm(true);
-    setSelectedType('');
+    setSelectedType("");
     setFormData({});
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setLoading(true);
 
     setTimeout(() => {
-      const newMethod: PaymentMethod = {
+      const method: PaymentMethod = {
         id: String(Date.now()),
         type: selectedType as any,
         label:
-          selectedType === 'PIX'
-            ? `${formData.chavePix}`
-            : selectedType === 'CARTÃO'
-              ? `${formData.bandeira} •••• ${formData.numeroCartao?.slice(-4)}`
-              : `${formData.banco} - Ag ${formData.agencia} / CC ${formData.conta}`,
+          selectedType === "PIX"
+            ? formData.pixKey
+            : selectedType === "CARD"
+            ? `${formData.brand} •••• ${formData.cardNumber?.slice(-4)}`
+            : `${formData.bank} - Ag ${formData.agency} / CC ${formData.account}`,
         data: formData,
       };
 
-      setMethods([...methods, newMethod]);
+      setMethods(prev => [...prev, method]);
       setShowForm(false);
-      setIsLoading(false);
-    }, 800); // simula processamento
+      setLoading(false);
+    }, 700);
   };
 
-  const handleRemove = (id: string) => {
-    setMethods(methods.filter((m) => m.id !== id));
+  const remove = (id: string) => {
+    setMethods(prev => prev.filter(m => m.id !== id));
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { id, value } = e.target;
-    setFormData({ ...formData, [id]: value });
+    setFormData(prev => ({ ...prev, [id]: value }));
   };
 
-  const renderFormFields = () => {
+  const renderForm = () => {
     switch (selectedType) {
-      case 'PIX':
+      case "PIX":
         return (
           <>
-            <label htmlFor="chavePix">Chave Pix</label>
-            <input id="chavePix" onChange={handleChange} placeholder="email, telefone ou CPF" />
+            <label>Chave Pix</label>
+            <input
+              id="pixKey"
+              placeholder="email, telefone, CPF"
+              onChange={handleChange}
+            />
           </>
         );
-      case 'CARTÃO':
+
+      case "CARD":
         return (
           <>
-            <label htmlFor="bandeira">Bandeira</label>
-            <select id="bandeira" onChange={handleChange}>
+            <label>Bandeira</label>
+            <select id="brand" onChange={handleChange}>
               <option value="">Selecione</option>
               <option value="Visa">Visa</option>
               <option value="Mastercard">Mastercard</option>
               <option value="Elo">Elo</option>
             </select>
 
-            <label htmlFor="numeroCartao">Número do Cartão</label>
-            <input id="numeroCartao" maxLength={16} placeholder="**** **** **** ****" onChange={handleChange} />
+            <label>Número do Cartão</label>
+            <input
+              id="cardNumber"
+              maxLength={16}
+              placeholder="•••• •••• •••• ••••"
+              onChange={handleChange}
+            />
 
-            <label htmlFor="validade">Validade</label>
-            <input id="validade" placeholder="MM/AA" onChange={handleChange} />
+            <label>Validade</label>
+            <input id="expires" placeholder="MM/AA" onChange={handleChange} />
 
-            <label htmlFor="nomeTitular">Nome do Titular</label>
-            <input id="nomeTitular" onChange={handleChange} />
+            <label>Nome do Titular</label>
+            <input id="cardHolder" onChange={handleChange} />
           </>
         );
-      case 'CONTA BANCÁRIA':
+
+      case "BANK_ACCOUNT":
         return (
           <>
-            <label htmlFor="banco">Banco</label>
-            <input id="banco" onChange={handleChange} />
+            <label>Banco</label>
+            <input id="bank" onChange={handleChange} />
 
-            <label htmlFor="agencia">Agência</label>
-            <input id="agencia" onChange={handleChange} />
+            <label>Agência</label>
+            <input id="agency" onChange={handleChange} />
 
-            <label htmlFor="conta">Conta</label>
-            <input id="conta" onChange={handleChange} />
+            <label>Conta</label>
+            <input id="account" onChange={handleChange} />
           </>
         );
+
       default:
         return null;
     }
@@ -119,26 +137,26 @@ const PaymentMethodsPanel: React.FC<PaymentMethodsPanelProps> = ({ userType }) =
   return (
     <div className="panel">
       <h3>
-        {userType === 'prestador' ? 'Métodos de Recebimento' : 'Métodos de Pagamento'}
+        {userType === "provider" ? "Métodos de Recebimento" : "Métodos de Pagamento"}
       </h3>
 
       <p>
-        {userType === 'prestador'
-          ? 'Cadastre formas de receber pagamentos por seus serviços.'
-          : 'Adicione métodos de pagamento para contratar prestadores.'}
+        {userType === "provider"
+          ? "Adicione formas de receber pelos seus serviços."
+          : "Adicione métodos de pagamento para contratar prestadores."}
       </p>
 
-      {/* Lista de métodos existentes */}
       <div className="payment-list">
         {methods.length === 0 ? (
           <p>Nenhum método cadastrado.</p>
         ) : (
-          methods.map((m) => (
+          methods.map(m => (
             <div key={m.id} className="payment-item">
               <span>
                 <strong>{m.type}</strong> — {m.label}
               </span>
-              <button className="btn payment-remove" onClick={() => handleRemove(m.id)}>
+
+              <button className="btn payment-remove" onClick={() => remove(m.id)}>
                 Remover
               </button>
             </div>
@@ -146,41 +164,48 @@ const PaymentMethodsPanel: React.FC<PaymentMethodsPanelProps> = ({ userType }) =
         )}
       </div>
 
-      {/* Botão de adicionar */}
       {!showForm && (
         <button className="btn add" onClick={handleAdd}>
-          + Adicionar {userType === 'prestador' ? 'Conta' : 'Método'}
+          + Adicionar {userType === "provider" ? "Conta" : "Método"}
         </button>
       )}
 
-      {/* Formulário de novo método */}
       {showForm && (
         <form className="payment-form" onSubmit={handleSubmit}>
           {!selectedType && (
             <>
-              <label htmlFor="type">Tipo de Método</label>
+              <label>Tipo de Método</label>
               <select
                 id="type"
-                onChange={(e) => setSelectedType(e.target.value as any)}
+                onChange={e =>
+                  setSelectedType(e.target.value as any)
+                }
                 defaultValue=""
               >
                 <option value="">Selecione...</option>
                 <option value="PIX">Pix</option>
-                {userType === 'cliente' && <option value="CARTÃO">Cartão</option>}
-                {userType === 'prestador' && <option value="CONTA BANCÁRIA">Conta Bancária</option>}
+                {userType === "client" && <option value="CARD">Cartão</option>}
+                {userType === "provider" && (
+                  <option value="BANK_ACCOUNT">Conta Bancária</option>
+                )}
               </select>
             </>
           )}
 
-          {selectedType && renderFormFields()}
+          {selectedType && renderForm()}
 
           {selectedType && (
             <div className="form-actions">
-              <button type="button" className="btn cancel" onClick={() => setShowForm(false)}>
+              <button
+                type="button"
+                className="btn cancel"
+                onClick={() => setShowForm(false)}
+              >
                 Cancelar
               </button>
-              <button type="submit" className="btn primary" disabled={isLoading}>
-                {isLoading ? 'Salvando...' : 'Salvar'}
+
+              <button type="submit" className="btn primary" disabled={loading}>
+                {loading ? "Salvando..." : "Salvar"}
               </button>
             </div>
           )}

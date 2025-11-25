@@ -14,27 +14,34 @@ const RatingPopup: React.FC<RatingPopupProps> = ({ isOpen, onClose, onSubmit }) 
   if (!isOpen) return null;
 
   return (
-    <div className="rating-overlay">
+    <div className="rating-overlay" role="dialog" aria-modal="true">
       <div className="rating-popup">
-        <h3 className="rating-title">Avalie o serviço</h3>
-        <p className="rating-subtitle">De 1 a 5 estrelas</p>
 
+        <h3 className="rating-title">Avalie o serviço</h3>
+        <p className="rating-subtitle">Escolha entre 1 e 5 estrelas</p>
+
+        {/* ESTRELAS */}
         <div className="rating-stars">
           {[1, 2, 3, 4, 5].map((star) => (
             <span
               key={star}
-              className={`star ${(hover || selected) >= star ? "active" : ""}`}
+              className={`star ${Math.max(hover, selected) >= star ? "active" : ""}`}
               onMouseEnter={() => setHover(star)}
               onMouseLeave={() => setHover(0)}
               onClick={() => setSelected(star)}
+              role="button"
+              aria-label={`Avaliar com ${star} estrelas`}
             >
               ★
             </span>
           ))}
         </div>
 
+        {/* BOTÕES */}
         <div className="rating-actions">
-          <button className="btn cancel" onClick={onClose}>Cancelar</button>
+          <button className="btn cancel" onClick={onClose}>
+            Cancelar
+          </button>
 
           <button
             className="btn primary"
@@ -47,6 +54,7 @@ const RatingPopup: React.FC<RatingPopupProps> = ({ isOpen, onClose, onSubmit }) 
             Enviar Avaliação
           </button>
         </div>
+
       </div>
     </div>
   );

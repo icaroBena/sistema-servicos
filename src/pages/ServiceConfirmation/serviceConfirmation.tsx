@@ -1,9 +1,13 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./serviceConfirmation.css";
 
 export default function ServiceConfirmation() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Dados enviados pela ServiceRequest (payload)
+  const requestData = location.state;
 
   return (
     <div className="confirmation-container">
@@ -13,10 +17,11 @@ export default function ServiceConfirmation() {
       </p>
 
       <div className="confirmation-content">
+        
         {/* COLUNA ESQUERDA */}
         <div className="left-column">
 
-          {/* Prestador de Serviço */}
+          {/* Prestador */}
           <div className="card">
             <h2 className="section-title">Prestador de Serviço</h2>
 
@@ -36,16 +41,17 @@ export default function ServiceConfirmation() {
             </div>
           </div>
 
-          {/* Detalhes do Serviço */}
+          {/* Detalhes */}
           <div className="card">
             <h2 className="section-title">Detalhes do Serviço</h2>
 
-            <div className="tag">Instalações Elétricas</div>
+            <div className="tag">
+              {requestData?.category || "Instalações Elétricas"}
+            </div>
 
             <p className="service-description">
-              Instalação de tomadas extras na sala e cozinha, incluindo verificação
-              da rede elétrica existente e adequação às normas de segurança. Serviço
-              inclui fornecimento de materiais básicos.
+              {requestData?.description ||
+                `Instalação de tomadas extras, verificação da rede elétrica e adequação às normas.`}
             </p>
 
             <div className="details-grid">
@@ -74,26 +80,36 @@ export default function ServiceConfirmation() {
 
             <div className="price-row">
               <span>Valor do serviço</span>
-              <strong>R$ 150.00</strong>
+              <strong>
+                R$ {requestData?.offeredValue?.toFixed(2) ?? "150.00"}
+              </strong>
             </div>
 
             <div className="price-row">
               <span>Taxa da plataforma (15%)</span>
-              <strong>R$ 22.50</strong>
+              <strong>
+                R$ {(requestData?.offeredValue * 0.15).toFixed(2) ?? "22.50"}
+              </strong>
             </div>
 
             <div className="divider"></div>
 
             <div className="price-row total">
               <span>Total</span>
-              <span className="total-value">R$ 172.50</span>
+              <span className="total-value">
+                R${" "}
+                {(requestData?.offeredValue * 1.15).toFixed(2) ?? "172.50"}
+              </span>
             </div>
 
             <div className="info-box">
               O pagamento será processado após a conclusão do serviço
             </div>
 
-            <button className="btn-primary">Confirmar Serviço</button>
+            <button className="btn-primary">
+              Confirmar Serviço
+            </button>
+
             <button className="btn-secondary" onClick={() => navigate(-1)}>
               Voltar e Editar
             </button>

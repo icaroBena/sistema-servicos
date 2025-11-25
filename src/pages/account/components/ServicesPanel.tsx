@@ -1,3 +1,4 @@
+// src/pages/account/components/ServicesPanel.tsx
 import React, { useState, useEffect } from "react";
 import ServiceFormModal from "./popups/ServiceFormModal";
 import type { Servico } from "../../../models/Servico";
@@ -36,18 +37,20 @@ const ServicesPanel: React.FC = () => {
 
   const save = (s: Servico) => {
     if (!s.id) s.id = Date.now().toString();
+
     if (edit) {
-      setServices((prev) => prev.map((x) => (x.id === s.id ? s : x)));
+      setServices(prev => prev.map(item => item.id === s.id ? s : item));
     } else {
-      setServices((prev) => [...prev, s]);
+      setServices(prev => [...prev, s]);
     }
+
     setModalOpen(false);
     setEdit(null);
   };
 
   const remove = (id: string) => {
     if (confirm("Deseja remover este serviço?")) {
-      setServices((prev) => prev.filter((s) => s.id !== id));
+      setServices(prev => prev.filter(item => item.id !== id));
     }
   };
 
@@ -71,18 +74,18 @@ const ServicesPanel: React.FC = () => {
       <div className="srv-list">
         {services.length === 0 && <p>Nenhum serviço criado.</p>}
 
-        {services.map((s) => (
+        {services.map(s => (
           <div key={s.id} className="srv-card">
-            <img src={s.imagemUrl ?? ""} className="srv-img" />
+            <img src={s.imageUrl ?? ""} className="srv-img" />
 
             <div className="srv-info">
-              <h4>{s.titulo}</h4>
-              <p className="desc">{s.descricao}</p>
-              <p><b>Categoria:</b> {s.categoria}</p>
+              <h4>{s.title}</h4>
+              <p className="desc">{s.description}</p>
+              <p><b>Categoria:</b> {s.category}</p>
             </div>
 
             <div className="srv-right">
-              <span className="price">{s.preco}</span>
+              <span className="price">R$ {s.price}</span>
 
               <button
                 className="small"
@@ -94,7 +97,10 @@ const ServicesPanel: React.FC = () => {
                 Editar
               </button>
 
-              <button className="small remove" onClick={() => remove(s.id)}>
+              <button
+                className="small remove"
+                onClick={() => remove(s.id)}
+              >
                 Remover
               </button>
             </div>

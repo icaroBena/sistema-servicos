@@ -1,60 +1,60 @@
+// src/pages/account/components/PropositionsPanel.tsx
+
 import React, { useState } from "react";
 import "./propositions-panel.css";
 
-interface PropostaServico {
+interface Proposal {
   id: string;
-  cliente: {
-    nome: string;
-    localizacao: string;
+  client: {
+    name: string;
+    location: string;
   };
-  categorias: string[];
-  descricao: string;
-  preco: number;
-  tempo: string;
-  status: "pendente" | "aceita" | "recusada" | "negociacao";
-  contraproposta?: number;
+  categories: string[];
+  description: string;
+  price: number;
+  estimatedTime: string;
+  status: "pending" | "accepted" | "rejected" | "negotiation";
+  counterOffer?: number;
 }
 
-const mockPropostas: PropostaServico[] = [
+const mockProposals: Proposal[] = [
   {
     id: "1",
-    cliente: { nome: "João Pedro", localizacao: "Rua das Flores, 120 - Centro" },
-    categorias: ["Instalações Elétricas"],
-    descricao: "Preciso instalar uma tomada nova na cozinha.",
-    preco: 150,
-    tempo: "Imediato",
-    status: "pendente",
+    client: { name: "João Pedro", location: "Rua das Flores, 120 - Centro" },
+    categories: ["Instalações Elétricas"],
+    description: "Preciso instalar uma tomada nova na cozinha.",
+    price: 150,
+    estimatedTime: "Imediato",
+    status: "pending",
   },
 ];
 
 const PropositionsPanel: React.FC = () => {
-  const [propostas, setPropostas] = useState(mockPropostas);
-  const [novoValor, setNovoValor] = useState<{ [id: string]: string }>({});
+  const [proposals, setProposals] = useState<Proposal[]>(mockProposals);
+  const [counterValues, setCounterValues] = useState<Record<string, string>>({});
 
-  const handleAceitar = (id: string) => {
-    setPropostas(prev =>
-      prev.map(p => (p.id === id ? { ...p, status: "aceita" } : p))
+  const accept = (id: string) => {
+    setProposals(prev =>
+      prev.map(p => (p.id === id ? { ...p, status: "accepted" } : p))
     );
   };
 
-  const handleRecusar = (id: string) => {
-    setPropostas(prev =>
-      prev.map(p => (p.id === id ? { ...p, status: "recusada" } : p))
+  const reject = (id: string) => {
+    setProposals(prev =>
+      prev.map(p => (p.id === id ? { ...p, status: "rejected" } : p))
     );
   };
 
-  const enviarContraproposta = (id: string) => {
-    const valor = Number(novoValor[id]);
-    if (!valor || valor <= 0) return alert("Digite um valor válido");
+  const sendCounterOffer = (id: string) => {
+    const value = Number(counterValues[id]);
 
-    setPropostas(prev =>
+    if (!value || value <= 0)
+      return alert("Digite um valor válido.");
+
+    setProposals(prev =>
       prev.map(p =>
         p.id === id
-          ? {
-              ...p,
-              contraproposta: valor,
-              status: "negociacao",
-            }
+          ? { ...p, counterOffer: value, status: "negotiation" }
           : p
       )
     );
@@ -68,33 +68,36 @@ const PropositionsPanel: React.FC = () => {
       <p className="section-subtitle">Negocie valores e responda clientes.</p>
 
       <div className="proposal-list">
-        {propostas.map((p) => (
+        {proposals.map(p => (
           <div key={p.id} className="proposal-card">
             <div className="proposal-info">
-              <h3 className="prop-title">{p.categorias.join(", ")}</h3>
+              <h3 className="prop-title">{p.categories.join(", ")}</h3>
 
-              <p><strong>Cliente:</strong> {p.cliente.nome}</p>
-              <p><strong>Endereço:</strong> {p.cliente.localizacao}</p>
-              <p><strong>Descrição:</strong> {p.descricao}</p>
-              <p><strong>Valor oferecido:</strong> R$ {p.preco}</p>
-              {p.contraproposta && (
-                <p><strong>Seu valor sugerido:</strong> R$ {p.contraproposta}</p>
+              <p><strong>Cliente:</strong> {p.client.name}</p>
+              <p><strong>Endereço:</strong> {p.client.location}</p>
+              <p><strong>Descrição:</strong> {p.description}</p>
+              <p><strong>Valor oferecido:</strong> R$ {p.price}</p>
+
+              {p.counterOffer && (
+                <p>
+                  <strong>Seu valor sugerido:</strong> R$ {p.counterOffer}
+                </p>
               )}
-              <p><strong>Tempo:</strong> {p.tempo}</p>
+
+              <p><strong>Tempo:</strong> {p.estimatedTime}</p>
 
               <span className={`status-badge status-${p.status}`}>
                 {p.status}
               </span>
             </div>
 
-            {/* AÇÕES */}
-            {p.status === "pendente" && (
+            {p.status === "pending" && (
               <div className="proposal-actions">
-                <button className="btn primary" onClick={() => handleAceitar(p.id)}>
+                <button className="btn primary" onClick={() => accept(p.id)}>
                   Aceitar
                 </button>
 
-                <button className="btn remove" onClick={() => handleRecusar(p.id)}>
+                <button className="btn remove" onClick={() => reject(p.id)}>
                   Recusar
                 </button>
 
@@ -103,14 +106,18 @@ const PropositionsPanel: React.FC = () => {
                     type="number"
                     placeholder="Novo valor"
                     className="counter-input"
-                    value={novoValor[p.id] || ""}
-                    onChange={(e) =>
-                      setNovoValor({ ...novoValor, [p.id]: e.target.value })
+                    value={counterValues[p.id] || ""}
+                    onChange={e =>
+                      setCounterValues({
+                        ...counterValues,
+                        [p.id]: e.target.value,
+                      })
                     }
                   />
+
                   <button
                     className="btn toggle"
-                    onClick={() => enviarContraproposta(p.id)}
+                    onClick={() => sendCounterOffer(p.id)}
                   >
                     Enviar contraproposta
                   </button>

@@ -1,45 +1,63 @@
-// src/services/reembolsoMockApi.ts
-import reembolsoMockList from "../mocks/reembolsoMock";
-import type { Reembolso, ProvaReembolso } from "../models/Reembolso";
+import type { Refund } from "../models/Refund";
+import * as refundsApi from "../api/refunds";
 
-let reembolsos: Reembolso[] = [...reembolsoMockList];
+let inMemory: Refund[] = [];
 
-export const reembolsoMockApi = {
-  listarPorUsuario(userId: string): Reembolso[] {
-    return reembolsos.filter(r => r.solicitanteId === userId);
+export const refundService = {
+  async listByUser(userId: string) {
+    try {
+      const all = await refundsApi.listRefunds();
+      return all.filter((r) => r.requesterId === userId);
+    } catch (err) {
+      return inMemory.filter((r) => r.requesterId === userId);
+    }
   },
 
-  obterPorAgendamento(agendamentoId: string): Reembolso | undefined {
-    return reembolsos.find(r => r.agendamentoId === agendamentoId);
+  async getByBooking(bookingId: string) {
+    try {
+      const all = await refundsApi.listRefunds();
+      return all.find((r) => r.bookingId === bookingId);
+    } catch (err) {
+      return inMemory.find((r) => r.bookingId === bookingId);
+    }
   },
 
-  obter(id: string): Reembolso | undefined {
-    return reembolsos.find(r => r.id === id);
+  async get(id: string) {
+    try {
+      return await refundsApi.getRefund(id);
+    } catch (err) {
+      return inMemory.find((r) => r.id === id);
+    }
   },
 
-  criar(data: {
-    agendamentoId: string;
-    solicitanteId: string;
-    tipoSolicitante: "cliente" | "prestador";
-    valorSolicitado: number;
-    justificativa: string;
-    provas: ProvaReembolso[];
-  }): Reembolso {
-    const novo: Reembolso = {
-      id: "rb" + Date.now(),
-      criadoEm: new Date().toISOString(),
-      atualizadoEm: new Date().toISOString(),
-      status: "pendente",
-      escrowBloqueado: true,
-      ...data
-    };
-
-    reembolsos.push(novo);
-    return novo;
+  async create(data: Partial<Refund>) {
+    try {
+      return await refundsApi.createRefund(data);
+    } catch (err) {
+      const novo: Refund = {
+        id: "rb" + Date.now(),
+        bookingId: data.bookingId || "",
+        requesterId: data.requesterId || "",
+        requesterType: (data.requesterType as any) || "client",
+        requestedValue: data.requestedValue || 0,
+        justification: data.justification || "",
+        evidenceList: data.evidenceList || [],
+        status: "pending",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      inMemory.push(novo);
+      return novo;
+    }
   },
 
-  // helpers de teste (opcionais)
-  atualizarStatus(id: string, status: Reembolso["status"]) {
-    reembolsos = reembolsos.map(r => r.id === id ? { ...r, status, atualizadoEm: new Date().toISOString() } : r);
-  }
+  async updateStatus(id: string, status: Refund["status"]) {
+    try {
+      return await refundsApi.updateRefund(id, { status } as any);
+    } catch (err) {
+      inMemory = inMemory.map((r) =>
+        r.id === id ? { ...r, status, updatedAt: new Date().toISOString() } : r
+      );
+    }
+  },
 };

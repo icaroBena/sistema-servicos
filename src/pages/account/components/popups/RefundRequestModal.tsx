@@ -2,83 +2,86 @@
 
 import React, { useState } from "react";
 import "../account-tabs-style.css";
-import { reembolsoMockApi } from "../../../../services/reembolsoMockApi";
-import type { ProvaReembolso } from "../../../../models/Reembolso";
+import { refundService } from "../../../../services/reembolsoMockApi";
+import type { RefundEvidence } from "../../../../models/Reembolso";
 
 interface Props {
   agendamentoId: string;
   solicitanteId: string;
-  tipoSolicitante: "cliente" | "prestador";
-  valor: number;
+  requesterType: "client" | "provider";
+  requestedValue: number;
   onClose: () => void;
-  onCriado: (reembolsoId: string) => void;
+  onCriado: (refundId: string) => void;
 }
 
 const RefundRequestModal: React.FC<Props> = ({
   agendamentoId,
   solicitanteId,
-  tipoSolicitante,
-  valor,
+  requesterType,
+  requestedValue,
   onClose,
-  onCriado
+  onCriado,
 }) => {
-  const [justificativa, setJustificativa] = useState("");
-  const [provas, setProvas] = useState<ProvaReembolso[]>([]);
+  const [reason, setReason] = useState("");
+  const [evidence, setEvidence] = useState<RefundEvidence[]>([]);
 
-  /** Recebe arquivos e os adiciona como provas */
+  /* ---------------- Upload de Evidências ---------------- */
   const handleUpload = (files: FileList | null) => {
     if (!files) return;
 
-    const novasProvas = [...provas];
+    const updated = [...evidence];
 
     Array.from(files).forEach((file) => {
-      novasProvas.push({
+      updated.push({
         id: "p" + Date.now(),
-        nomeArquivo: file.name,
+        fileName: file.name,
         url: URL.createObjectURL(file),
-        enviadoEm: new Date().toISOString(),
+        uploadedAt: new Date().toISOString(),
       });
     });
 
-    setProvas(novasProvas);
+    setEvidence(updated);
   };
 
-  /** Envia o reembolso para o mockApi */
-  const criarReembolso = () => {
-    if (justificativa.trim().length < 5) {
+  /* ---------------- Criar Reembolso ---------------- */
+  const createRefund = async () => {
+    if (reason.trim().length < 5) {
       alert("A justificativa deve conter pelo menos 5 caracteres.");
       return;
     }
 
-    const novo = reembolsoMockApi.criar({
-      agendamentoId,
-      solicitanteId,
-      tipoSolicitante,
-      valorSolicitado: valor,
-      justificativa,
-      provas,
-    });
+    const novo = await refundService.create({
+      bookingId: agendamentoId,
+      requesterId: solicitanteId,
+      requesterType: requesterType,
+      requestedValue: requestedValue,
+      justification: reason,
+      evidenceList: evidence,
+    } as any);
 
     onCriado(novo.id);
   };
 
   return (
     <div className="modal-backdrop">
-
       <div className="modal refund-modal">
         <h2>Abrir Reembolso</h2>
 
-        <p><b>Valor a ser reembolsado:</b> R$ {valor}</p>
+        <p>
+          <b>Valor a ser reembolsado:</b> R$ {requestedValue}
+        </p>
 
+        {/* Justificativa */}
         <label>Justificativa do pedido</label>
         <textarea
           className="refund-textarea"
           placeholder="Explique por que está solicitando reembolso..."
-          value={justificativa}
-          onChange={(e) => setJustificativa(e.target.value)}
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
         />
 
-        <label>Provas (imagens)</label>
+        {/* Upload de Provas */}
+        <label>Evidências (imagens)</label>
         <input
           type="file"
           accept="image/*"
@@ -87,18 +90,19 @@ const RefundRequestModal: React.FC<Props> = ({
         />
 
         <div className="evidence-list">
-          {provas.map((p) => (
+          {evidence.map((item) => (
             <img
-              key={p.id}
-              src={p.url}
-              alt={p.nomeArquivo}
+              key={item.id}
+              src={item.url}
+              alt={item.fileName}
               className="evidence-thumbnail"
             />
           ))}
         </div>
 
+        {/* Botões */}
         <div className="modal-buttons">
-          <button className="btn primary" onClick={criarReembolso}>
+          <button className="btn primary" onClick={createRefund}>
             Enviar Solicitação
           </button>
 
@@ -107,7 +111,6 @@ const RefundRequestModal: React.FC<Props> = ({
           </button>
         </div>
       </div>
-
     </div>
   );
 };

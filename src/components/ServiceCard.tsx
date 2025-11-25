@@ -1,29 +1,39 @@
 import "../styles/serviceCard.css";
 
-export type ServiceCardProps = {
+export interface ServiceCardProps {
   title: string;
   imgSrc: string;
   buttonText?: string;
-  onClick?: () => void; // <- camelCase e opcional
-};
+  onClick?: () => void;
+}
 
-export default function ServiceCard({
+const ServiceCard: React.FC<ServiceCardProps> = ({
   title,
   imgSrc,
   buttonText = "Ver Orçamentos",
   onClick,
-}: ServiceCardProps) {
+}) => {
   return (
-    <div className="wm-service-card">
-      <img src={imgSrc} alt={title} className="wm-service-img" />
-      <h3>{title}</h3>
+    <div className="wm-service-card" role="article" aria-label={title}>
+      <img
+        src={imgSrc}
+        alt={title}
+        className="wm-service-img"
+        loading="lazy"
+      />
+
+      <h3 className="wm-service-title">{title}</h3>
+
       <button
         type="button"
-        className="wm-btn-primary"   // use a classe que você já estilizou
-        onClick={onClick}            // <- conecta aqui
+        className="wm-btn-primary"
+        onClick={onClick}
+        aria-label={`Acessar detalhes de ${title}`}
       >
         {buttonText}
       </button>
     </div>
   );
-}
+};
+
+export default ServiceCard;

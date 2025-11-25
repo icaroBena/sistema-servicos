@@ -1,82 +1,118 @@
-import React from 'react';
-import './sidebar.css';
+// src/pages/account/components/Sidebar.tsx
+
+import React from "react";
+import "./sidebar.css";
 
 import { useNavigate } from "react-router-dom";
 import {
-    FaUser, FaCheckCircle, FaCog, FaBell, FaCreditCard, FaSignOutAlt,
-    FaHandshake, FaCalendarAlt, FaBriefcase, FaMoneyBill
+  FaUser,
+  FaCheckCircle,
+  FaCog,
+  FaBell,
+  FaCreditCard,
+  FaSignOutAlt,
+  FaHandshake,
+  FaCalendarAlt,
+  FaBriefcase,
+  FaMoneyBill,
 } from "react-icons/fa";
+
 import { useNotificacoes } from "../../../contexts/NotificationContext";
 
-
 interface SidebarProps {
-    active: string;
-    onSelect: (section: string) => void;
-    userType: string;
+  active: string;
+  onSelect: (section: string) => void;
+  userType: string; // internal values: "client" | "provider"
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ active, onSelect, userType }) => {
-    const navigate = useNavigate();
-    const { notificacoes } = useNotificacoes();
+  const navigate = useNavigate();
+  const { notifications } = useNotificacoes();
 
-    const badgeProps = {
-        propostas: notificacoes.filter(n => n.tipo === "proposta" && n.status === "nao_lida").length,
-        agendamentos: notificacoes.filter(n => n.tipo === "agendamento" && n.status === "nao_lida").length,
-        notificacoes: notificacoes.filter(n => n.tipo === "sistema" && n.status === "nao_lida").length,
-    };
+  // ======================================================================
+  // BADGES PADRONIZADOS (seguindo model Notification)
+  // ======================================================================
+  const badgeProps = {
+    proposals: notifications.filter((n) => n.type === "proposal" && n.status === "unread").length,
+    appointments: notifications.filter((n) => n.type === "booking" && n.status === "unread").length,
+    system: notifications.filter((n) => n.type === "system" && n.status === "unread").length,
+  };
 
-    const commonLinks = [
-        { id: 'profile', icon: FaUser, label: 'Perfil' },
-        { id: 'appointments', icon: FaCalendarAlt, label: 'Agendamentos' },
-        { id: 'propositions', icon: FaHandshake, label: 'Propostas' },
-        { id: 'notifications', icon: FaBell, label: 'Notificações' },
-        { id: 'settings', icon: FaCog, label: 'Configurações' },
-    ];
+  // ======================================================================
+  // LINKS PADRONIZADOS
+  // ======================================================================
 
-    const providerLinks = [
-        { id: 'services', icon: FaBriefcase, label: 'Meus Serviços' },
-        { id: 'verification', icon: FaCheckCircle, label: 'Verificação' },
-        { id: 'payments', icon: FaCreditCard, label: 'Pagamentos' },
-    ];
+  const commonLinks = [
+    { id: "profile", icon: FaUser, label: "Perfil" },
+    { id: "appointments", icon: FaCalendarAlt, label: "Agendamentos" },
+    { id: "propositions", icon: FaHandshake, label: "Propostas" },
+    { id: "notifications", icon: FaBell, label: "Notificações" },
+    { id: "settings", icon: FaCog, label: "Configurações" },
+  ];
 
-    const clientLinks = [
-        { id: 'payments', icon: FaCreditCard, label: 'Carteira' },
-        { id: 'refunds', icon: FaMoneyBill, label: 'Reembolso' },
-    ];
+  const providerLinks = [
+    { id: "services", icon: FaBriefcase, label: "Meus Serviços" },
+    { id: "verification", icon: FaCheckCircle, label: "Verificação" },
+    { id: "payments", icon: FaCreditCard, label: "Pagamentos" },
+  ];
 
-    const linksToShow =
-        userType === 'prestador'
-            ? [...commonLinks.slice(0, 1), ...providerLinks, ...commonLinks.slice(1)]
-            : [...commonLinks.slice(0, 1), ...clientLinks, ...commonLinks.slice(1)];
+  const clientLinks = [
+    { id: "payments", icon: FaCreditCard, label: "Carteira" },
+    { id: "refunds", icon: FaMoneyBill, label: "Reembolso" },
+  ];
 
-    return (
-        <aside className="account-sidebar">
-            <h2 className="sidebar-title">Conta</h2>
+  // Ordem final padronizada:
+  // Perfil → (Prestador OR Cliente) → Agendamentos → Propostas → Notificações → Configurações
+  const linksToShow =
+    userType === "provider"
+      ? [...commonLinks.slice(0, 1), ...providerLinks, ...commonLinks.slice(1)]
+      : [...commonLinks.slice(0, 1), ...clientLinks, ...commonLinks.slice(1)];
 
-            <ul className="sidebar-menu">
-                {linksToShow.map((link) => (
-                    <li key={link.id} className={active === link.id ? 'active' : ''} onClick={() => onSelect(link.id)}>
-                        <link.icon /> {link.label}
+  // ======================================================================
+  // RENDERIZAÇÃO
+  // ======================================================================
 
-                        {link.id === "propositions" && badgeProps.propostas > 0 && (
-                            <span className="sidebar-badge">{badgeProps.propostas}</span>
-                        )}
+  return (
+    <aside className="account-sidebar">
+      <h2 className="sidebar-title">Conta</h2>
 
-                        {link.id === "appointments" && badgeProps.agendamentos > 0 && (
-                            <span className="sidebar-badge">{badgeProps.agendamentos}</span>
-                        )}
+      <ul className="sidebar-menu">
+        {linksToShow.map((link) => {
+          const Icon = link.icon;
 
-                        {link.id === "notifications" && badgeProps.notificacoes > 0 && (
-                            <span className="sidebar-badge">{badgeProps.notificacoes}</span>
-                        )}
-                    </li>
+          return (
+            <li
+              key={link.id}
+              className={active === link.id ? "active" : ""}
+              onClick={() => onSelect(link.id)}
+            >
+              <Icon /> {link.label}
 
-                ))}
-            </ul>
+              {/* BADGE DE PROPOSTAS */}
+              {link.id === "propositions" && badgeProps.proposals > 0 && (
+                <span className="sidebar-badge">{badgeProps.proposals}</span>
+              )}
 
-            <button className="logout-btn" onClick={() => navigate('/login')}> < FaSignOutAlt /> Sair</button>
-        </aside>
-    );
+              {/* BADGE DE AGENDAMENTOS */}
+              {link.id === "appointments" && badgeProps.appointments > 0 && (
+                <span className="sidebar-badge">{badgeProps.appointments}</span>
+              )}
+
+              {/* BADGE DE NOTIFICAÇÕES DO SISTEMA */}
+              {link.id === "notifications" && badgeProps.system > 0 && (
+                <span className="sidebar-badge">{badgeProps.system}</span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+
+      {/* LOGOUT */}
+      <button className="logout-btn" onClick={() => navigate("/login")}>
+        <FaSignOutAlt /> Sair
+      </button>
+    </aside>
+  );
 };
 
 export default Sidebar;

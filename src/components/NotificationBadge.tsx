@@ -1,14 +1,22 @@
 import React from "react";
 import "../styles/badge.css";
 
-interface Props {
+export interface NotificationBadgeProps {
   count: number;
 }
 
-const NotificationBadge: React.FC<Props> = ({ count }) => {
-  if (count <= 0) return null;
+const NotificationBadge: React.FC<NotificationBadgeProps> = ({ count }) => {
+  if (!count || count <= 0) return null;
 
-  return <span className="notif-badge">{count}</span>;
+  return (
+    <span
+      className="notif-badge"
+      role="status"
+      aria-label={`${count} notificações não lidas`}
+    >
+      {count}
+    </span>
+  );
 };
 
 export default NotificationBadge;

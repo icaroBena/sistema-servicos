@@ -1,20 +1,24 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaHome, FaHandshake, FaCalendarAlt, FaBell } from "react-icons/fa";
+
 import NotificationBadge from "./NotificationBadge";
 import { useNotificacoes } from "../contexts/NotificationContext";
+
 import "../styles/navbar.css";
 
 const Navbar: React.FC = () => {
-  const { notificacoes } = useNotificacoes();
+  const { notifications } = useNotificacoes();
   const location = useLocation();
 
-  // Contagem por tipo
-  const novasPropostas = notificacoes.filter(n => n.tipo === "proposta" && n.status === "nao_lida").length;
-  const novosAgendamentos = notificacoes.filter(n => n.tipo === "agendamento" && n.status === "nao_lida").length;
-  const novasNotif = notificacoes.filter(n => n.tipo === "sistema" && n.status === "nao_lida").length;
+  /* ------------------ BADGES ------------------ */
+  const novasPropostas = notifications.filter((n) => n.type === "proposal" && n.status === "unread").length;
 
-  // Detectar aba ativa via query string
+  const novosAgendamentos = notifications.filter((n) => n.type === "booking" && n.status === "unread").length;
+
+  const novasNotif = notifications.filter((n) => n.type === "system" && n.status === "unread").length;
+
+  /* ------------------ CONTEXTO ------------------ */
   const params = new URLSearchParams(location.search);
   const currentTab = params.get("tab");
 
@@ -22,24 +26,29 @@ const Navbar: React.FC = () => {
     location.pathname.startsWith("/account") ||
     location.pathname.startsWith("/home");
 
-  const isTabActive = (tab: string) =>
+  const isActivePath = (path: string): string =>
+    location.pathname.startsWith(path) ? "nav-btn active" : "nav-btn";
+
+  const isTabActive = (tab: string): string =>
     location.pathname === "/account" && currentTab === tab
       ? "nav-btn active"
       : "nav-btn";
 
-  const isActivePath = (path: string) =>
-    location.pathname.startsWith(path) ? "nav-btn active" : "nav-btn";
-
   return (
-    <nav className="navbar">
+    <nav
+      className="navbar"
+      role="navigation"
+      aria-label="Menu principal do WorkMatch"
+    >
+      {/* LOGO */}
       <div className="nav-left">
-        <Link to="/home" className="nav-logo">
+        <Link to="/home" className="nav-logo" aria-label="Ir para página inicial">
           WorkMatch
         </Link>
       </div>
 
+      {/* LINKS */}
       <div className="nav-right">
-
         {/* HOME */}
         <Link to="/home" className={isActivePath("/home")}>
           <FaHome className="nav-icon" />
@@ -49,7 +58,10 @@ const Navbar: React.FC = () => {
         {/* PROPOSTAS */}
         <Link
           to={isLogged ? "/account?tab=propositions" : "#"}
-          className={isTabActive("propositions") + (!isLogged ? " disabled" : "")}
+          className={
+            isTabActive("propositions") + (!isLogged ? " disabled" : "")
+          }
+          aria-disabled={!isLogged}
         >
           <FaHandshake className="nav-icon" />
           Propostas
@@ -59,7 +71,10 @@ const Navbar: React.FC = () => {
         {/* AGENDAMENTOS */}
         <Link
           to={isLogged ? "/account?tab=appointments" : "#"}
-          className={isTabActive("appointments") + (!isLogged ? " disabled" : "")}
+          className={
+            isTabActive("appointments") + (!isLogged ? " disabled" : "")
+          }
+          aria-disabled={!isLogged}
         >
           <FaCalendarAlt className="nav-icon" />
           Agendamentos
@@ -69,7 +84,10 @@ const Navbar: React.FC = () => {
         {/* NOTIFICAÇÕES */}
         <Link
           to={isLogged ? "/account?tab=notifications" : "#"}
-          className={isTabActive("notifications") + (!isLogged ? " disabled" : "")}
+          className={
+            isTabActive("notifications") + (!isLogged ? " disabled" : "")
+          }
+          aria-disabled={!isLogged}
           style={{ position: "relative" }}
         >
           <FaBell className="nav-icon" />
@@ -77,18 +95,19 @@ const Navbar: React.FC = () => {
           <NotificationBadge count={novasNotif} />
         </Link>
 
-        {/* CONTA */}
+        {/* PERFIL */}
         <Link
           to="/account?tab=profile"
           className={isTabActive("profile") + " account-btn"}
+          aria-label="Acessar conta do usuário"
         >
           <img
             src="/Figures/default-user.png"
             className="nav-profile"
             alt="Conta"
+            loading="lazy"
           />
         </Link>
-
       </div>
     </nav>
   );

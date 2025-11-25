@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import "./admin.css";
 
-// Modelo de Usuário
+/* ============================================================
+   MODELOS PADRONIZADOS (compatíveis com front + backend)
+   ============================================================ */
 export interface Usuario {
   id: string;
   nome: string;
@@ -18,19 +20,26 @@ export interface Usuario {
   foto?: string | null;
 }
 
-// Modelo de Reembolso
 export interface Reembolso {
   id: string;
+
   clienteId: string;
   prestadorId: string;
+
   motivo: string;
   valor: string;
   data: string;
+
   evidenciaUrl?: string;
 }
 
-export default function Admin() {
-  // MOCK: Lista de usuários cadastrados
+/* ============================================================
+   COMPONENTE PRINCIPAL
+   ============================================================ */
+
+const Admin: React.FC = () => {
+
+  /* ---------------- MOCKS DE USUÁRIOS ---------------- */
   const [usuarios, setUsuarios] = useState<Usuario[]>([
     {
       id: "u1",
@@ -45,7 +54,6 @@ export default function Admin() {
       sobre: "Especialista em instalações elétricas residenciais.",
       foto: "/Figures/prestador-exemplo.png",
     },
-
     {
       id: "u2",
       nome: "Maria Souza",
@@ -57,7 +65,7 @@ export default function Admin() {
     },
   ]);
 
-  // MOCK: Solicitações de Reembolso
+  /* ---------------- MOCKS DE REEMBOLSOS ---------------- */
   const [reembolsos, setReembolsos] = useState<Reembolso[]>([
     {
       id: "r1",
@@ -70,54 +78,69 @@ export default function Admin() {
     },
   ]);
 
-  // Filtrar prestadores que NÃO são verificados
+  /* ============================================================
+     PRESTADORES PENDENTES
+     ============================================================ */
   const prestadoresPendentes = usuarios.filter(
     (u) => u.tipo === "prestador" && !u.verificado
   );
 
-  function aprovarPrestador(id: string) {
-    setUsuarios((prev) =>
-      prev.map((u) =>
+  const aprovarPrestador = (id: string) => {
+    setUsuarios(prev =>
+      prev.map(u =>
         u.id === id ? { ...u, verificado: true } : u
       )
     );
     alert("Prestador aprovado!");
-  }
+  };
 
-  function recusarPrestador(id: string) {
-    setUsuarios((prev) => prev.filter((u) => u.id !== id));
+  const recusarPrestador = (id: string) => {
+    setUsuarios(prev => prev.filter(u => u.id !== id));
     alert("Prestador removido.");
-  }
+  };
 
-  function aprovarReembolso(id: string) {
-    setReembolsos((prev) => prev.filter((r) => r.id !== id));
+  /* ============================================================
+     REEMBOLSOS
+     ============================================================ */
+  const aprovarReembolso = (id: string) => {
+    setReembolsos(prev => prev.filter(r => r.id !== id));
     alert("Reembolso aprovado!");
-  }
+  };
 
-  function recusarReembolso(id: string) {
-    setReembolsos((prev) => prev.filter((r) => r.id !== id));
+  const recusarReembolso = (id: string) => {
+    setReembolsos(prev => prev.filter(r => r.id !== id));
     alert("Reembolso recusado.");
-  }
+  };
 
+  /* ============================================================
+     RENDER DO PAINEL
+     ============================================================ */
   return (
     <main className="admin-container">
-      <h1>Painel Administrativo</h1>
+      <h1 className="admin-title">Painel Administrativo</h1>
 
-      {/* Prestadores */}
-      <section className="admin-section">
-        <h2>Prestadores Pendentes de Aprovação</h2>
+      {/* =================== PRESTADORES =================== */}
+      <section className="admin-section" role="region" aria-label="Aprovação de Prestadores">
+        <h2 className="section-title">Prestadores Pendentes de Aprovação</h2>
 
         {prestadoresPendentes.length === 0 ? (
           <p className="empty">Nenhum prestador aguardando aprovação.</p>
         ) : (
           prestadoresPendentes.map((p) => (
             <div key={p.id} className="admin-card">
-              {p.foto && <img src={p.foto} className="prestador-foto" />}
+
+              {p.foto && (
+                <img
+                  src={p.foto}
+                  alt={`Foto do prestador ${p.nome}`}
+                  className="prestador-foto"
+                />
+              )}
 
               <p><strong>Nome:</strong> {p.nome}</p>
               <p><strong>E-mail:</strong> {p.email}</p>
               <p><strong>Telefone:</strong> {p.telefone || "Não informado"}</p>
-              <p><strong>Localização:</strong> {p.localizacao}</p>
+              <p><strong>Localização:</strong> {p.localizacao || "Não informado"}</p>
               <p><strong>Categorias:</strong> {p.categorias.join(", ")}</p>
               <p><strong>Certificações:</strong> {p.certificacoes.join(", ")}</p>
 
@@ -125,29 +148,38 @@ export default function Admin() {
                 <p><strong>Sobre:</strong> {p.sobre}</p>
               )}
 
-              <a className="view-link" href="/Figures/documento-exemplo.pdf" target="_blank">
+              <a
+                className="view-link"
+                href="/Figures/documento-exemplo.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 📄 Ver documento de verificação
               </a>
 
               <div className="admin-buttons">
-                <button className="btn approve" onClick={() => aprovarPrestador(p.id)}>Aprovar</button>
-                <button className="btn reject" onClick={() => recusarPrestador(p.id)}>Recusar</button>
+                <button className="btn approve" onClick={() => aprovarPrestador(p.id)}>
+                  Aprovar
+                </button>
+                <button className="btn reject" onClick={() => recusarPrestador(p.id)}>
+                  Recusar
+                </button>
               </div>
             </div>
           ))
         )}
       </section>
 
-      {/* Reembolsos */}
-      <section className="admin-section">
-        <h2>Solicitações de Reembolso</h2>
+      {/* =================== REEMBOLSOS =================== */}
+      <section className="admin-section" role="region" aria-label="Solicitações de Reembolso">
+        <h2 className="section-title">Solicitações de Reembolso</h2>
 
         {reembolsos.length === 0 ? (
           <p className="empty">Nenhuma solicitação de reembolso.</p>
         ) : (
           reembolsos.map((r) => {
-            const cliente = usuarios.find((u) => u.id === r.clienteId);
-            const prestador = usuarios.find((u) => u.id === r.prestadorId);
+            const cliente = usuarios.find(u => u.id === r.clienteId);
+            const prestador = usuarios.find(u => u.id === r.prestadorId);
 
             return (
               <div key={r.id} className="admin-card">
@@ -158,20 +190,32 @@ export default function Admin() {
                 <p><strong>Data:</strong> {r.data}</p>
 
                 {r.evidenciaUrl && (
-                  <a href={r.evidenciaUrl} target="_blank" className="view-link">
-                    📎 Ver Evidência (foto)
+                  <a
+                    href={r.evidenciaUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="view-link"
+                  >
+                    📎 Ver Evidência
                   </a>
                 )}
 
                 <div className="admin-buttons">
-                  <button className="btn approve" onClick={() => aprovarReembolso(r.id)}>Aprovar</button>
-                  <button className="btn reject" onClick={() => recusarReembolso(r.id)}>Recusar</button>
+                  <button className="btn approve" onClick={() => aprovarReembolso(r.id)}>
+                    Aprovar
+                  </button>
+                  <button className="btn reject" onClick={() => recusarReembolso(r.id)}>
+                    Recusar
+                  </button>
                 </div>
               </div>
             );
           })
         )}
       </section>
+
     </main>
   );
-}
+};
+
+export default Admin;

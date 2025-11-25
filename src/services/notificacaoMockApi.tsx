@@ -1,45 +1,57 @@
-import type { Notificacao, StatusNotificacao } from "../models/Notificacao";
+import type { Notification } from "../models/Notification";
+import * as notificationsApi from "../api/notifications";
 
-let notificacoes: Notificacao[] = [];
+let inMemory: Notification[] = [];
 
-export const notificacaoMockApi = {
-  criar(data: Omit<Notificacao, "id" | "status" | "criadaEm">) {
-    const nova: Notificacao = {
-      id: "n" + crypto.randomUUID(),
-      status: "nao_lida",
-      criadaEm: new Date().toISOString(),
-      ...data
-    };
-
-    notificacoes.unshift(nova); // ordem cronológica
-    return nova;
+export const notificacaoService = {
+  async create(data: Partial<Notification>) {
+    try {
+      return await notificationsApi.createNotification(data as Partial<Notification>);
+    } catch (err) {
+      const nova: Notification = {
+        id: "n" + (crypto?.randomUUID ? crypto.randomUUID() : Date.now().toString()),
+        status: "unread",
+        createdAt: new Date().toISOString(),
+        type: (data.type as any) || "system",
+        title: data.title || "",
+        message: data.message || "",
+        ...data,
+      } as Notification;
+      inMemory.unshift(nova);
+      return nova;
+    }
   },
 
-  listar() {
-    return notificacoes.filter(n => n.status !== "removida");
+  async list() {
+    try {
+      return await notificationsApi.listNotifications();
+    } catch (err) {
+      return inMemory.filter((n) => n.status !== "removed");
+    }
   },
 
-  filtrar(status: StatusNotificacao) {
-    return notificacoes.filter(n => n.status === status);
+  async markAsRead(id: string) {
+    try {
+      await notificationsApi.markAsRead(id);
+    } catch (err) {
+      inMemory = inMemory.map((n) => (n.id === id ? { ...n, status: "read" } : n));
+    }
   },
 
-  marcarComoLida(id: string) {
-    notificacoes = notificacoes.map(n =>
-      n.id === id ? { ...n, status: "lida" } : n
-    );
+  async remove(id: string) {
+    try {
+      await notificationsApi.removeNotification(id);
+    } catch (err) {
+      inMemory = inMemory.map((n) => (n.id === id ? { ...n, status: "removed" } : n));
+    }
   },
 
-  remover(id: string) {
-    notificacoes = notificacoes.map(n =>
-      n.id === id ? { ...n, status: "removida" } : n
-    );
+  async countUnread() {
+    try {
+      const list = await this.list();
+      return list.filter((n) => n.status === "unread").length;
+    } catch (err) {
+      return inMemory.filter((n) => n.status === "unread").length;
+    }
   },
-
-  limparHistorico() {
-    notificacoes = notificacoes.map(n => ({ ...n, status: "removida" }));
-  },
-
-  countNaoLidas() {
-    return notificacoes.filter(n => n.status === "nao_lida").length;
-  }
 };
