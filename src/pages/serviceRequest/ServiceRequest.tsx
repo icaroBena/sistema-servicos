@@ -5,8 +5,7 @@ import "./request.css";
 type TempoServico = "imediato" | "2-6" | "1-3" | "1m+";
 
 export default function ServiceRequest() {
-  const navigate = useNavigate();
-  navigate("/confirm-service");
+  const navigate = useNavigate(); // ❗ agora sem navegação automática
 
   const [descricao, setDescricao] = useState("");
   const [valor, setValor] = useState("");
@@ -32,15 +31,14 @@ export default function ServiceRequest() {
     });
 
     alert("Solicitação enviada!");
-
-    navigate("/confirm-service");
+    navigate("/confirm-service"); // só navega AQUI
   }
 
   return (
     <main className="sr-container">
       <h1 className="sr-title">Serviço de Instalações e Manutenções Domésticas</h1>
 
-      {/* CARD DO SERVIÇO */}
+      {/* CARD */}
       <section className="sr-service-card">
         <img
           src="https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?auto=format&fit=crop&w=800&q=80"
@@ -70,7 +68,6 @@ export default function ServiceRequest() {
         <h2 className="sr-form-title">Qual tipo de serviço você procura?</h2>
 
         <form onSubmit={handleSubmit}>
-          {/* descrição */}
           <textarea
             className="sr-input sr-textarea"
             placeholder="Descreva o serviço desejado"
@@ -79,11 +76,9 @@ export default function ServiceRequest() {
             required
           />
 
-          {/* valor */}
           <label className="sr-label" htmlFor="valor">Orçamento oferecido</label>
-          <p className="sr-subtext">
-            Sugira o valor ideal, porém pode ser negociado diretamente com o prestador.
-          </p>
+          <p className="sr-subtext">Sugira o valor ideal, porém negociável.</p>
+
           <input
             id="valor"
             type="text"
@@ -93,34 +88,31 @@ export default function ServiceRequest() {
             onChange={(e) => setValor(e.target.value)}
           />
 
-          {/* tempo */}
           <fieldset className="sr-fieldset">
             <legend>Tempo de serviço</legend>
 
             <div className="sr-radio-group">
               <label>
-                <input type="radio" name="tempo" checked={tempo === "imediato"} onChange={() => setTempo("imediato")} />
+                <input type="radio" checked={tempo === "imediato"} onChange={() => setTempo("imediato")} />
                 Imediato
               </label>
 
               <label>
-                <input type="radio" name="tempo" checked={tempo === "2-6"} onChange={() => setTempo("2-6")} />
+                <input type="radio" checked={tempo === "2-6"} onChange={() => setTempo("2-6")} />
                 2 a 6 dias
               </label>
 
               <label>
-                <input type="radio" name="tempo" checked={tempo === "1-3"} onChange={() => setTempo("1-3")} />
+                <input type="radio" checked={tempo === "1-3"} onChange={() => setTempo("1-3")} />
                 1 a 3 semanas
               </label>
 
               <label>
-                <input type="radio" name="tempo" checked={tempo === "1m+"} onChange={() => setTempo("1m+")} />
+                <input type="radio" checked={tempo === "1m+"} onChange={() => setTempo("1m+")} />
                 1 mês ou mais
               </label>
             </div>
           </fieldset>
-
-          
 
           {previews.length > 0 && (
             <div className="sr-preview-grid">
@@ -130,7 +122,6 @@ export default function ServiceRequest() {
             </div>
           )}
 
-          {/* botões */}
           <div className="sr-actions">
             <button className="sr-btn sr-btn-primary" type="submit">
               Enviar solicitação
