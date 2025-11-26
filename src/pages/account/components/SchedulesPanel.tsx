@@ -7,6 +7,7 @@ import ScheduleDetailsModal from "./popups/ScheduleDetailsModal";
 import type { Booking } from "../../../models/Agendamento";
 import * as bookingsApi from "../../../api/bookings";
 import { useConfirm } from "../../../components/UseConfirm";
+import { loadFromLocal, saveToLocal } from "../../../utils/localFallback";
 import { useNavigate } from "react-router-dom";
 
 import "./account-tabs-style.css";
@@ -62,8 +63,7 @@ const SchedulesPanel: React.FC = () => {
 
       if (mounted) {
         try {
-          const raw = localStorage.getItem("fallback_bookings");
-          const list = raw ? JSON.parse(raw) : [];
+          const list = loadFromLocal("fallback_bookings", [] as Booking[]);
           setItems(list);
         } catch (e) {
           setItems([]);
@@ -77,7 +77,11 @@ const SchedulesPanel: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("schedules", JSON.stringify(items));
+    try {
+      saveToLocal("schedules", items);
+    } catch (e) {
+      // ignore
+    }
   }, [items]);
 
   // -------------------- AÇÕES ---------------------

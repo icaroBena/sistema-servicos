@@ -1,4 +1,5 @@
 import React from "react";
+import { loadFromLocal } from "../../../../utils/localFallback";
 import * as refundsApi from "../../../../api/refunds";
 import "../account-tabs-style.css";
 
@@ -19,8 +20,7 @@ const RefundDetailsModal: React.FC<Props> = ({ refundId, onClose }) => {
       } catch (err) {
         // fallback: look in localStorage
         try {
-          const raw = localStorage.getItem("fallback_refunds");
-          const list: any[] = raw ? JSON.parse(raw) : [];
+          const list: any[] = loadFromLocal<any[]>("fallback_refunds", []);
           const found = list.find((r) => r.id === refundId) ?? null;
           if (mounted) setRefund(found);
         } catch (e) {

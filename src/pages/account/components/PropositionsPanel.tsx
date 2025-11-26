@@ -18,6 +18,7 @@ interface ProposalView {
 }
 
 import * as proposalsApi from "../../../api/proposals";
+import { loadFromLocal, saveToLocal } from "../../../utils/localFallback";
 
 const SAMPLE_PROPOSALS: ProposalView[] = [
   {
@@ -44,10 +45,9 @@ const PropositionsPanel: React.FC = () => {
       setProposals((prev) => prev.map((p) => (p.id === id ? { ...p, status: "accepted" } : p)));
       // persist fallback
       try {
-        const raw = localStorage.getItem("fallback_proposals");
-        const list: ProposalView[] = raw ? JSON.parse(raw) : proposals;
+        const list: ProposalView[] = loadFromLocal("fallback_proposals", proposals);
         const updated = list.map((p) => (p.id === id ? { ...p, status: "accepted" } : p));
-        localStorage.setItem("fallback_proposals", JSON.stringify(updated));
+        saveToLocal("fallback_proposals", updated);
       } catch (e) {}
     }
   };
@@ -59,10 +59,9 @@ const PropositionsPanel: React.FC = () => {
     } catch (err) {
       setProposals((prev) => prev.map((p) => (p.id === id ? { ...p, status: "rejected" } : p)));
       try {
-        const raw = localStorage.getItem("fallback_proposals");
-        const list: ProposalView[] = raw ? JSON.parse(raw) : proposals;
+        const list: ProposalView[] = loadFromLocal("fallback_proposals", proposals);
         const updated = list.map((p) => (p.id === id ? { ...p, status: "rejected" } : p));
-        localStorage.setItem("fallback_proposals", JSON.stringify(updated));
+        saveToLocal("fallback_proposals", updated);
       } catch (e) {}
     }
   };
@@ -83,10 +82,9 @@ const PropositionsPanel: React.FC = () => {
           prev.map((p) => (p.id === id ? { ...p, counterOffer: value, status: "negotiation" } : p))
         );
         try {
-          const raw = localStorage.getItem("fallback_proposals");
-          const list: ProposalView[] = raw ? JSON.parse(raw) : proposals;
+          const list: ProposalView[] = loadFromLocal("fallback_proposals", proposals);
           const updated = list.map((p) => (p.id === id ? { ...p, counterOffer: value, status: "negotiation" } : p));
-          localStorage.setItem("fallback_proposals", JSON.stringify(updated));
+          saveToLocal("fallback_proposals", updated);
         } catch (e) {}
       }
     })();
@@ -112,8 +110,7 @@ const PropositionsPanel: React.FC = () => {
       setProposals(view);
     } catch (err) {
       try {
-        const raw = localStorage.getItem("fallback_proposals");
-        const list: ProposalView[] = raw ? JSON.parse(raw) : SAMPLE_PROPOSALS;
+        const list: ProposalView[] = loadFromLocal("fallback_proposals", SAMPLE_PROPOSALS);
         setProposals(list);
       } catch (e) {
         setProposals(SAMPLE_PROPOSALS);

@@ -1,5 +1,6 @@
 // src/pages/account/components/ServicesPanel.tsx
 import React, { useState, useEffect } from "react";
+import { loadFromLocal, saveToLocal } from "../../../utils/localFallback";
 import ServiceFormModal from "./popups/ServiceFormModal";
 import type { Service } from "../../../models/Servico";
 import "./account-tabs-style.css";
@@ -12,18 +13,16 @@ const ServicesPanel: React.FC = () => {
   const [edit, setEdit] = useState<Service | null>(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem("services");
-    if (saved) {
-      try {
-        setServices(JSON.parse(saved));
-      } catch {
-        setServices([]);
-      }
-    }
+    const list = loadFromLocal<Service[]>("services", []);
+    setServices(list || []);
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("services", JSON.stringify(services));
+    try {
+      saveToLocal("services", services);
+    } catch (e) {
+      // ignore
+    }
   }, [services]);
 
   const openAdd = () => {

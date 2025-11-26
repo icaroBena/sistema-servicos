@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import * as notificationsApi from "../api/notifications";
+import { loadFromLocal, saveToLocal } from "../utils/localFallback";
 import type { Notification } from "../models/Notificacao";
 
 interface NotificationContextType {
@@ -32,8 +33,8 @@ export const NotificationProvider: React.FC<ProviderProps> = ({ children }) => {
         setNotifications(list as Notification[]);
       } catch (err) {
         // seed with example notifications once per device (localStorage)
-        const loaded = localStorage.getItem("mock_notifs_loaded");
-        if (!loaded) {
+        const loaded = loadFromLocal<string>("mock_notifs_loaded", "false");
+        if (loaded !== "true") {
           const sample: Partial<Notification>[] = [
             { type: "proposal", title: "Nova proposta recebida", message: "Você recebeu uma nova proposta para o serviço.", link: "/account?tab=propositions" },
             { type: "booking", title: "Agendamento atualizado", message: "O prestador iniciou a execução do serviço.", link: "/account?tab=appointments" },
@@ -63,7 +64,7 @@ export const NotificationProvider: React.FC<ProviderProps> = ({ children }) => {
             if (created) inMemoryRef.current.unshift(created as Notification);
           }
 
-          localStorage.setItem("mock_notifs_loaded", "true");
+          saveToLocal("mock_notifs_loaded", "true");
           setNotifications(inMemoryRef.current.slice());
         } else {
           setNotifications(inMemoryRef.current.slice());

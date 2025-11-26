@@ -1,6 +1,7 @@
 // src/pages/account/components/PaymentMethodsPanel.tsx
 
 import React, { useEffect, useState } from "react";
+import { loadFromLocal, saveToLocal } from "../../../utils/localFallback";
 import "./account-tabs-style.css";
 
 interface PaymentMethod {
@@ -26,12 +27,16 @@ const PaymentMethodsPanel: React.FC<PaymentMethodsPanelProps> = ({ userType }) =
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem("paymentMethods");
-    if (saved) setMethods(JSON.parse(saved));
+    const list = loadFromLocal<PaymentMethod[]>("paymentMethods", []);
+    if (list) setMethods(list);
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("paymentMethods", JSON.stringify(methods));
+    try {
+      saveToLocal("paymentMethods", methods);
+    } catch (e) {
+      // ignore
+    }
   }, [methods]);
 
   const handleAdd = () => {

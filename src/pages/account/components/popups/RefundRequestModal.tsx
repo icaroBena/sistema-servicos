@@ -1,6 +1,7 @@
 // src/components/popups/RefundRequestModal.tsx
 
 import React, { useState } from "react";
+import { loadFromLocal, saveToLocal } from "../../../../utils/localFallback";
 import "../account-tabs-style.css";
 import * as refundsApi from "../../../../api/refunds";
 import type { Refund } from "../../../../models/Reembolso";
@@ -77,10 +78,9 @@ const RefundRequestModal: React.FC<Props> = ({
       // persist fallback in localStorage so other components can read it
       const key = "fallback_refunds";
       try {
-        const raw = localStorage.getItem(key);
-        const list: Refund[] = raw ? JSON.parse(raw) : [];
+        const list = loadFromLocal<Refund[]>(key, []);
         list.unshift(novo);
-        localStorage.setItem(key, JSON.stringify(list));
+        saveToLocal(key, list);
       } catch (e) {
         // ignore storage errors
       }

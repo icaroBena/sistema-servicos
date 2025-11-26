@@ -5,6 +5,7 @@ import "./account-tabs-style.css";
 
 // user fallback will be read from localStorage (auth_user) — no mock import
 import * as refundsApi from "../../../api/refunds";
+import { loadFromLocal } from "../../../utils/localFallback";
 
 import type { Refund } from "../../../models/Reembolso";
 
@@ -29,8 +30,7 @@ const RefundsPanel: React.FC = () => {
     } catch (err) {
       // API not available — use localStorage fallback if present
       try {
-        const raw = localStorage.getItem("fallback_refunds");
-        const list: Refund[] = raw ? JSON.parse(raw) : [];
+        const list: Refund[] = loadFromLocal<Refund[]>("fallback_refunds", []);
         setRefunds((list || []).filter((r) => r.requesterId === user.id));
       } catch (e) {
         setRefunds([]);
