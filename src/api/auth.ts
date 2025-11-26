@@ -68,6 +68,8 @@ export async function login(email: string, password: string): Promise<LoginRespo
 
 export async function register(payload: Partial<User> & { password: string }) {
   try {
+
+    console.log("Payload 2222", payload)
     // Map payload to backend Portuguese fields
     const body = { ...mapUserToBackend(payload), password: payload.password, cpf: (payload as any).cpf };
     const raw = await apiPost<any, any>("/auth/register", body);

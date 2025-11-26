@@ -118,6 +118,7 @@ const Register: React.FC = () => {
             type: formData.userType, // interno em inglês
             phone: formData.phone,
         };
+        console.log("Payload", payload)
 
         try {
             const data = await register(payload as any);
