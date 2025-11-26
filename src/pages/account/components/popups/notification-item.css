@@ -1,0 +1,27 @@
+.noti-card {
+  background: #fafafa;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.noti-unread {
+  border-left: 4px solid #0078ff;
+  background: #eef4ff;
+}
+
+.noti-top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.noti-msg {
+  margin: 6px 0 10px;
+  color: #444;
+}
+
+.noti-actions {
+  display: flex;
+  gap: 10px;
+}
