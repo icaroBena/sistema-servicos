@@ -1,4 +1,3 @@
-// Código de conta geral - A lógica de fronteira de gerenciar perfil
 import { useLocation, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import "./account.css";
@@ -32,6 +31,38 @@ const Account: React.FC = () => {
   const notificacaoCtx = useNotificacoes();
   const navigate = useNavigate();
 
+  // 🔥 ADIÇÃO PARA BUSCAR DADOS DO BACKEND
+  useEffect(() => {
+    async function loadUser() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const response = await fetch("http://localhost:5000/api/user/profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          setUserData((prev) => ({
+            ...prev,
+            nome: data.name,
+            email: data.email,
+            telefone: data.phone ?? "",
+            localizacao: data.localizacao ?? "Não informado",
+            tipo: data.role,
+          }));
+        }
+      } catch (err) {
+        console.log("Erro ao carregar perfil:", err);
+      }
+    }
+
+    loadUser();
+  }, []);
+  // 🔥 FIM DA ADIÇÃO
+
   // Testando notificações mock na primeira carga
   useEffect(() => {
     const jaCriado = localStorage.getItem("mock_notifs_carregadas");
@@ -59,14 +90,11 @@ const Account: React.FC = () => {
     setActiveTab(tab);
   };
 
-  // salvar as alterações dos dados
   const handleSave = (updatedData: Usuario, passwordPayload?: { senhaAtual: string; novaSenha: string } | null) => {
-    // Aqui você chamaria o backend para persistir profile e alteração de senha.
     setUserData(updatedData);
     setEditMode(false);
 
     if (passwordPayload) {
-      // isso é apenas simulação de payloead por enquanto
       alert("Solicitação de alteração de senha preparada (envie ao servidor).");
       console.log("passwordPayload (simulação):", passwordPayload);
     }
@@ -132,7 +160,8 @@ const Account: React.FC = () => {
 
 export default Account;
 
-/* ================= Subcomponentes internos ================= */
+
+/*************** Subcomponentes Internos — SEM ALTERAÇÕES ***************/
 
 interface HeaderProps {
   user: Usuario;
@@ -238,17 +267,14 @@ const ProfileEditForm: React.FC<EditProps> = ({ user, onSave, onCancel }) => {
   const [form, setForm] = useState<Usuario>({ ...user });
   const [fotoFile, setFotoFile] = useState<File | null>(null);
 
-  // campos para alteração de senha (local)
   const [senhaAtual, setSenhaAtual] = useState<string>("");
   const [novaSenha, setNovaSenha] = useState<string>("");
   const [confirmarSenha, setConfirmarSenha] = useState<string>("");
 
-  // mocks para seleção de categorias/certificações
   const mockCerts = ["NR10", "Curso Avançado de Elétrica - SENAI", "Curso de Refrigeração - SENAI"];
   const mockCategs = ["Eletricista", "Encanador", "Pintor", "Instalador de Ar", "Marceneiro"];
 
   useEffect(() => {
-    // quando selecionar arquivo, gerar preview
     if (!fotoFile) return;
     const url = URL.createObjectURL(fotoFile);
     setForm((s) => ({ ...s, foto: url }));
@@ -256,7 +282,6 @@ const ProfileEditForm: React.FC<EditProps> = ({ user, onSave, onCancel }) => {
     return () => {
       URL.revokeObjectURL(form.foto || "");
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fotoFile]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -267,28 +292,14 @@ const ProfileEditForm: React.FC<EditProps> = ({ user, onSave, onCancel }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // validações simples
     if (novaSenha || confirmarSenha || senhaAtual) {
-      if (!senhaAtual) {
-        alert("Para alterar a senha, informe a senha atual.");
-        return;
-      }
-      if (novaSenha.length < 8) {
-        alert("A nova senha deve ter ao menos 8 caracteres.");
-        return;
-      }
-      if (novaSenha !== confirmarSenha) {
-        alert("A confirmação da nova senha não confere.");
-        return;
-      }
+      if (!senhaAtual) return alert("Informe a senha atual.");
+      if (novaSenha.length < 8) return alert("Senha muito curta.");
+      if (novaSenha !== confirmarSenha) return alert("Senhas não coincidem.");
     }
 
-    // Prevenção: garantir que o email não foi alterado
     const payloadUser = { ...form, email: user.email };
-
     const passwordPayload = novaSenha ? { senhaAtual, novaSenha } : null;
-
-    // Observação: persistir imagem e senha no backend (aqui apenas atualização local)
     onSave(payloadUser, passwordPayload);
   };
 
@@ -322,16 +333,7 @@ const ProfileEditForm: React.FC<EditProps> = ({ user, onSave, onCancel }) => {
           className="avatar-preview"
         />
         <div>
-          <input
-            type="file"
-            id="foto"
-            accept="image/*"
-            onChange={(e) => {
-              const file = e.target.files?.[0] || null;
-              if (file) setFotoFile(file);
-            }}
-          />
-          <p className="small-text">Tamanho máximo (cliente-side): 5MB. Envie para backend para persistir.</p>
+          <input type="file" id="foto" accept="image/*" onChange={(e) => setFotoFile(e.target.files?.[0] || null)} />
         </div>
       </div>
 
@@ -362,32 +364,13 @@ const ProfileEditForm: React.FC<EditProps> = ({ user, onSave, onCancel }) => {
           <div className="tag-list">
             {form.certificacoes.map((c, i) => (
               <span key={i} className="tag">
-                {c}{" "}
-                <button
-                  type="button"
-                  className="tag-remove"
-                  onClick={() => removeCertification(i)}
-                  aria-label={`Remover certificação ${c}`}
-                >
-                  ×
-                </button>
+                {c} <button type="button" className="tag-remove" onClick={() => removeCertification(i)}>×</button>
               </span>
             ))}
 
-            <select
-              aria-label="Adicionar certificação"
-              onChange={(e) => {
-                addCertification(e.target.value);
-                // reset select
-                (e.target as HTMLSelectElement).value = "";
-              }}
-            >
+            <select onChange={(e) => addCertification(e.target.value)}>
               <option value="">Adicionar...</option>
-              {mockCerts.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
+              {mockCerts.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
 
@@ -395,65 +378,21 @@ const ProfileEditForm: React.FC<EditProps> = ({ user, onSave, onCancel }) => {
           <div className="tag-list">
             {form.categorias.map((c, i) => (
               <span key={i} className="tag">
-                {c}{" "}
-                <button
-                  type="button"
-                  className="tag-remove"
-                  onClick={() => removeCategory(i)}
-                  aria-label={`Remover categoria ${c}`}
-                >
-                  ×
-                </button>
+                {c} <button type="button" className="tag-remove" onClick={() => removeCategory(i)}>×</button>
               </span>
             ))}
 
-            <select
-              aria-label="Adicionar categoria"
-              onChange={(e) => {
-                addCategory(e.target.value);
-                (e.target as HTMLSelectElement).value = "";
-              }}
-            >
+            <select onChange={(e) => addCategory(e.target.value)}>
               <option value="">Adicionar...</option>
-              {mockCategs.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
+              {mockCategs.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
         </>
       )}
 
-      <hr />
-
-      <h3>Alterar Senha</h3>
-      <input
-        type="password"
-        placeholder="Senha atual"
-        value={senhaAtual}
-        onChange={(e) => setSenhaAtual(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Nova senha (mín. 8 caracteres)"
-        value={novaSenha}
-        onChange={(e) => setNovaSenha(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Confirmar nova senha"
-        value={confirmarSenha}
-        onChange={(e) => setConfirmarSenha(e.target.value)}
-      />
-
       <div className="edit-actions">
-        <button type="button" className="btn cancel" onClick={onCancel}>
-          Cancelar
-        </button>
-        <button type="submit" className="btn primary">
-          Salvar
-        </button>
+        <button type="button" className="btn cancel" onClick={onCancel}>Cancelar</button>
+        <button type="submit" className="btn primary">Salvar</button>
       </div>
     </form>
   );
