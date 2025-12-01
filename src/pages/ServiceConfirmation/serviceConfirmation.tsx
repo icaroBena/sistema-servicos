@@ -5,6 +5,11 @@ import "./serviceConfirmation.css";
 export default function ServiceConfirmation() {
   const navigate = useNavigate();
 
+  // Função que será chamada ao clicar no botão
+  const handleConfirmarServico = () => {
+    navigate("/home"); // Navega para a tela home
+  };
+
   return (
     <div className="confirmation-container">
       <h1 className="page-title">Confirmação de Serviço</h1>
@@ -93,7 +98,11 @@ export default function ServiceConfirmation() {
               O pagamento será processado após a conclusão do serviço
             </div>
 
-            <button className="btn-primary">Confirmar Serviço</button>
+            {/* Aqui está a navegação para a tela Home */}
+            <button className="btn-primary" onClick={handleConfirmarServico}>
+              Confirmar Serviço
+            </button>
+
             <button className="btn-secondary" onClick={() => navigate(-1)}>
               Voltar e Editar
             </button>
