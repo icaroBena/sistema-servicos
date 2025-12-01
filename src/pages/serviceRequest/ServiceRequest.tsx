@@ -5,7 +5,7 @@ import "./request.css";
 type TempoServico = "imediato" | "2-6" | "1-3" | "1m+";
 
 export default function ServiceRequest() {
-  const navigate = useNavigate(); // ❗ agora sem navegação automática
+  const navigate = useNavigate();
 
   const [descricao, setDescricao] = useState("");
   const [valor, setValor] = useState("");
@@ -20,18 +20,18 @@ export default function ServiceRequest() {
     setFiles(safeFiles);
   }
 
+  // formatação de moeda
+  function formatMoney(v: string) {
+    const num = Number(v.replace(/\D/g, "")) / 100;
+    return num.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  }
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    console.log("Solicitação enviada:", {
-      descricao,
-      valor,
-      tempo,
-      files
-    });
+    localStorage.setItem("@wm_orcamento", valor); // salva para próxima página
 
-    alert("Solicitação enviada!");
-    navigate("/confirm-service"); // só navega AQUI
+    navigate("/confirm-service");
   }
 
   return (
@@ -79,38 +79,28 @@ export default function ServiceRequest() {
           <label className="sr-label" htmlFor="valor">Orçamento oferecido</label>
           <p className="sr-subtext">Sugira o valor ideal, porém negociável.</p>
 
+          {/* CAMPO EDITADO */}
           <input
             id="valor"
             type="text"
             className="sr-input"
             placeholder="R$ 0,00"
             value={valor}
-            onChange={(e) => setValor(e.target.value)}
+            onChange={(e) => {
+              const onlyNumbers = e.target.value.replace(/\D/g, "");
+              setValor(formatMoney(onlyNumbers));
+            }}
+            required
           />
 
           <fieldset className="sr-fieldset">
             <legend>Tempo de serviço</legend>
 
             <div className="sr-radio-group">
-              <label>
-                <input type="radio" checked={tempo === "imediato"} onChange={() => setTempo("imediato")} />
-                Imediato
-              </label>
-
-              <label>
-                <input type="radio" checked={tempo === "2-6"} onChange={() => setTempo("2-6")} />
-                2 a 6 dias
-              </label>
-
-              <label>
-                <input type="radio" checked={tempo === "1-3"} onChange={() => setTempo("1-3")} />
-                1 a 3 semanas
-              </label>
-
-              <label>
-                <input type="radio" checked={tempo === "1m+"} onChange={() => setTempo("1m+")} />
-                1 mês ou mais
-              </label>
+              <label><input type="radio" checked={tempo === "imediato"} onChange={() => setTempo("imediato")} />Imediato</label>
+              <label><input type="radio" checked={tempo === "2-6"} onChange={() => setTempo("2-6")} />2 a 6 dias</label>
+              <label><input type="radio" checked={tempo === "1-3"} onChange={() => setTempo("1-3")} />1 a 3 semanas</label>
+              <label><input type="radio" checked={tempo === "1m+"} onChange={() => setTempo("1m+")} />1 mês ou mais</label>
             </div>
           </fieldset>
 

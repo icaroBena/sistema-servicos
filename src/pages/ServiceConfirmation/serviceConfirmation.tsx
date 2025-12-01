@@ -5,27 +5,25 @@ import "./serviceConfirmation.css";
 export default function ServiceConfirmation() {
   const navigate = useNavigate();
 
+  const valor = localStorage.getItem("@wm_orcamento") ?? "R$ 0,00";
+
+  const preco = Number(valor.replace(/[^\d,]/g, "").replace(",", ".")); // "R$1.500,33" > 1500.33
+  const taxa = preco * 0.15;
+  const total = preco + taxa;
+
   return (
     <div className="confirmation-container">
       <h1 className="page-title">Confirmação de Serviço</h1>
-      <p className="page-subtitle">
-        Revise os detalhes do seu serviço antes de confirmar
-      </p>
+      <p className="page-subtitle">Revise os detalhes do seu serviço antes de confirmar</p>
 
       <div className="confirmation-content">
-        {/* COLUNA ESQUERDA */}
-        <div className="left-column">
 
-          {/* Prestador de Serviço */}
+        <div className="left-column">
           <div className="card">
             <h2 className="section-title">Prestador de Serviço</h2>
 
             <div className="provider-box">
-              <img
-                src="https://via.placeholder.com/60"
-                alt="Prestador"
-                className="provider-avatar"
-              />
+              <img src="https://via.placeholder.com/60" alt="Prestador" className="provider-avatar" />
 
               <div className="provider-info">
                 <h3 className="provider-name">João Silva</h3>
@@ -36,16 +34,13 @@ export default function ServiceConfirmation() {
             </div>
           </div>
 
-          {/* Detalhes do Serviço */}
           <div className="card">
             <h2 className="section-title">Detalhes do Serviço</h2>
 
             <div className="tag">Instalações Elétricas</div>
 
             <p className="service-description">
-              Instalação de tomadas extras na sala e cozinha, incluindo verificação
-              da rede elétrica existente e adequação às normas de segurança. Serviço
-              inclui fornecimento de materiais básicos.
+              Instalação de tomadas extras, com materiais incluídos e ajuste à rede existente.
             </p>
 
             <div className="details-grid">
@@ -63,30 +58,28 @@ export default function ServiceConfirmation() {
               </div>
             </div>
           </div>
-
         </div>
 
-        {/* COLUNA DIREITA */}
+        {/* FINANCEIRO — EDITADO */}
         <div className="right-column">
           <div className="card">
-
             <h3 className="section-title">Resumo Financeiro</h3>
 
             <div className="price-row">
               <span>Valor do serviço</span>
-              <strong>R$ 150.00</strong>
+              <strong>{valor}</strong>
             </div>
 
             <div className="price-row">
               <span>Taxa da plataforma (15%)</span>
-              <strong>R$ 22.50</strong>
+              <strong>R$ {taxa.toFixed(2)}</strong>
             </div>
 
             <div className="divider"></div>
 
             <div className="price-row total">
               <span>Total</span>
-              <span className="total-value">R$ 172.50</span>
+              <span className="total-value">R$ {total.toFixed(2)}</span>
             </div>
 
             <div className="info-box">
@@ -104,7 +97,6 @@ export default function ServiceConfirmation() {
             </p>
           </div>
         </div>
-
       </div>
     </div>
   );
