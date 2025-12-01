@@ -1,7 +1,7 @@
 const API_URL: string = import.meta.env.VITE_API_URL;
 
 interface LoginResponse {
-  success?: boolean; 
+  success?: boolean;
   message?: string;
   token?: string;
   user?: {
@@ -17,22 +17,17 @@ export async function loginRequest(email: string, password: string): Promise<Log
     const response = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }), 
+      body: JSON.stringify({ email, password }),
     });
 
-    const data: LoginResponse = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
     console.error("Erro na requisição de login:", error);
     return { success: false, message: "Falha ao conectar com o servidor." };
   }
 }
 
-export async function registerRequest(
-  username: string,
-  email: string,
-  password: string
-): Promise<LoginResponse> {
+export async function registerRequest(username: string, email: string, password: string) {
   try {
     const response = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
@@ -40,10 +35,23 @@ export async function registerRequest(
       body: JSON.stringify({ name: username, email, password }),
     });
 
-    const data: LoginResponse = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
     console.error("Erro na requisição de cadastro:", error);
     return { success: false, message: "Falha ao conectar com o servidor." };
   }
+}
+
+// ========================
+// Pegar dados reais do usuário
+// ========================
+export async function getProfile(token: string) {
+  const response = await fetch(`${API_URL}/users/me`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return await response.json();
 }

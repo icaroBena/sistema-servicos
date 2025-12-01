@@ -17,22 +17,28 @@ import PaymentMethodsPanel from "./components/PaymentMethodsPanel";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
-// Mocks leves para testar as duas perspectivas (cliente / prestador)
 import type { Usuario } from "../../models/Usuario";
-import { mockCliente, mockPrestador } from "../../mocks/devUser";
 import { carregarNotificacoesMock } from "../../mocks/notificacoesMock";
+
 import { useNotificacoes } from "../../contexts/NotificationContext";
+import { getProfile } from "../../services/api";
 
 const Account: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("profile");
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [userData, setUserData] = useState<Usuario>(mockCliente);
+
+  // começa como null para evitar hooks desordenados
+  const [userData, setUserData] = useState<Usuario | null>(null);
 
   const location = useLocation();
   const notificacaoCtx = useNotificacoes();
   const navigate = useNavigate();
 
-  // Testando notificações mock na primeira carga
+  // ===============================
+  // HOOKS DEVEM FICAR AQUI SEMPRE!
+  // ===============================
+
+  // mock notificações
   useEffect(() => {
     const jaCriado = localStorage.getItem("mock_notifs_carregadas");
 
@@ -43,7 +49,7 @@ const Account: React.FC = () => {
     }
   }, []);
 
-  // Quando a URL mudar, atualizar a tab
+  // muda aba quando muda URL
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const tabFromUrl = params.get("tab");
@@ -53,20 +59,73 @@ const Account: React.FC = () => {
     }
   }, [location.search]);
 
-  // Quando user clicar na sidebar, atualizar a URL também
   const handleTabSelect = (tab: string) => {
     navigate(`/account?tab=${tab}`);
     setActiveTab(tab);
   };
 
-  // salvar as alterações dos dados
-  const handleSave = (updatedData: Usuario, passwordPayload?: { senhaAtual: string; novaSenha: string } | null) => {
-    // Aqui você chamaria o backend para persistir profile e alteração de senha.
+  // pegar usuário real do backend
+  useEffect(() => {
+    async function carregarUsuario() {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const user = await getProfile(token);
+
+      setUserData({
+        id: user.id,
+        nome: user.name,
+        email: user.email,
+        telefone: user.phone || "",
+        localizacao: user.localizacao || "",
+        tipo: "cliente",
+        foto: "",
+        certificacoes: [],
+        categorias: [],
+        disponibilidade: "DISPONÍVEL",
+        avaliacao: 5,
+        sobre: ""
+      });
+    }
+
+    carregarUsuario();
+  }, []);
+
+  // garantir tab = profile se nada selecionado
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (!params.get("tab")) {
+      navigate("/account?tab=profile", { replace: true });
+    }
+  }, []);
+
+  // ===============================
+  // RETURN CONDICIONAL — AGORA NO LUGAR CERTO
+  // ===============================
+  if (!userData) {
+    return (
+      <div className="wm-account">
+        <Navbar />
+        <div className="account-container">
+          <p style={{ padding: 20 }}>Carregando perfil...</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // ===============================
+  // DAQUI PRA BAIXO NADA FOI ALTERADO
+  // ===============================
+
+  const handleSave = (
+    updatedData: Usuario,
+    passwordPayload?: { senhaAtual: string; novaSenha: string } | null
+  ) => {
     setUserData(updatedData);
     setEditMode(false);
 
     if (passwordPayload) {
-      // isso é apenas simulação de payloead por enquanto
       alert("Solicitação de alteração de senha preparada (envie ao servidor).");
       console.log("passwordPayload (simulação):", passwordPayload);
     }
@@ -92,31 +151,32 @@ const Account: React.FC = () => {
 
       case "services":
         return userData.tipo === "prestador" ? <ServicesPanel /> : <div />;
+
       case "verification":
         return userData.tipo === "prestador" ? <ProviderPanel /> : <div />;
+
       case "refunds":
         return userData.tipo === "cliente" ? <RefundsPanel /> : <div />;
+
       case "appointments":
         return <SchedulesPanel />;
+
       case "propositions":
         return <PropositionsPanel />;
+
       case "payments":
         return <PaymentMethodsPanel userType={userData.tipo} />;
+
       case "settings":
         return <SettingsPanel />;
+
       case "notifications":
         return <NotificationsPanel />;
+
       default:
         return null;
     }
   };
-
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    if (!params.get("tab")) {
-      navigate("/account?tab=profile", { replace: true });
-    }
-  }, []);
 
   return (
     <div className="wm-account">
@@ -176,6 +236,7 @@ interface ViewProps {
   user: Usuario;
   onEdit: () => void;
 }
+
 const ProfileView: React.FC<ViewProps> = ({ user, onEdit }) => {
   return (
     <div className="profile-view">
@@ -238,17 +299,14 @@ const ProfileEditForm: React.FC<EditProps> = ({ user, onSave, onCancel }) => {
   const [form, setForm] = useState<Usuario>({ ...user });
   const [fotoFile, setFotoFile] = useState<File | null>(null);
 
-  // campos para alteração de senha (local)
   const [senhaAtual, setSenhaAtual] = useState<string>("");
   const [novaSenha, setNovaSenha] = useState<string>("");
   const [confirmarSenha, setConfirmarSenha] = useState<string>("");
 
-  // mocks para seleção de categorias/certificações
   const mockCerts = ["NR10", "Curso Avançado de Elétrica - SENAI", "Curso de Refrigeração - SENAI"];
   const mockCategs = ["Eletricista", "Encanador", "Pintor", "Instalador de Ar", "Marceneiro"];
 
   useEffect(() => {
-    // quando selecionar arquivo, gerar preview
     if (!fotoFile) return;
     const url = URL.createObjectURL(fotoFile);
     setForm((s) => ({ ...s, foto: url }));
@@ -256,10 +314,11 @@ const ProfileEditForm: React.FC<EditProps> = ({ user, onSave, onCancel }) => {
     return () => {
       URL.revokeObjectURL(form.foto || "");
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fotoFile]);
+  }, [fotoFile, form.foto]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { id, value } = e.target;
     setForm((prev) => ({ ...prev, [id]: value }));
   };
@@ -267,7 +326,6 @@ const ProfileEditForm: React.FC<EditProps> = ({ user, onSave, onCancel }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // validações simples
     if (novaSenha || confirmarSenha || senhaAtual) {
       if (!senhaAtual) {
         alert("Para alterar a senha, informe a senha atual.");
@@ -283,12 +341,9 @@ const ProfileEditForm: React.FC<EditProps> = ({ user, onSave, onCancel }) => {
       }
     }
 
-    // Prevenção: garantir que o email não foi alterado
     const payloadUser = { ...form, email: user.email };
-
     const passwordPayload = novaSenha ? { senhaAtual, novaSenha } : null;
 
-    // Observação: persistir imagem e senha no backend (aqui apenas atualização local)
     onSave(payloadUser, passwordPayload);
   };
 
@@ -298,7 +353,8 @@ const ProfileEditForm: React.FC<EditProps> = ({ user, onSave, onCancel }) => {
 
   const addCertification = (value: string) => {
     if (!value) return;
-    if (!form.certificacoes.includes(value)) setForm({ ...form, certificacoes: [...form.certificacoes, value] });
+    if (!form.certificacoes.includes(value))
+      setForm({ ...form, certificacoes: [...form.certificacoes, value] });
   };
 
   const removeCategory = (idx: number) => {
@@ -307,7 +363,8 @@ const ProfileEditForm: React.FC<EditProps> = ({ user, onSave, onCancel }) => {
 
   const addCategory = (value: string) => {
     if (!value) return;
-    if (!form.categorias.includes(value)) setForm({ ...form, categorias: [...form.categorias, value] });
+    if (!form.categorias.includes(value))
+      setForm({ ...form, categorias: [...form.categorias, value] });
   };
 
   return (
@@ -363,22 +420,15 @@ const ProfileEditForm: React.FC<EditProps> = ({ user, onSave, onCancel }) => {
             {form.certificacoes.map((c, i) => (
               <span key={i} className="tag">
                 {c}{" "}
-                <button
-                  type="button"
-                  className="tag-remove"
-                  onClick={() => removeCertification(i)}
-                  aria-label={`Remover certificação ${c}`}
-                >
+                <button type="button" className="tag-remove" onClick={() => removeCertification(i)}>
                   ×
                 </button>
               </span>
             ))}
 
             <select
-              aria-label="Adicionar certificação"
               onChange={(e) => {
                 addCertification(e.target.value);
-                // reset select
                 (e.target as HTMLSelectElement).value = "";
               }}
             >
@@ -396,19 +446,13 @@ const ProfileEditForm: React.FC<EditProps> = ({ user, onSave, onCancel }) => {
             {form.categorias.map((c, i) => (
               <span key={i} className="tag">
                 {c}{" "}
-                <button
-                  type="button"
-                  className="tag-remove"
-                  onClick={() => removeCategory(i)}
-                  aria-label={`Remover categoria ${c}`}
-                >
+                <button type="button" className="tag-remove" onClick={() => removeCategory(i)}>
                   ×
                 </button>
               </span>
             ))}
 
             <select
-              aria-label="Adicionar categoria"
               onChange={(e) => {
                 addCategory(e.target.value);
                 (e.target as HTMLSelectElement).value = "";
